@@ -1,8 +1,7 @@
-import { z } from 'zod'
-
-import { createTRPCRouter, publicProcedure } from './init'
-
 import type { TRPCRouterRecord } from '@trpc/server'
+import { YoutubeTranscript } from 'youtube-transcript'
+import { z } from 'zod'
+import { createTRPCRouter, publicProcedure } from './init'
 
 const todos = [
   { id: 1, name: 'Get groceries' },
@@ -21,7 +20,22 @@ const todosRouter = {
     }),
 } satisfies TRPCRouterRecord
 
+const youtubeRouter = {
+  getTranscript: publicProcedure
+    .input(z.object({ videoId: z.string() }))
+    .query(async ({ input }) => {
+      try {
+        const transcript = await YoutubeTranscript.fetchTranscript(input.videoId)
+        return transcript
+      } catch (error) {
+        console.error('Error fetching transcript:', error)
+        throw new Error('Failed to fetch transcript')
+      }
+    }),
+} satisfies TRPCRouterRecord
+
 export const trpcRouter = createTRPCRouter({
   todos: todosRouter,
+  youtube: youtubeRouter,
 })
 export type TRPCRouter = typeof trpcRouter
