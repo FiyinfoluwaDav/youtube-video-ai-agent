@@ -1,6 +1,6 @@
+import { prisma } from '@/db'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
-import { prisma } from '@/db'
 
 const getTodos = createServerFn({
   method: 'GET',
@@ -14,7 +14,7 @@ const createTodo = createServerFn({
   method: 'POST',
 })
   .inputValidator((data: { title: string }) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data }: { data: { title: string } }) => {
     return await prisma.todo.create({
       data,
     })
@@ -87,7 +87,7 @@ function DemoPrisma() {
         <h2 className="text-2xl font-bold mb-4 text-indigo-200">Todos</h2>
 
         <ul className="space-y-3 mb-6">
-          {todos.map((todo) => (
+          {todos.map((todo: { id: number; title: string }) => (
             <li
               key={todo.id}
               className="rounded-lg p-4 shadow-md border transition-all hover:scale-[1.02] cursor-pointer group"
@@ -121,7 +121,6 @@ function DemoPrisma() {
             style={{
               background: 'rgba(93, 103, 227, 0.1)',
               borderColor: 'rgba(93, 103, 227, 0.3)',
-              focusRing: 'rgba(93, 103, 227, 0.5)',
             }}
           />
           <button
