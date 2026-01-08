@@ -1,19 +1,18 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 
-import { getClient } from '@/db'
+import { prisma } from '../../db'
+import { Todo } from '../../generated/prisma/client'
 
 const getTodos = createServerFn({
   method: 'GET',
 }).handler(async () => {
-  const client = await getClient()
-  if (!client) {
+  try {
+    return await prisma.todo.findMany()
+  } catch (error) {
+    console.error(error)
     return undefined
   }
-  return (await client.query(`SELECT * FROM todos`)) as Array<{
-    id: number
-    title: string
-  }>
 })
 
 const insertTodo = createServerFn({
@@ -21,11 +20,15 @@ const insertTodo = createServerFn({
 })
   .inputValidator((d: { title: string }) => d)
   .handler(async ({ data }) => {
-    const client = await getClient()
-    if (!client) {
-      return undefined
+    try {
+      await prisma.todo.create({
+        data: {
+          title: data.title,
+        },
+      })
+    } catch (error) {
+      console.error(error)
     }
-    await client.query(`INSERT INTO todos (title) VALUES ($1)`, [data.title])
   })
 
 export const Route = createFileRoute('/demo/neon')({
@@ -80,7 +83,7 @@ function App() {
           <>
             <h1 className="text-2xl font-bold mb-4">Todos</h1>
             <ul className="space-y-3 mb-6">
-              {todos.map((todo: { id: number; title: string }) => (
+              {todos.map((todo: Todo) => (
                 <li
                   key={todo.id}
                   className="bg-white/10 backdrop-blur-sm rounded-lg p-4 shadow-sm border border-white/20 transition-all hover:bg-white/20 hover:scale-[1.02] cursor-pointer group"
