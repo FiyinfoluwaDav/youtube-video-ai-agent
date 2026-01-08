@@ -18,6 +18,9 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+  optimizeDeps: {
+    exclude: ['@prisma/client', '@prisma/adapter-pg', '@neondatabase/serverless'],
+  },
 })
 
 export default config
