@@ -253,9 +253,10 @@ export default function Header() {
             </div>
           )}
 
-          {/* Demo Links End */}
+          {/* Demo Links End here */}
         </nav>
 
+        {/* User Header */}
         <div className="p-4 border-t border-gray-700 bg-gray-800 flex flex-col gap-2">
           <ClerkHeader />
         </div>
