@@ -24,12 +24,18 @@ const youtubeRouter = {
   getTranscript: publicProcedure
     .input(z.object({ videoId: z.string() }))
     .query(async ({ input }) => {
+      console.log('--- STARTING TRANSCRIPT FETCH ---')
+      console.log('Video ID:', input.videoId)
       try {
         const transcript = await YoutubeTranscript.fetchTranscript(input.videoId)
         return transcript
       } catch (error) {
-        console.error('Error fetching transcript:', error)
-        throw new Error('Failed to fetch transcript')
+        console.error('Error fetching transcript for video:', input.videoId)
+        console.error(error)
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch transcript: ${error.message}`)
+        }
+        throw new Error('Failed to fetch transcript: Unknown error')
       }
     }),
 } satisfies TRPCRouterRecord

@@ -1,10 +1,10 @@
+import { TanStackDevtools } from '@tanstack/react-devtools'
 import {
-  HeadContent,
-  Scripts,
-  createRootRouteWithContext,
+    HeadContent,
+    Scripts,
+    createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import Header from '../components/Header'
 
@@ -47,6 +47,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
 
+  loader: () => {
+    // Inject CSS on server side
+    return {
+      styles: appCss,
+    }
+  },
+  notFoundComponent: () => <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">404 - Page Not Found</div>,
   shellComponent: RootDocument,
 })
 
