@@ -1,7 +1,11 @@
 import type { TRPCRouterRecord } from '@trpc/server'
-import { YoutubeTranscript } from 'youtube-transcript'
+import { exec } from 'child_process'
+import path from 'path'
+import { promisify } from 'util'
 import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from './init'
+
+const execAsync = promisify(exec)
 
 const todos = [
   { id: 1, name: 'Get groceries' },
@@ -27,8 +31,24 @@ const youtubeRouter = {
       console.log('--- STARTING TRANSCRIPT FETCH ---')
       console.log('Video ID:', input.videoId)
       try {
-        const transcript = await YoutubeTranscript.fetchTranscript(input.videoId)
-        return transcript
+        // Use Python script to fetch transcript
+        const scriptPath = path.join(process.cwd(), 'src', 'scripts', 'get_transcript.py')
+        console.log('Script path:', scriptPath)
+        
+        const { stdout } = await execAsync(`python "${scriptPath}" "${input.videoId}"`)
+        
+        const result = JSON.parse(stdout)
+        
+        if (result.error) {
+            throw new Error(result.error)
+        }
+        
+        // Ensure result is an array
+        if (!Array.isArray(result)) {
+             throw new Error('Invalid transcript format returned from script')
+        }
+
+        return result
       } catch (error) {
         console.error('Error fetching transcript for video:', input.videoId)
         console.error(error)
