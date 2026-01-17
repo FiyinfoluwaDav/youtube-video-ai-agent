@@ -31,7 +31,7 @@ const youtubeRouter = {
       console.log('--- STARTING TRANSCRIPT FETCH ---')
       console.log('Video ID:', input.videoId)
       try {
-        // Use Python script to fetch transcript
+        // Use Python script to fetch video transcript
         const scriptPath = path.join(process.cwd(), 'src', 'scripts', 'get_transcript.py')
         console.log('Script path:', scriptPath)
         
