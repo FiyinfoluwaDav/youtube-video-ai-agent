@@ -27,8 +27,6 @@ def main():
         sys.exit(1)
 
     try:
-        # Fetch transcript using instance method as per user's environment
-        # The user noted: "Based on local library inspection, use instance method .list()"
         transcript_list = YouTubeTranscriptApi().list(video_id)
         
         # Try to get manual English, fallback to generated English, then any available
@@ -40,7 +38,7 @@ def main():
              except:
                  transcript = transcript_list.find_transcript(['en'])
         
-        # data = transcript.fetch()
+       ()
         data = transcript.fetch()
 
         # Map 'start' to 'offset' to match frontend expectations
