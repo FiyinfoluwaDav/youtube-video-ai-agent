@@ -38,7 +38,6 @@ def main():
              except:
                  transcript = transcript_list.find_transcript(['en'])
         
-       ()
         data = transcript.fetch()
 
         # Map 'start' to 'offset' to match frontend expectations
