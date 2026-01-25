@@ -62,7 +62,7 @@ function VideoPage() {
         </div>
       </div>
 
-      {/* Main Content Area (Video & Mindmap placeholder) */}
+      {/* Main Content Area (Video & Mindmap placeholder for now) */}
       <div className="flex-1 p-6 overflow-y-auto">
         <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-2xl mb-6 ring-1 ring-white/10">
           <iframe
