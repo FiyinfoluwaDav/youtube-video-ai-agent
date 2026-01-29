@@ -71,7 +71,9 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 export const TodoScalarFieldEnum = {
   id: 'id',
   title: 'title',
-  createdAt: 'createdAt'
+  description: 'description',
+  is_completed: 'is_completed',
+  created_at: 'created_at'
 } as const
 
 export type TodoScalarFieldEnum = (typeof TodoScalarFieldEnum)[keyof typeof TodoScalarFieldEnum]
@@ -91,4 +93,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
