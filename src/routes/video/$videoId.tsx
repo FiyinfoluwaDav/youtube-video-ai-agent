@@ -86,7 +86,7 @@ function VideoPage() {
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder="Ask something about the video..."
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all placeholder:text-slate-600"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-3 pr-12 focus:bg-slate-800 transition-all focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent placeholder:text-slate-600"
               />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-lg transition-colors text-purple-400">
                 <Send className="w-4 h-4" />
