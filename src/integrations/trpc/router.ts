@@ -4,6 +4,7 @@ import path from 'path'
 import { promisify } from 'util'
 import { z } from 'zod'
 import { createTRPCRouter, publicProcedure } from './init'
+import { MOCK_TRANSCRIPT } from './mockData'
 
 const execAsync = promisify(exec)
 
@@ -30,22 +31,34 @@ const youtubeRouter = {
     .query(async ({ input }) => {
       console.log('--- STARTING TRANSCRIPT FETCH ---')
       console.log('Video ID:', input.videoId)
+
+      if (input.videoId === 'mock-id') {
+        console.log('Using Mock Data for Transcript')
+        return MOCK_TRANSCRIPT
+      }
       try {
         // Use Python script to fetch video transcript... If no transcript, use model to generate transcript
-        const scriptPath = path.join(process.cwd(), 'src', 'scripts', 'get_transcript.py')
+        const scriptPath = path.join(
+          process.cwd(),
+          'src',
+          'scripts',
+          'get_transcript.py',
+        )
         console.log('Script path:', scriptPath)
-        
-        const { stdout } = await execAsync(`python "${scriptPath}" "${input.videoId}"`)
-        
+
+        const { stdout } = await execAsync(
+          `python "${scriptPath}" "${input.videoId}"`,
+        )
+
         const result = JSON.parse(stdout)
-        
+
         if (result.error) {
-            throw new Error(result.error)
+          throw new Error(result.error)
         }
-        
+
         // Ensure result is an array
         if (!Array.isArray(result)) {
-             throw new Error('Invalid transcript format returned from script')
+          throw new Error('Invalid transcript format returned from script')
         }
 
         return result
@@ -53,7 +66,7 @@ const youtubeRouter = {
         console.error('Error fetching transcript for video:', input.videoId)
         console.error(error)
         if (error instanceof Error) {
-            throw new Error(`Failed to fetch transcript: ${error.message}`)
+          throw new Error(`Failed to fetch transcript: ${error.message}`)
         }
         throw new Error('Failed to fetch transcript: Unknown error')
       }
