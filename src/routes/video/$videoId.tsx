@@ -136,7 +136,7 @@ function VideoPage() {
                     className="group p-2.5 rounded-lg hover:bg-white/5 transition-colors cursor-pointer text-slate-300 text-sm leading-relaxed"
                   >
                     <div className="flex gap-2 items-start">
-                      <span className="text-xs text-slate-600 font-mono mt-0.5 select-none opacity-0 group-hover:opacity-100 transition-opacity min-w-[35px]">
+                      <span className="text-xs text-slate-500 font-mono mt-0.5 select-none opacity-0 group-hover:opacity-100 transition-opacity min-w-[35px]">
                         {Math.floor(item.offset / 60)}:
                         {String(Math.floor(item.offset % 60)).padStart(2, '0')}
                       </span>
