@@ -62,7 +62,7 @@ function VideoPage() {
           className="flex flex-col border-r border-white/10 bg-slate-950"
         >
           <div className="p-4 border-b border-white/10 bg-slate-900/50 backdrop-blur-md sticky top-0 z-10 flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-purple-400" />
+            <MessageSquare className="w-5 h-5 text-blue-400" />
             <h2 className="font-semibold text-slate-200">AI Chat Assistant</h2>
           </div>
 
