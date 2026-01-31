@@ -96,7 +96,7 @@ export const dummyPlans = [
 
 export const dummyChats = [
   {
-    _id: '689de4bbaa932dc3a8ef6cd7',
+    id: '689de4bbaa932dc3a8ef6cd7',
     userId: '689c6deed410acddc0d95a0e',
     userName: 'GreatStack',
     name: 'New Chat',
@@ -120,7 +120,7 @@ export const dummyChats = [
     updatedAt: '2025-08-14T13:29:54.753Z',
   },
   {
-    _id: '689ccb9016a922dd57a23fce',
+    id: '689ccb9016a922dd57a23fce',
     userId: '689c6deed410acddc0d95a0e',
     name: 'New Chat',
     messages: [
@@ -291,7 +291,7 @@ export const dummyChats = [
     userName: 'GreatStack',
   },
   {
-    _id: Date.now(),
+    id: Date.now().toString(),
     userId: 'gs123456789',
     name: 'New Chat',
     userName: 'GreatStack',
