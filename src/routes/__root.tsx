@@ -53,7 +53,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       styles: appCss,
     }
   },
-  notFoundComponent: () => <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">404 - Page Not Found</div>,
+  notFoundComponent: () => (
+    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
+      404 - Page Not Found
+    </div>
+  ),
   shellComponent: RootDocument,
 })
 
