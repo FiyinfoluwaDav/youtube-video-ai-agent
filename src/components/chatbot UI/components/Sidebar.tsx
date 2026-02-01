@@ -87,7 +87,9 @@ const Sidebar = () => {
         />
         <div className="flex flex-col text-sm">
           <p>Credit : {credits}</p>
-          <p>Purchase credits to use Summara</p>
+          <p className="text-gray-500 text-xs">
+            Purchase credits to use Summara
+          </p>
         </div>
       </Link>
     </div>
