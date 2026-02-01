@@ -4,7 +4,13 @@ import { useState } from 'react'
 import { assets } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 
-const Sidebar = () => {
+const Sidebar = ({
+  isMenuOpen,
+  setIsMenuOpen,
+}: {
+  isMenuOpen: boolean
+  setIsMenuOpen: (isMenuOpen: boolean) => void
+}) => {
   const {
     credits,
     chats,
@@ -19,8 +25,8 @@ const Sidebar = () => {
 
   return (
     <div
-      className="flex flex-col h-screen min-w-72 p-5 dark:bg-gradient-to-b from-[#242124]/30 to-[#000000]/30 border-r border-[#80609F]/30 backdrop-blur-3xl
-        transition-all duration-500 max-md:absolute left-0 z-1"
+      className={`flex flex-col h-screen min-w-72 p-5 dark:bg-gradient-to-b from-[#242124]/30 to-[#000000]/30 border-r border-[#80609F]/30 backdrop-blur-3xl
+        transition-all duration-500 max-md:absolute left-0 z-1 ${!isMenuOpen && 'max-md:-translate-x-full'}`}
     >
       {/*Logo */}
       <img
@@ -62,7 +68,11 @@ const Sidebar = () => {
           .map((chat) => (
             <div
               key={chat.id}
-              onClick={() => setSelectedChat(chat)}
+              onClick={() => {
+                setSelectedChat(chat)
+                setIsMenuOpen(false)
+                ;<Link to="/" />
+              }}
               className={`p-2 px-4 border rounded-md cursor-pointer flex justify-between group transition-colors ${
                 selectedChat?.id === chat.id
                   ? 'bg-blue-50 dark:bg-[#57317C]/30 border-blue-200 dark:border-[#80609F]/50'
@@ -83,26 +93,29 @@ const Sidebar = () => {
           ))}
       </div>
       {/*Credit Purchase Option*/}
-      <Link
-        to="/credits"
-        className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200"
-      >
-        <img
-          src={assets.diamond_icon}
-          className="w-4.5 not-dark:invert"
-          alt=""
-        />
-        <div className="flex flex-col text-sm">
-          <p>Credit : {credits}</p>
-          <p className="text-gray-500 text-xs">
-            Purchase credits to use Summara
-          </p>
-        </div>
-      </Link>
+      <div>
+        <Link
+          to="/credits"
+          className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          <img
+            src={assets.diamond_icon}
+            className="w-4.5 not-dark:invert"
+            alt=""
+          />
+          <div className="flex flex-col text-sm">
+            <p>Credit : {credits}</p>
+            <p className="text-gray-500 text-xs">
+              Purchase credits to use Summara
+            </p>
+          </div>
+        </Link>
+      </div>
       {/* Dark Mode Toggle */}
       <div className="flex items-center justify-between gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
         <div className="flex item-center gap-2 text-sm">
-          <img src={assets.theme_icon} className="w-4 not-dark:invert" alt="" />
+          <img src={assets.theme_icon} className="w-4 dark:invert" alt="" />
           <p>Dark Mode</p>
         </div>
         <label className="relative inline-flex cursor-pointer">
@@ -129,6 +142,15 @@ const Sidebar = () => {
             alt=""
           />
         )}
+      </div>
+
+      <div>
+        <img
+          onClick={() => setIsMenuOpen(false)}
+          src={assets.close_icon}
+          className="absolute top-3 right-3 w-5 h-5 cursor-pointer md:hidden not-dark:invert"
+          alt=""
+        />
       </div>
     </div>
   )
