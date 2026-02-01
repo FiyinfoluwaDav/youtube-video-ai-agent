@@ -5,8 +5,15 @@ import { assets } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 
 const Sidebar = () => {
-  const { credits, chats, selectedChat, setSelectedChat, theme, setTheme } =
-    useAppContext()
+  const {
+    credits,
+    chats,
+    selectedChat,
+    setSelectedChat,
+    theme,
+    setTheme,
+    user,
+  } = useAppContext()
 
   const [search, setSearch] = useState('')
 
@@ -108,6 +115,20 @@ const Sidebar = () => {
           <div className="w-9 h-5 bg-gray-400 rounded-full peer-checked:bg-purple600 transition-all"></div>
           <span className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full peer-checked:translate-x-4 transition-transform"></span>
         </label>
+      </div>
+      {/* User Account */}
+      <div className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
+        <img src={assets.user_icon} className="w-7 rounded-full" alt="" />
+        <p className="flex-1 text-sm dark:text-white truncate">
+          {user ? user.name : 'Login your account'}
+        </p>
+        {user && (
+          <img
+            src={assets.logout_icon}
+            className=" h-5 cursor-pointer hidden not-dark:invert group-hover:block"
+            alt=""
+          />
+        )}
       </div>
     </div>
   )
