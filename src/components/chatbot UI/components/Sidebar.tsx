@@ -5,7 +5,7 @@ import { assets } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 
 const Sidebar = () => {
-  const { credits, chats, selectedChat, setSelectedChat, theme } =
+  const { credits, chats, selectedChat, setSelectedChat, theme, setTheme } =
     useAppContext()
 
   const [search, setSearch] = useState('')
@@ -92,6 +92,23 @@ const Sidebar = () => {
           </p>
         </div>
       </Link>
+      {/* Dark Mode Toggle */}
+      <div className="flex items-center justify-between gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
+        <div className="flex item-center gap-2 text-sm">
+          <img src={assets.theme_icon} className="w-4 not-dark:invert" alt="" />
+          <p>Dark Mode</p>
+        </div>
+        <label className="relative inline-flex cursor-pointer">
+          <input
+            type="checkbox"
+            className="sr-only peer"
+            checked={theme === 'dark'}
+            onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          />
+          <div className="w-9 h-5 bg-gray-400 rounded-full peer-checked:bg-purple600 transition-all"></div>
+          <span className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full peer-checked:translate-x-4 transition-transform"></span>
+        </label>
+      </div>
     </div>
   )
 }
