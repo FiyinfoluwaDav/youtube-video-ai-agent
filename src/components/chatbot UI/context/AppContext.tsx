@@ -16,12 +16,15 @@ interface AppContextType {
   setTheme: (theme: string) => void
   selectedChat: Chat | null
   setSelectedChat: (chat: Chat | null) => void
+  credits: number
+  setCredits: (credits: number) => void
 }
 
 interface User {
   id: string
   name: string
   email: string
+  credits: number
 }
 
 interface Message {
@@ -49,6 +52,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [chats, setChats] = useState<Chat[] | null>(null)
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
   const [theme, setTheme] = useState<string>('dark')
+  const [credits, setCredits] = useState<number>(0)
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme')
@@ -71,9 +75,11 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (user) {
       fetchUsersChat()
+      setCredits(user.credits)
     } else {
       setChats([])
       setSelectedChat(null)
+      setCredits(0)
     }
   }, [user])
 
@@ -98,6 +104,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     setSelectedChat,
     theme,
     setTheme,
+    credits,
+    setCredits,
   }
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
