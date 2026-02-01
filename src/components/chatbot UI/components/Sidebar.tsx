@@ -5,7 +5,8 @@ import { assets } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 
 const Sidebar = () => {
-  const { chats, selectedChat, setSelectedChat, theme } = useAppContext()
+  const { credits, chats, selectedChat, setSelectedChat, theme } =
+    useAppContext()
 
   const [search, setSearch] = useState('')
 
@@ -75,11 +76,20 @@ const Sidebar = () => {
           ))}
       </div>
       {/*Credit Purchase Option*/}
-      <div
-        onClick={() => {
-          ;<Link to="/credits">Credits</Link>
-        }}
-      ></div>
+      <Link
+        to="/credits"
+        className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200"
+      >
+        <img
+          src={assets.diamond_icon}
+          className="w-4.5 not-dark:invert"
+          alt=""
+        />
+        <div className="flex flex-col text-sm">
+          <p>Credit : {credits}</p>
+          <p>Purchase credits to use Summara</p>
+        </div>
+      </Link>
     </div>
   )
 }
