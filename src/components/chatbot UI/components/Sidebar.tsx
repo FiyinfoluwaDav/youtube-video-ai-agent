@@ -1,40 +1,78 @@
-import { History, MessageSquarePlus, Settings } from 'lucide-react'
+import { useState } from 'react'
+import { assets } from '../assets/assets'
+import { useAppContext } from '../context/AppContext'
 
 const Sidebar = () => {
+  const { chats, selectedChat, setSelectedChat, theme } = useAppContext()
+
+  const [search, setSearch] = useState('')
+
   return (
-    <div className="w-16 lg:w-64 h-full bg-slate-900 border-r border-white/10 flex flex-col flex-shrink-0 transition-all duration-300">
-      <div className="p-4 flex items-center justify-center lg:justify-start gap-3 border-b border-white/10 h-16">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-          <MessageSquarePlus className="w-5 h-5 text-white" />
-        </div>
-        <span className="font-semibold text-slate-200 hidden lg:block truncate">
-          New Chat
-        </span>
+    <div
+      className="flex flex-col h-screen min-w-72 p-5 dark:bg-gradient-to-b from-[#242124]/30 to-[#000000]/30 border-r border-[#80609F]/30 backdrop-blur-3xl
+        transition-all duration-500 max-md:absolute left-0 z-1"
+    >
+      {/*Logo */}
+      <img
+        src={theme === 'light' ? assets.logo_full : assets.logo_full_dark}
+        alt=""
+        className="w-full max-w-48"
+      />
+
+      {/*New Chat Button*/}
+      <button className="flex justify-center items-center w-full py-2 mt-10 text-white bg-gradient-to-r from-[#A456F7] to-[#3D81F6] text-sm rounded-md cursor-pointer">
+        <span className="mr-2 text-xl">+</span>
+        New Chat
+      </button>
+
+      <div className="flex items-center gap-2 p-3 mt-4 border border-gray-400 dark:border-white/20 rounded-md">
+        <img src={assets.search_icon} alt="" className="w-4 not-dark:invert" />
+        <input
+          onChange={(e) => setSearch(e.target.value)}
+          value={search}
+          type="text"
+          placeholder="Search conversations"
+          className="text-xs placeholder:text-gray-400 outline-none w-full bg-transparent"
+        />
       </div>
 
-      <div className="flex-1 overflow-y-auto py-4 px-2 space-y-2">
-        <div className="px-2 pb-2 text-xs font-medium text-slate-500 uppercase tracking-wider hidden lg:block">
-          History
-        </div>
-        {/* Placeholder for history items */}
-        {[1, 2, 3].map((i) => (
-          <button
-            key={i}
-            className="w-full p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-slate-200 flex items-center gap-3 transition-colors group"
-          >
-            <History className="w-5 h-5 flex-shrink-0" />
-            <span className="text-sm truncate hidden lg:block">
-              Previous Chat {i}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      <div className="p-2 border-t border-white/10">
-        <button className="w-full p-2 rounded-lg hover:bg-white/5 text-slate-400 hover:text-slate-200 flex items-center gap-3 transition-colors justify-center lg:justify-start">
-          <Settings className="w-5 h-5 flex-shrink-0" />
-          <span className="text-sm font-medium hidden lg:block">Settings</span>
-        </button>
+      {/*Recent Chats*/}
+      {chats && chats.length > 0 && (
+        <p className="text-sm mt-4 text-gray-400">Recent Chats</p>
+      )}
+      <div className="flex-1 overflow-y-scroll mt-3 text-sm space-y-3">
+        {chats
+          ?.filter((chat) =>
+            chat.messages[0]
+              ? chat.messages[0].content
+                  .toLowerCase()
+                  .includes(search.toLowerCase())
+              : chat.name.toLowerCase().includes(search.toLowerCase()),
+          )
+          .map((chat) => (
+            <div
+              key={chat.id}
+              onClick={() => setSelectedChat(chat)}
+              className={`p-2 px-4 border rounded-md cursor-pointer flex justify-between group transition-colors ${
+                selectedChat?.id === chat.id
+                  ? 'bg-blue-50 dark:bg-[#57317C]/30 border-blue-200 dark:border-[#80609F]/50'
+                  : 'hover:bg-gray-50 dark:hover:bg-[#57317C]/10 border-gray-200 dark:border-[#80609F]/15 bg-white dark:bg-transparent'
+              }`}
+            >
+              <div className="w-full overflow-hidden">
+                <p className="truncate w-full font-medium text-gray-700 dark:text-gray-200">
+                  {chat.messages.length > 0
+                    ? chat.messages[0].content.slice(0, 32)
+                    : chat.name}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-[#B1A6C0] mt-1">
+                  {new Date(
+                    parseInt(chat.updatedAt || chat.createdAt),
+                  ).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   )
