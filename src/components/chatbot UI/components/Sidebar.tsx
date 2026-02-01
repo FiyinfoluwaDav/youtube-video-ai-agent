@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { useState } from 'react'
 import { assets } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
@@ -66,9 +67,7 @@ const Sidebar = () => {
                     : chat.name}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-[#B1A6C0] mt-1">
-                  {new Date(
-                    parseInt(chat.updatedAt || chat.createdAt),
-                  ).toLocaleDateString()}
+                  {moment(chat.updatedAt).fromNow()}
                 </p>
               </div>
             </div>
