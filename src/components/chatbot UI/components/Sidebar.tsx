@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router'
 import moment from 'moment'
 import { useState } from 'react'
 import { assets } from '../assets/assets'
@@ -41,7 +42,7 @@ const Sidebar = () => {
       {chats && chats.length > 0 && (
         <p className="text-sm mt-4 text-gray-400">Recent Chats</p>
       )}
-      <div className="flex-1 overflow-y-scroll mt-3 text-sm space-y-3">
+      <div className="flex-1 mt-3 text-sm space-y-3">
         {chats
           ?.filter((chat) =>
             chat.messages[0]
@@ -73,6 +74,12 @@ const Sidebar = () => {
             </div>
           ))}
       </div>
+      {/*Credit Purchase Option*/}
+      <div
+        onClick={() => {
+          ;<Link to="/credits">Credits</Link>
+        }}
+      ></div>
     </div>
   )
 }
