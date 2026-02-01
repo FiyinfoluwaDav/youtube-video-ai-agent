@@ -48,9 +48,14 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [chats, setChats] = useState<Chat[] | null>(null)
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
-  const [theme, setTheme] = useState<string>(
-    localStorage.getItem('theme') || 'dark',
-  )
+  const [theme, setTheme] = useState<string>('dark')
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme')
+    if (storedTheme) {
+      setTheme(storedTheme)
+    }
+  }, [])
 
   const fetchUser = async () => {
     setUser(dummyUserData)
