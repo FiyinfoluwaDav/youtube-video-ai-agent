@@ -64,13 +64,13 @@ function VideoPage() {
           <Panel
             defaultSize={65}
             minSize={30}
-            className="flex flex-row border-r border-gray-200 dark:border-white/10 bg-white dark:bg-slate-950"
+            className="flex flex-row border-r border-gray-300 dark:border-white/10 bg-white dark:bg-slate-950"
           >
             <Sidebar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
             <ChatBot />
           </Panel>
 
-          <PanelResizeHandle className="w-1.5 bg-gray-200 dark:bg-slate-900 hover:bg-purple-500/50 transition-colors cursor-col-resize active:bg-purple-500" />
+          <PanelResizeHandle className="w-1.5 bg-gray-300 dark:bg-slate-900 hover:bg-purple-500/50 transition-colors cursor-col-resize active:bg-purple-500" />
 
           {/* Right Panel: Video & Transcript (Default 35%) */}
           <Panel
@@ -97,7 +97,7 @@ function VideoPage() {
 
               {/* Transcript Section */}
               <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="p-3 border-b border-gray-200 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md flex items-center justify-between sticky top-0">
+                <div className="p-3 border-b border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md flex items-center justify-between sticky top-0">
                   <h2 className="font-semibold flex items-center gap-2 text-slate-700 dark:text-slate-200 text-sm">
                     <FileText className="w-4 h-4 text-purple-400" />
                     Transcript
