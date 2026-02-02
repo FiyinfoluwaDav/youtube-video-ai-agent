@@ -25,12 +25,12 @@ const Sidebar = ({
 
   return (
     <div
-      className={`flex flex-col h-full min-w-72 p-5 dark:bg-gradient-to-b from-[#242124]/30 to-[#000000]/30 border-r border-[#80609F]/30 backdrop-blur-3xl
+      className={`flex flex-col h-full min-w-72 p-5 dark:bg-gradient-to-b from-[#242124]/30 to-[#000000]/30 border-r border-gray-300 dark:border-[#80609F]/30 backdrop-blur-3xl
         transition-all duration-500 max-md:absolute left-0 z-1 ${!isMenuOpen && 'max-md:-translate-x-full'}`}
     >
       {/*Logo */}
       <img
-        src={theme === 'light' ? assets.logo_full : assets.logo_full_dark}
+        src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
         alt=""
         className="w-full max-w-48"
       />
@@ -41,7 +41,7 @@ const Sidebar = ({
         New Chat
       </button>
 
-      <div className="flex items-center gap-2 p-3 mt-4 border border-gray-400 dark:border-white/20 rounded-md">
+      <div className="flex items-center gap-2 p-3 mt-4 border border-gray-300 dark:border-white/20 rounded-md">
         <img src={assets.search_icon} alt="" className="w-4 not-dark:invert" />
         <input
           onChange={(e) => setSearch(e.target.value)}
@@ -76,7 +76,7 @@ const Sidebar = ({
               className={`p-2 px-4 border rounded-md cursor-pointer flex justify-between group transition-colors ${
                 selectedChat?.id === chat.id
                   ? 'bg-blue-50 dark:bg-[#57317C]/30 border-blue-200 dark:border-[#80609F]/50'
-                  : 'hover:bg-gray-50 dark:hover:bg-[#57317C]/10 border-gray-200 dark:border-[#80609F]/15 bg-white dark:bg-transparent'
+                  : 'hover:bg-gray-50 dark:hover:bg-[#57317C]/10 border-gray-300 dark:border-[#80609F]/15 bg-white dark:bg-transparent'
               }`}
             >
               <div className="w-full overflow-hidden">
@@ -96,7 +96,7 @@ const Sidebar = ({
       <div>
         <Link
           to="/credits"
-          className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200"
+          className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200"
           onClick={() => setIsMenuOpen(false)}
         >
           <img
@@ -113,7 +113,7 @@ const Sidebar = ({
         </Link>
       </div>
       {/* Dark Mode Toggle */}
-      <div className="flex items-center justify-between gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
+      <div className="flex items-center justify-between gap-2 cursor-pointer p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
         <div className="flex item-center gap-2 text-sm">
           <img src={assets.theme_icon} className="w-4 dark:invert" alt="" />
           <p>Dark Mode</p>
@@ -130,7 +130,7 @@ const Sidebar = ({
         </label>
       </div>
       {/* User Account */}
-      <div className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-300 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
+      <div className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
         <img src={assets.user_icon} className="w-7 rounded-full" alt="" />
         <p className="flex-1 text-sm dark:text-white truncate">
           {user ? user.name : 'Login your account'}
