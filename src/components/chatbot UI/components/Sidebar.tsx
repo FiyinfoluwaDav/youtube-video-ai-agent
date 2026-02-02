@@ -42,7 +42,11 @@ const Sidebar = ({
       </button>
 
       <div className="flex items-center gap-2 p-3 mt-4 border border-gray-300 dark:border-white/20 rounded-md">
-        <img src={assets.search_icon} alt="" className="w-4 not-dark:invert" />
+        <img
+          src={assets.search_icon}
+          alt=""
+          className="w-4 invert dark:invert-0"
+        />
         <input
           onChange={(e) => setSearch(e.target.value)}
           value={search}
@@ -99,11 +103,7 @@ const Sidebar = ({
           className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200"
           onClick={() => setIsMenuOpen(false)}
         >
-          <img
-            src={assets.diamond_icon}
-            className="w-4.5 not-dark:invert"
-            alt=""
-          />
+          <img src={assets.diamond_icon} className="w-4.5 dark:invert" alt="" />
           <div className="flex flex-col text-sm">
             <p>Credit : {credits}</p>
             <p className="text-gray-500 text-xs">
@@ -115,7 +115,11 @@ const Sidebar = ({
       {/* Dark Mode Toggle */}
       <div className="flex items-center justify-between gap-2 cursor-pointer p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
         <div className="flex item-center gap-2 text-sm">
-          <img src={assets.theme_icon} className="w-4 dark:invert" alt="" />
+          <img
+            src={assets.theme_icon}
+            className="w-4 invert dark:invert-0"
+            alt=""
+          />
           <p>Dark Mode</p>
         </div>
         <label className="relative inline-flex cursor-pointer">
@@ -138,7 +142,7 @@ const Sidebar = ({
         {user && (
           <img
             src={assets.logout_icon}
-            className=" h-5 cursor-pointer hidden not-dark:invert group-hover:block"
+            className=" h-5 cursor-pointer hidden invert dark:invert-0 group-hover:block"
             alt=""
           />
         )}
@@ -148,7 +152,7 @@ const Sidebar = ({
         <img
           onClick={() => setIsMenuOpen(false)}
           src={assets.close_icon}
-          className="absolute top-3 right-3 w-5 h-5 cursor-pointer md:hidden not-dark:invert"
+          className="absolute top-3 right-3 w-5 h-5 cursor-pointer md:hidden invert dark:invert-0"
           alt=""
         />
       </div>
