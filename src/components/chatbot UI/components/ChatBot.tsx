@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
-import { Message, useAppContext } from '../context/AppContext'
+import { Message as MessageType, useAppContext } from '../context/AppContext'
+import Message from './Message'
+
 const ChatBot = () => {
   const { selectedChat, theme } = useAppContext()
   const [chatInput, setChatInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<MessageType[]>([])
 
   useEffect(() => {
     if (selectedChat) {
@@ -29,6 +31,9 @@ const ChatBot = () => {
             </p>
           </div>
         )}
+        {messages.map((message, index) => (
+          <Message message={message} key={index} />
+        ))}
       </div>
 
       {/* Prompt Input Box */}
