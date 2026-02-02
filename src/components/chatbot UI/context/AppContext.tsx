@@ -20,14 +20,14 @@ interface AppContextType {
   setCredits: (credits: number) => void
 }
 
-interface User {
+export interface User {
   id: string
   name: string
   email: string
   credits: number
 }
 
-interface Message {
+export interface Message {
   isImage: boolean
   isPublished: boolean
   role: string
@@ -35,7 +35,7 @@ interface Message {
   timestamp: number
 }
 
-interface Chat {
+export interface Chat {
   id: string
   userId: string
   name: string
@@ -69,7 +69,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     // @ts-ignore
     setChats(dummyChats)
     // @ts-ignore
-    setSelectedChat(dummyChats[0])
+    setSelectedChat()
   }
 
   useEffect(() => {
