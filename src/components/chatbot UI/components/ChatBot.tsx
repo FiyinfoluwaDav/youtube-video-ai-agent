@@ -14,11 +14,11 @@ const ChatBot = () => {
   }, [selectedChat])
 
   return (
-    <div className="flex-1 flex flex-col justify-between m-5 md:m-10 xl:mx-30 max-md:mt-14 2xl:pr-40">
+    <div className="flex-1 flex flex-col justify-between p-4 md:p-6 max-md:mt-14 h-full">
       {/* Chat Messages */}
-      <div className="flex-1 mb-5 overflow-y-scroll">
+      <div className="flex-1 mb-5 overflow-y-auto">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center gap-2 text-primary">
+          <div className="flex flex-col items-center justify-center gap-2 text-primary h-full">
             <img
               src={theme === 'light' ? assets.logo_full : assets.logo_full_dark}
               alt=""
