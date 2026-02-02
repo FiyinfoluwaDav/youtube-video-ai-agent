@@ -20,7 +20,7 @@ const ChatBot = () => {
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-2 text-primary h-full">
             <img
-              src={theme === 'light' ? assets.logo_full : assets.logo_full_dark}
+              src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
               alt=""
               className="w-full max-w-56 sm:max-w-68"
             />
