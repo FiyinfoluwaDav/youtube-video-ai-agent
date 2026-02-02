@@ -69,7 +69,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     // @ts-ignore
     setChats(dummyChats)
     // @ts-ignore
-    setSelectedChat()
+    setSelectedChat(dummyChats[0])
   }
 
   useEffect(() => {
