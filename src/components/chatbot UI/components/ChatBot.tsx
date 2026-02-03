@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { assets } from '../assets/assets'
 import { Message as MessageType, useAppContext } from '../context/AppContext'
 import Message from './Message'
 
 const ChatBot = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
   const { selectedChat, theme } = useAppContext()
   const [chatInput, setChatInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -35,10 +36,19 @@ const ChatBot = () => {
     }
   }, [selectedChat])
 
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollTo({
+        top: containerRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [messages])
+
   return (
     <div className="flex-1 flex flex-col justify-between p-4 md:p-6 max-md:mt-14 h-full">
       {/* Chat Messages */}
-      <div className="flex-1 mb-5 overflow-y-auto">
+      <div ref={containerRef} className="flex-1 mb-5 overflow-y-auto">
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-2 text-primary h-full">
             <img
