@@ -16,7 +16,16 @@ const ChatBot = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setMessages((prev) => [...prev, { role: 'user', content: prompt }])
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: 'user',
+        content: prompt,
+        isImage: false,
+        isPublished: false,
+        timestamp: Date.now(),
+      },
+    ])
     setPrompt('')
     setLoading(false)
   }
