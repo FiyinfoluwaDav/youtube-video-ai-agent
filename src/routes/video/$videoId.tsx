@@ -1,4 +1,5 @@
 import { assets } from '@/components/chatbot UI/assets/assets'
+import '@/components/chatbot UI/assets/prism.css'
 import ChatBot from '@/components/chatbot UI/components/ChatBot'
 import Sidebar from '@/components/chatbot UI/components/Sidebar'
 import { useTRPC } from '@/integrations/trpc/react'
