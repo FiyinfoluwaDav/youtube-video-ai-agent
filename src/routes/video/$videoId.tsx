@@ -2,9 +2,10 @@ import { assets } from '@/components/chatbot UI/assets/assets'
 import '@/components/chatbot UI/assets/prism.css'
 import ChatBot from '@/components/chatbot UI/components/ChatBot'
 import Sidebar from '@/components/chatbot UI/components/Sidebar'
+import Loading from '@/components/chatbot UI/pages/Loading'
 import { useTRPC } from '@/integrations/trpc/react'
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useLocation } from '@tanstack/react-router'
 import { AlertCircle, FileText, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import {
@@ -19,6 +20,9 @@ export const Route = createFileRoute('/video/$videoId')({
 
 function VideoPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { pathname } = useLocation()
+
+  if (pathname === '/loading') return <Loading />
   const { videoId } = Route.useParams()
   const trpc = useTRPC()
   const {
