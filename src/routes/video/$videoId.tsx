@@ -7,12 +7,13 @@ import { useTRPC } from '@/integrations/trpc/react'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useLocation } from '@tanstack/react-router'
 import { AlertCircle, FileText, Loader2 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   Panel,
   Group as PanelGroup,
   Separator as PanelResizeHandle,
 } from 'react-resizable-panels'
+import YouTube, { YouTubeProps } from 'react-youtube'
 
 export const Route = createFileRoute('/video/$videoId')({
   component: VideoPage,
@@ -30,6 +31,70 @@ function VideoPage() {
     isLoading,
     error,
   } = useQuery(trpc.youtube.getTranscript.queryOptions({ videoId }))
+
+  const [currentTime, setCurrentTime] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const playerRef = useRef<any>(null)
+  const activeTranscriptRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout
+
+    if (isPlaying && playerRef.current) {
+      interval = setInterval(() => {
+        const time = playerRef.current.getCurrentTime()
+        setCurrentTime(time)
+      }, 500) // Update every 500ms
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isPlaying])
+
+  useEffect(() => {
+    if (activeTranscriptRef.current) {
+      activeTranscriptRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    }
+  }, [currentTime])
+
+  const onPlayerReady: YouTubeProps['onReady'] = (event) => {
+    playerRef.current = event.target
+  }
+
+  const onPlayerStateChange: YouTubeProps['onStateChange'] = (event) => {
+    // 1 = playing, 2 = paused
+    setIsPlaying(event.data === 1)
+  }
+
+  const opts: YouTubeProps['opts'] = {
+    height: '100%',
+    width: '100%',
+    playerVars: {
+      autoplay: 0,
+      modestbranding: 1,
+      rel: 0,
+    },
+  }
+
+  // Calculate active transcript index
+  // Find the last item where item.offset <= currentTime
+  const activeIndex = transcript?.reduce((acc, item, index) => {
+    if (item.offset <= currentTime) {
+      return index
+    }
+    return acc
+  }, -1)
+
+  const handleTranscriptClick = (offset: number) => {
+    if (playerRef.current) {
+      playerRef.current.seekTo(offset, true)
+      playerRef.current.playVideo()
+    }
+  }
 
   if (isLoading) {
     return (
@@ -88,21 +153,20 @@ function VideoPage() {
               {/* Video Section */}
               <div className="w-full bg-black shadow-xl shrink-0">
                 <div className="aspect-video w-full">
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    src={`https://www.youtube.com/embed/${videoId}?enablejsapi=1`}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  ></iframe>
+                  <YouTube
+                    videoId={videoId}
+                    opts={opts}
+                    onReady={onPlayerReady}
+                    onStateChange={onPlayerStateChange}
+                    className="w-full h-full"
+                    iframeClassName="w-full h-full"
+                  />
                 </div>
               </div>
 
               {/* Transcript Section */}
               <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="p-3 border-b border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md flex items-center justify-between sticky top-0">
+                <div className="p-3 border-b border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
                   <h2 className="font-semibold flex items-center gap-2 text-slate-700 dark:text-slate-200 text-sm">
                     <FileText className="w-4 h-4 text-purple-400" />
                     Transcript
@@ -110,23 +174,38 @@ function VideoPage() {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
-                  {transcript.map((item, index) => (
-                    <div
-                      key={index}
-                      className="group p-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer text-slate-700 dark:text-slate-300 text-sm leading-relaxed"
-                    >
-                      <div className="flex gap-2 items-start">
-                        <span className="text-xs text-slate-500 font-mono mt-0.5 select-none opacity-0 group-hover:opacity-100 transition-opacity min-w-[35px]">
-                          {Math.floor(item.offset / 60)}:
-                          {String(Math.floor(item.offset % 60)).padStart(
-                            2,
-                            '0',
-                          )}
-                        </span>
-                        <p>{item.text}</p>
+                  {transcript.map((item, index) => {
+                    const isActive = index === activeIndex
+                    return (
+                      <div
+                        key={index}
+                        ref={isActive ? activeTranscriptRef : null}
+                        onClick={() => handleTranscriptClick(item.offset)}
+                        className={`group p-2.5 rounded-lg transition-all cursor-pointer text-sm leading-relaxed ${
+                          isActive
+                            ? 'bg-purple-500/10 text-purple-600 dark:text-purple-300 ring-1 ring-purple-500/20'
+                            : 'hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        <div className="flex gap-2 items-start">
+                          <span
+                            className={`text-xs font-mono mt-0.5 select-none transition-opacity min-w-[35px] ${
+                              isActive
+                                ? 'opacity-100 text-purple-500'
+                                : 'opacity-0 group-hover:opacity-100 text-slate-500'
+                            }`}
+                          >
+                            {Math.floor(item.offset / 60)}:
+                            {String(Math.floor(item.offset % 60)).padStart(
+                              2,
+                              '0',
+                            )}
+                          </span>
+                          <p>{item.text}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             </div>
