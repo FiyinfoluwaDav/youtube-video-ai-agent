@@ -173,7 +173,7 @@ function VideoPage() {
                   </h2>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+                <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
                   {transcript.map((item, index) => {
                     const isActive = index === activeIndex
                     return (

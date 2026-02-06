@@ -48,7 +48,10 @@ const ChatBot = () => {
   return (
     <div className="flex-1 flex flex-col justify-between p-4 md:p-6 max-md:mt-14 h-full">
       {/* Chat Messages */}
-      <div ref={containerRef} className="flex-1 mb-5 overflow-y-auto">
+      <div
+        ref={containerRef}
+        className="flex-1 mb-5 overflow-y-auto custom-scrollbar"
+      >
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center gap-2 text-primary h-full">
             <img
