@@ -140,7 +140,7 @@ function VideoPage() {
             <ChatBot />
           </Panel>
 
-          <PanelResizeHandle className="w-1.5 bg-gray-300 dark:bg-slate-900 hover:bg-purple-500/50 transition-colors cursor-col-resize active:bg-purple-500" />
+          <PanelResizeHandle className="w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30" />
 
           {/* Right Panel: Video & Transcript (Default 35%) */}
           <Panel
