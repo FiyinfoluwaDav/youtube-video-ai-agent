@@ -25,134 +25,154 @@ const Sidebar = ({
 
   return (
     <div
-      className={`flex flex-col h-full min-w-72 p-5 dark:bg-gradient-to-b from-[#242124]/30 to-[#000000]/30 border-r border-gray-300 dark:border-[#80609F]/30 backdrop-blur-3xl
-        transition-all duration-500 max-md:absolute left-0 z-1 ${!isMenuOpen && 'max-md:-translate-x-full'}`}
+      className={`flex flex-col h-full min-w-72 p-5 bg-white dark:bg-[#0a0a0a] border-r border-gray-200 dark:border-white/5
+        transition-all duration-500 max-md:absolute left-0 z-50 ${!isMenuOpen && 'max-md:-translate-x-full'}`}
     >
       {/*Logo */}
       <img
         src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
         alt=""
-        className="w-full max-w-48"
+        className="w-full max-w-40 opacity-90"
       />
 
       {/*New Chat Button*/}
-      <button className="flex justify-center items-center w-full py-2 mt-10 text-white bg-gradient-to-r from-[#A456F7] to-[#3D81F6] text-sm rounded-md cursor-pointer">
-        <span className="mr-2 text-xl">+</span>
+      <button
+        className="flex justify-center items-center w-full py-2.5 mt-8 text-sm font-medium rounded-lg cursor-pointer
+        bg-gray-900 text-white hover:bg-black
+        dark:bg-white dark:text-black dark:hover:bg-gray-200 transition-colors duration-200"
+      >
+        <span className="mr-2 text-xl font-light">+</span>
         New Chat
       </button>
 
-      <div className="flex items-center gap-2 p-3 mt-4 border border-gray-300 dark:border-white/20 rounded-md">
+      <div className="flex items-center gap-2 p-2.5 mt-6 bg-gray-50 dark:bg-[#2c2c2c] rounded-lg">
         <img
           src={assets.search_icon}
           alt=""
-          className="w-4 invert dark:invert-0"
+          className="w-4 opacity-50 dark:invert"
         />
         <input
           onChange={(e) => setSearch(e.target.value)}
           value={search}
           type="text"
-          placeholder="Search conversations"
-          className="text-xs placeholder:text-gray-400 outline-none w-full bg-transparent"
+          placeholder="Search"
+          className="text-sm placeholder:text-gray-500 outline-none w-full bg-transparent dark:text-gray-200"
         />
       </div>
 
       {/*Recent Chats*/}
       {chats && chats.length > 0 && (
-        <p className="text-sm mt-4 text-gray-400">Recent Chats</p>
+        <p className="text-sm font-bold mt-8 text-black dark:text-white uppercase tracking-wider pl-1">
+          Recent
+        </p>
       )}
-      <div className="flex-1 mt-3 text-sm space-y-3">
-        {chats
-          ?.filter((chat) =>
-            chat.messages[0]
-              ? chat.messages[0].content
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-              : chat.name.toLowerCase().includes(search.toLowerCase()),
-          )
-          .map((chat) => (
-            <div
-              key={chat.id}
-              onClick={() => {
-                setSelectedChat(chat)
-                setIsMenuOpen(false)
-                ;<Link to="/" />
-              }}
-              className={`p-2 px-4 border rounded-md cursor-pointer flex justify-between group transition-colors ${
-                selectedChat?.id === chat.id
-                  ? 'bg-blue-50 dark:bg-[#57317C]/30 border-blue-200 dark:border-[#80609F]/50'
-                  : 'hover:bg-gray-50 dark:hover:bg-[#57317C]/10 border-gray-300 dark:border-[#80609F]/15 bg-white dark:bg-transparent'
-              }`}
-            >
-              <div className="w-full overflow-hidden">
-                <p className="truncate w-full font-medium text-gray-700 dark:text-gray-200">
-                  {chat.messages.length > 0
-                    ? chat.messages[0].content.slice(0, 32)
-                    : chat.name}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-[#B1A6C0] mt-1">
-                  {moment(chat.updatedAt).fromNow()}
-                </p>
+      <div className="flex-1 mt-2 -mx-2 overflow-y-auto">
+        <div className="space-y-1 px-2">
+          {chats
+            ?.filter((chat) =>
+              chat.messages[0]
+                ? chat.messages[0].content
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
+                : chat.name.toLowerCase().includes(search.toLowerCase()),
+            )
+            .map((chat) => (
+              <div
+                key={chat.id}
+                onClick={() => {
+                  setSelectedChat(chat)
+                  setIsMenuOpen(false)
+                  ;<Link to="/" />
+                }}
+                className={`p-2.5 px-3 rounded-lg cursor-pointer flex justify-between group transition-all duration-200 ${
+                  selectedChat?.id === chat.id
+                    ? 'bg-gray-200 dark:bg-[#2c2c2c]'
+                    : 'hover:bg-gray-200 dark:hover:bg-[#2c2c2c]'
+                }`}
+              >
+                <div className="w-full overflow-hidden">
+                  <p
+                    className={`truncate w-full text-sm ${selectedChat?.id === chat.id ? 'font-medium text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}
+                  >
+                    {chat.messages.length > 0
+                      ? chat.messages[0].content.slice(0, 32)
+                      : chat.name}
+                  </p>
+                  <p className="text-xs text-gray-400 dark:text-gray-600 mt-0.5">
+                    {moment(chat.updatedAt).fromNow()}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
-      {/*Credit Purchase Option*/}
-      <div>
+
+      {/* Bottom Actions */}
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/5 space-y-1">
+        {/*Credit Purchase Option*/}
         <Link
           to="/credits"
-          className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200"
+          className="flex items-center gap-3 cursor-pointer p-2.5 px-3 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2c2c2c] transition-colors duration-200"
           onClick={() => setIsMenuOpen(false)}
         >
-          <img src={assets.diamond_icon} className="w-4.5 dark:invert" alt="" />
-          <div className="flex flex-col text-sm">
-            <p>Credit : {credits}</p>
-            <p className="text-gray-500 text-xs">
-              Purchase credits to use Summara
+          <img
+            src={assets.diamond_icon}
+            className="w-4.5 opacity-70 dark:invert"
+            alt=""
+          />
+          <div className="flex flex-col">
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+              Credits: {credits}
             </p>
           </div>
         </Link>
-      </div>
-      {/* Dark Mode Toggle */}
-      <div className="flex items-center justify-between gap-2 cursor-pointer p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
-        <div className="flex item-center gap-2 text-sm">
-          <img
-            src={assets.theme_icon}
-            className="w-4 invert dark:invert-0"
-            alt=""
-          />
-          <p>Dark Mode</p>
+
+        {/* Dark Mode Toggle */}
+        <div className="flex items-center justify-between gap-3 cursor-pointer p-2.5 px-3 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2c2c2c] transition-colors duration-200">
+          <div className="flex items-center gap-3 text-sm font-medium text-gray-700 dark:text-gray-200">
+            <img
+              src={assets.theme_icon}
+              className="w-4.5 opacity-70 invert dark:invert-0"
+              alt=""
+            />
+            <p>Dark Mode</p>
+          </div>
+          <label className="relative inline-flex cursor-pointer">
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              checked={theme === 'dark'}
+              onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            />
+            <div className="w-9 h-5 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-white/20"></div>
+          </label>
         </div>
-        <label className="relative inline-flex cursor-pointer">
-          <input
-            type="checkbox"
-            className="sr-only peer"
-            checked={theme === 'dark'}
-            onChange={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          />
-          <div className="w-9 h-5 bg-gray-400 rounded-full peer-checked:bg-purple600 transition-all"></div>
-          <span className="absolute left-1 top-1 w-3 h-3 bg-white rounded-full peer-checked:translate-x-4 transition-transform"></span>
-        </label>
-      </div>
-      {/* User Account */}
-      <div className="flex items-center gap-2 cursor-pointer p-3 mt-4 border border-gray-400 dark:border-white/15 rounded-md hover:scale-103 transition-all duration-200">
-        <img src={assets.user_icon} className="w-7 rounded-full" alt="" />
-        <p className="flex-1 text-sm dark:text-white truncate">
-          {user ? user.name : 'Login your account'}
-        </p>
-        {user && (
+
+        {/* User Account */}
+        <div className="flex items-center gap-3 cursor-pointer p-2.5 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-[#111] transition-colors duration-200">
           <img
-            src={assets.logout_icon}
-            className=" h-5 cursor-pointer hidden invert dark:invert-0 group-hover:block"
+            src={assets.user_icon}
+            className="w-8 h-8 rounded-full bg-gray-200"
             alt=""
           />
-        )}
+          <p className="flex-1 text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
+            {user ? user.name : 'Login'}
+          </p>
+          {user && (
+            <img
+              src={assets.logout_icon}
+              className="h-4 w-4 opacity-50 hover:opacity-100 cursor-pointer dark:invert"
+              alt=""
+            />
+          )}
+        </div>
       </div>
 
       <div>
         <img
           onClick={() => setIsMenuOpen(false)}
           src={assets.close_icon}
-          className="absolute top-3 right-3 w-5 h-5 cursor-pointer md:hidden invert dark:invert-0"
+          className="absolute top-4 right-4 w-5 h-5 cursor-pointer md:hidden opacity-50 dark:invert"
           alt=""
         />
       </div>
