@@ -109,7 +109,7 @@ const ChatBot = () => {
           <img
             src={loading ? assets.stop_icon : assets.send_icon}
             alt=""
-            className="w-5 h-5 cursor-pointer opacity-80 dark:opacity-70 dark:invert"
+            className="w-5 h-5 cursor-pointer opacity-60 grayscale dark:invert dark:opacity-80"
           />
         </button>
       </form>
