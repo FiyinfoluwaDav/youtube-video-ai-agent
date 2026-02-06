@@ -68,9 +68,9 @@ const ChatBot = () => {
         {/* Three Dots Loading */}
         {loading && (
           <div className="flex items-center loader gap-1.5">
-            <div className="w-1.5 h-1.5 rounded-full bg-gray-500 dark:bg-white animate-bounce"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-gray-500 dark:bg-white animate-bounce"></div>
-            <div className="w-1.5 h-1.5 rounded-full bg-gray-500 dark:bg-white animate-bounce"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce delay-100"></div>
+            <div className="w-1.5 h-1.5 rounded-full bg-gray-400 dark:bg-gray-500 animate-bounce delay-200"></div>
           </div>
         )}
       </div>
@@ -78,33 +78,38 @@ const ChatBot = () => {
       {/* Prompt Input Box */}
       <form
         onSubmit={onSubmit}
-        className="bg-primary/20 dark:bg-[#583C79]/30 border border-primary dark:border-[#80609F]/30 rounded-full w-full max-w-2l p-3 pl-4 mx-auto flex gap-4 items-center"
+        className="bg-gray-100 dark:bg-[#202020] rounded-full w-full max-w-2xl p-2 px-4 mx-auto flex gap-4 items-center focus-within:ring-1 focus-within:ring-gray-300 dark:focus-within:ring-gray-700 transition-all shadow-sm"
       >
         <select
           onChange={(e) => setMode(e.target.value)}
           value={mode}
-          className="text-sm pl-3 pr-2 outline-none"
+          className="text-sm pl-2 pr-2 outline-none bg-transparent dark:text-gray-300 font-medium"
         >
-          <option className="dark:bg-purple-900" value="text">
+          <option className="dark:bg-[#202020]" value="text">
             Text
           </option>
-          <option className="dark:bg-purple-900" value="image">
+          <option className="dark:bg-[#202020]" value="image">
             Image
           </option>
         </select>
+        <div className="w-[1px] h-6 bg-gray-300 dark:bg-gray-700 mx-1"></div>
         <input
           onChange={(e) => setPrompt(e.target.value)}
           value={prompt}
           type="text"
-          placeholder="Enter your prompt here..."
+          placeholder="Ask anything..."
           required
-          className="flex-1 w-full text-sm outline-none"
+          className="flex-1 w-full text-sm outline-none bg-transparent dark:text-white placeholder:text-gray-500"
         />
-        <button disabled={loading} type="submit">
+        <button
+          disabled={loading}
+          type="submit"
+          className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+        >
           <img
             src={loading ? assets.stop_icon : assets.send_icon}
             alt=""
-            className="w-8 cursor-pointer"
+            className="w-5 h-5 cursor-pointer opacity-80 dark:opacity-70 dark:invert"
           />
         </button>
       </form>
