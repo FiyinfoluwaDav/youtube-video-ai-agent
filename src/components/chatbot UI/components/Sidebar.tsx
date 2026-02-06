@@ -45,11 +45,11 @@ const Sidebar = ({
         New Chat
       </button>
 
-      <div className="flex items-center gap-2 p-2.5 mt-6 bg-gray-50 dark:bg-[#2c2c2c] rounded-lg">
+      <div className="flex items-center gap-2 p-2.5 mt-6 bg-gray-200 dark:bg-[#2c2c2c] rounded-lg">
         <img
           src={assets.search_icon}
           alt=""
-          className="w-4 opacity-50 dark:invert"
+          className="w-4 opacity-50 invert dark:invert-0"
         />
         <input
           onChange={(e) => setSearch(e.target.value)}
