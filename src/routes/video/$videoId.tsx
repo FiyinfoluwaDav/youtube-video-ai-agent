@@ -149,7 +149,7 @@ function VideoPage() {
             collapsible={true}
             collapsedSize={0}
           >
-            <div className="h-full flex flex-col bg-gray-50 dark:bg-slate-900">
+            <div className="h-full flex flex-col bg-gray-50 dark:bg-[#0a0a0a]">
               {/* Video Section */}
               <div className="w-full bg-black shadow-xl shrink-0">
                 <div className="aspect-video w-full">
@@ -166,9 +166,9 @@ function VideoPage() {
 
               {/* Transcript Section */}
               <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="p-3 border-b border-gray-300 dark:border-white/10 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
+                <div className="p-3 border-b border-gray-300 dark:border-white/10 bg-white/50 dark:bg-[#0a0a0a]/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
                   <h2 className="font-semibold flex items-center gap-2 text-slate-700 dark:text-slate-200 text-sm">
-                    <FileText className="w-4 h-4 text-purple-400" />
+                    <FileText className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                     Transcript
                   </h2>
                 </div>
@@ -183,15 +183,15 @@ function VideoPage() {
                         onClick={() => handleTranscriptClick(item.offset)}
                         className={`group p-2.5 rounded-lg transition-all cursor-pointer text-sm leading-relaxed ${
                           isActive
-                            ? 'bg-purple-500/10 text-purple-600 dark:text-purple-300 ring-1 ring-purple-500/20'
-                            : 'hover:bg-black/5 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300'
+                            ? 'bg-gray-200 dark:bg-[#202020] text-black dark:text-white font-medium'
+                            : 'hover:bg-gray-100 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300'
                         }`}
                       >
                         <div className="flex gap-2 items-start">
                           <span
                             className={`text-xs font-mono mt-0.5 select-none transition-opacity min-w-[35px] ${
                               isActive
-                                ? 'opacity-100 text-purple-500'
+                                ? 'opacity-100 text-gray-600 dark:text-gray-400'
                                 : 'opacity-0 group-hover:opacity-100 text-slate-500'
                             }`}
                           >
