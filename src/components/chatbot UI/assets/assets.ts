@@ -7,6 +7,7 @@ import logo_full from './logo_full.svg'
 import logo_full_dark from './logo_full_dark.svg'
 import logout_icon from './logout_icon.svg'
 import menu_icon from './menu_icon.svg'
+import message_icon from './message_icon.svg'
 import mountain_img from './mountain_img.jpg'
 import search_icon from './search_icon.svg'
 import send_icon from './send_icon.svg'
@@ -42,6 +43,7 @@ export const assets = {
   logo_full_dark,
   diamond_icon,
   gallery_icon,
+  message_icon,
 }
 
 export const dummyUserData = {

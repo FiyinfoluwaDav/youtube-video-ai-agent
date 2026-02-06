@@ -41,7 +41,11 @@ const Sidebar = ({
         bg-gray-900 text-white hover:bg-black
         dark:bg-white dark:text-black dark:hover:bg-gray-200 transition-colors duration-200"
       >
-        <span className="mr-2 text-xl font-light">+</span>
+        <img
+          src={assets.message_icon}
+          alt=""
+          className="w-5 h-5 mr-3 invert dark:invert-0"
+        />
         New Chat
       </button>
 
