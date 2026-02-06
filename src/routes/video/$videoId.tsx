@@ -134,7 +134,7 @@ function VideoPage() {
           <Panel
             defaultSize={65}
             minSize={30}
-            className="flex flex-row border-r border-gray-300 dark:border-white/10 bg-white dark:bg-slate-950"
+            className="flex flex-row border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a]"
           >
             <Sidebar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
             <ChatBot />
