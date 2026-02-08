@@ -49,3 +49,13 @@ path.join(process.cwd(), "src/generated/prisma/query_engine-windows.dll.node")
  * 
  */
 export type Todo = Prisma.TodoModel
+/**
+ * Model Chat
+ * 
+ */
+export type Chat = Prisma.ChatModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel

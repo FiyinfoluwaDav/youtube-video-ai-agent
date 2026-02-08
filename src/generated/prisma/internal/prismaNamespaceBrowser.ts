@@ -49,7 +49,9 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 
 export const ModelName = {
-  Todo: 'Todo'
+  Todo: 'Todo',
+  Chat: 'Chat',
+  Message: 'Message'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -77,6 +79,29 @@ export const TodoScalarFieldEnum = {
 } as const
 
 export type TodoScalarFieldEnum = (typeof TodoScalarFieldEnum)[keyof typeof TodoScalarFieldEnum]
+
+
+export const ChatScalarFieldEnum = {
+  id: 'id',
+  videoId: 'videoId',
+  userId: 'userId',
+  title: 'title',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChatScalarFieldEnum = (typeof ChatScalarFieldEnum)[keyof typeof ChatScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  chatId: 'chatId',
+  role: 'role',
+  content: 'content',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const SortOrder = {

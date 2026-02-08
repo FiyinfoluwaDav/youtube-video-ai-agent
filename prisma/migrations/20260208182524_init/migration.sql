@@ -1,0 +1,42 @@
+-- CreateTable
+CREATE TABLE "todos" (
+    "id" SERIAL NOT NULL,
+    "title" VARCHAR(255) NOT NULL,
+    "description" TEXT,
+    "is_completed" BOOLEAN DEFAULT false,
+    "created_at" TIMESTAMP(6) DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "todos_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "chats" (
+    "id" TEXT NOT NULL,
+    "video_id" TEXT NOT NULL,
+    "user_id" TEXT,
+    "title" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "chats_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "messages" (
+    "id" TEXT NOT NULL,
+    "chat_id" TEXT NOT NULL,
+    "role" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "messages_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE INDEX "chats_video_id_idx" ON "chats"("video_id");
+
+-- CreateIndex
+CREATE INDEX "messages_chat_id_idx" ON "messages"("chat_id");
+
+-- AddForeignKey
+ALTER TABLE "messages" ADD CONSTRAINT "messages_chat_id_fkey" FOREIGN KEY ("chat_id") REFERENCES "chats"("id") ON DELETE CASCADE ON UPDATE CASCADE;

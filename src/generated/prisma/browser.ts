@@ -22,3 +22,13 @@ export * from './enums.ts';
  * 
  */
 export type Todo = Prisma.TodoModel
+/**
+ * Model Chat
+ * 
+ */
+export type Chat = Prisma.ChatModel
+/**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
