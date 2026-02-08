@@ -25,19 +25,19 @@ const Sidebar = ({
 
   return (
     <div
-      className={`flex flex-col h-full min-w-72 p-5 bg-white dark:bg-[#0a0a0a] border-r border-gray-200 dark:border-white/5
+      className={`flex flex-col h-full min-w-72 p-5 bg-white dark:bg-[#0a0a0a] border-r border-gray-300 dark:border-white/13
         transition-all duration-500 max-md:absolute left-0 z-50 ${!isMenuOpen && 'max-md:-translate-x-full'}`}
     >
       {/*Logo */}
       <img
         src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
         alt=""
-        className="w-full max-w-40 opacity-90"
+        className="w-full max-w-55 opacity-90"
       />
 
       {/*New Chat Button*/}
       <button
-        className="flex justify-center items-center w-full py-2.5 mt-8 text-sm font-medium rounded-lg cursor-pointer
+        className="flex justify-center items-center w-full py-2.5 mt-7 text-sm font-medium rounded-lg cursor-pointer
         bg-gray-900 text-white hover:bg-black
         dark:bg-white dark:text-black dark:hover:bg-gray-200 transition-colors duration-200"
       >
