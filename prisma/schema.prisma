@@ -18,3 +18,29 @@ model Todo {
 
   @@map("todos")
 }
+
+model Chat {
+  id        String    @id @default(uuid())
+  videoId   String    @map("video_id")
+  userId    String?   @map("user_id") // For future auth or session/device ID
+  title     String?
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  messages  Message[]
+
+  @@index([videoId])
+  @@map("chats")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  chatId    String   @map("chat_id")
+  role      String   // "user" or "assistant"
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([chatId])
+  @@map("messages")
+}
