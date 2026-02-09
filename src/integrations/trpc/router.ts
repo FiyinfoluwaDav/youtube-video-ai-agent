@@ -3,6 +3,7 @@ import { exec } from 'child_process'
 import path from 'path'
 import { promisify } from 'util'
 import { z } from 'zod'
+import { sendChatRequest } from '../../lib/ollama'
 import { createTRPCRouter, publicProcedure } from './init'
 import { MOCK_TRANSCRIPT } from './mockData'
 
@@ -73,8 +74,32 @@ const youtubeRouter = {
     }),
 } satisfies TRPCRouterRecord
 
+const chatRouter = {
+  sendMessage: publicProcedure
+    .input(
+      z.object({
+        messages: z.array(
+          z.object({
+            role: z.enum(['user', 'assistant', 'system']),
+            content: z.string(),
+          }),
+        ),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      try {
+        const response = await sendChatRequest(input.messages)
+        return { content: response }
+      } catch (error) {
+        console.error('Error in chat.sendMessage:', error)
+        throw new Error('Failed to get response from AI')
+      }
+    }),
+} satisfies TRPCRouterRecord
+
 export const trpcRouter = createTRPCRouter({
   todos: todosRouter,
   youtube: youtubeRouter,
+  chat: chatRouter,
 })
 export type TRPCRouter = typeof trpcRouter
