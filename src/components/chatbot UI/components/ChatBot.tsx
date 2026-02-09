@@ -1,3 +1,5 @@
+import { useTRPC } from '@/integrations/trpc/react'
+import { useMutation } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { assets } from '../assets/assets'
 import { Message as MessageType, useAppContext } from '../context/AppContext'
@@ -6,29 +8,57 @@ import Message from './Message'
 const ChatBot = () => {
   const containerRef = useRef<HTMLDivElement>(null)
   const { selectedChat, theme } = useAppContext()
-  const [chatInput, setChatInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState<MessageType[]>([])
 
   const [prompt, setPrompt] = useState('')
   const [mode, setMode] = useState('text')
-  const [published, isPublished] = useState(false)
+
+  const trpc = useTRPC()
+  const { mutateAsync: sendMessage } = useMutation(
+    trpc.chat.sendMessage.mutationOptions(),
+  )
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setMessages((prev) => [
-      ...prev,
+    const newMessages = [
+      ...messages,
       {
         role: 'user',
         content: prompt,
         isImage: false,
         isPublished: false,
         timestamp: Date.now(),
-      },
-    ])
+      } as MessageType,
+    ]
+    setMessages(newMessages)
     setPrompt('')
-    setLoading(false)
+
+    try {
+      const response = await sendMessage({
+        messages: newMessages.map((m) => ({
+          role: m.role as 'user' | 'assistant' | 'system',
+          content: m.content,
+        })),
+      })
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: response.content,
+          isImage: false,
+          isPublished: false,
+          timestamp: Date.now(),
+        },
+      ])
+    } catch (error) {
+      console.error('Error sending message:', error)
+      // Optionally add an error message to the chat
+    } finally {
+      setLoading(false)
+    }
   }
   useEffect(() => {
     if (selectedChat) {
