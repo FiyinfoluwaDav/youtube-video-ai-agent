@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { dummyChats, dummyUserData } from '../assets/assets'
+import { dummyUserData } from '../assets/assets'
 
 interface AppContextType {
   user: User | null
@@ -66,10 +66,25 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const fetchUsersChat = async () => {
-    // @ts-ignore
-    setChats(dummyChats)
-    // @ts-ignore
-    setSelectedChat(dummyChats[0])
+    const storedChats = localStorage.getItem('chats')
+    if (storedChats) {
+      try {
+        const parsedChats = JSON.parse(storedChats)
+        setChats(parsedChats)
+        if (parsedChats.length > 0) {
+          setSelectedChat(parsedChats[0])
+        } else {
+          setSelectedChat(null)
+        }
+      } catch (error) {
+        console.error('Failed to parse chats from localStorage:', error)
+        setChats([])
+        setSelectedChat(null)
+      }
+    } else {
+      setChats([])
+      setSelectedChat(null)
+    }
   }
 
   useEffect(() => {
