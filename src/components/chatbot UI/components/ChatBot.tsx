@@ -9,7 +9,12 @@ import {
 } from '../context/AppContext'
 import Message from './Message'
 
-const ChatBot = () => {
+interface ChatBotProps {
+  transcript?: { text: string; offset: number; duration: number }[]
+  currentTime?: number
+}
+
+const ChatBot = ({ transcript, currentTime }: ChatBotProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const { selectedChat, setSelectedChat, user, chats, setChats, theme } =
     useAppContext()
@@ -42,11 +47,41 @@ const ChatBot = () => {
     setPrompt('')
 
     try {
+      const messagesToSend = newMessages.map((m) => ({
+        role: m.role as 'user' | 'assistant' | 'system',
+        content: m.content,
+      }))
+
+      if (transcript && transcript.length > 0) {
+        const formattedTranscript = transcript
+          .map(
+            (t) =>
+              `[${Math.floor(t.offset / 60)}:${String(
+                Math.floor(t.offset % 60),
+              ).padStart(2, '0')}] ${t.text}`,
+          )
+          .join('\n')
+
+        const systemMessage = {
+          role: 'system' as const,
+          content: `You are an AI assistant helping a user with a video. 
+Here is the transcript of the video:
+${formattedTranscript}
+
+The user is currently watching at timestamp: ${
+            currentTime
+              ? `${Math.floor(currentTime / 60)}:${String(
+                  Math.floor(currentTime % 60),
+                ).padStart(2, '0')}`
+              : '0:00'
+          }.
+Answer questions based on this transcript and context.`,
+        }
+        messagesToSend.unshift(systemMessage)
+      }
+
       const response = await sendMessage({
-        messages: newMessages.map((m) => ({
-          role: m.role as 'user' | 'assistant' | 'system',
-          content: m.content,
-        })),
+        messages: messagesToSend,
       })
 
       const assistantMessage: MessageType = {
