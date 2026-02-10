@@ -2,12 +2,17 @@ import { useTRPC } from '@/integrations/trpc/react'
 import { useMutation } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { assets } from '../assets/assets'
-import { Message as MessageType, useAppContext } from '../context/AppContext'
+import {
+  Chat,
+  Message as MessageType,
+  useAppContext,
+} from '../context/AppContext'
 import Message from './Message'
 
 const ChatBot = () => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { selectedChat, theme } = useAppContext()
+  const { selectedChat, setSelectedChat, user, chats, setChats, theme } =
+    useAppContext()
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState<MessageType[]>([])
 
@@ -22,16 +27,17 @@ const ChatBot = () => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    const newMessages = [
-      ...messages,
-      {
-        role: 'user',
-        content: prompt,
-        isImage: false,
-        isPublished: false,
-        timestamp: Date.now(),
-      } as MessageType,
-    ]
+
+    const currentPrompt = prompt
+    const userMessage: MessageType = {
+      role: 'user',
+      content: currentPrompt,
+      isImage: false,
+      isPublished: false,
+      timestamp: Date.now(),
+    }
+
+    const newMessages = [...messages, userMessage]
     setMessages(newMessages)
     setPrompt('')
 
@@ -43,16 +49,46 @@ const ChatBot = () => {
         })),
       })
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: 'assistant',
-          content: response.content,
-          isImage: false,
-          isPublished: false,
-          timestamp: Date.now(),
-        },
-      ])
+      const assistantMessage: MessageType = {
+        role: 'assistant',
+        content: response.content,
+        isImage: false, // Assuming text response for now, update logic if response includes image
+        isPublished: false,
+        timestamp: Date.now(),
+      }
+
+      const finalMessages = [...newMessages, assistantMessage]
+      setMessages(finalMessages)
+
+      // Save to Chat Storage
+      let updatedChat: Chat
+      let updatedChats: Chat[]
+
+      if (selectedChat) {
+        updatedChat = {
+          ...selectedChat,
+          messages: finalMessages,
+          updatedAt: new Date().toISOString(),
+        }
+        updatedChats = chats
+          ? chats.map((c) => (c.id === selectedChat.id ? updatedChat : c))
+          : [updatedChat]
+      } else {
+        updatedChat = {
+          id: Date.now().toString(),
+          userId: user?.id || 'guest',
+          name: currentPrompt.slice(0, 40),
+          userName: user?.name || 'Guest',
+          messages: finalMessages,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+        updatedChats = [updatedChat, ...(chats || [])]
+      }
+
+      setChats(updatedChats)
+      setSelectedChat(updatedChat)
+      localStorage.setItem('chats', JSON.stringify(updatedChats))
     } catch (error) {
       console.error('Error sending message:', error)
       // Optionally add an error message to the chat
@@ -63,6 +99,8 @@ const ChatBot = () => {
   useEffect(() => {
     if (selectedChat) {
       setMessages(selectedChat.messages)
+    } else {
+      setMessages([])
     }
   }, [selectedChat])
 
