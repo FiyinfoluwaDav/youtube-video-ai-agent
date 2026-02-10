@@ -37,6 +37,10 @@ const Sidebar = ({
 
       {/*New Chat Button*/}
       <button
+        onClick={() => {
+          setSelectedChat(null)
+          setIsMenuOpen(false)
+        }}
         className="flex justify-center items-center w-full py-2.5 mt-7 text-sm font-medium rounded-lg cursor-pointer
         bg-gray-900 text-white hover:bg-black
         dark:bg-white dark:text-black dark:hover:bg-gray-200 transition-colors duration-200"
@@ -79,6 +83,11 @@ const Sidebar = ({
                     .toLowerCase()
                     .includes(search.toLowerCase())
                 : chat.name.toLowerCase().includes(search.toLowerCase()),
+            )
+            .sort(
+              (a, b) =>
+                new Date(b.updatedAt || 0).getTime() -
+                new Date(a.updatedAt || 0).getTime(),
             )
             .map((chat) => (
               <div
