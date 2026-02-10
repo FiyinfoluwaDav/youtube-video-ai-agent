@@ -14,6 +14,64 @@ interface ChatBotProps {
   currentTime?: number
 }
 
+// Helper to get relevant transcript segments
+const getRelevantTranscript = (
+  transcript: { text: string; offset: number; duration: number }[],
+  currentTime: number,
+  query: string,
+  maxChars = 12000, // Approx 3000 tokens
+) => {
+  if (!transcript || transcript.length === 0) return ''
+
+  // 1. Always include context around current timestamp (+/- 2 minutes)
+  const currentContextWindow = 120 // seconds
+  const currentSegments = transcript.filter(
+    (t) =>
+      t.offset >= currentTime - currentContextWindow &&
+      t.offset <= currentTime + currentContextWindow,
+  )
+
+  // 2. keyword matching for other parts
+  // split query into significant words (remove stopwords ideally, but simple split for now)
+  const keywords = query
+    .toLowerCase()
+    .split(' ')
+    .filter((w) => w.length > 3) // simple filter
+
+  const keywordSegments =
+    keywords.length > 0
+      ? transcript.filter(
+          (t) =>
+            !currentSegments.includes(t) && // Avoid duplicates
+            keywords.some((k) => t.text.toLowerCase().includes(k)),
+        )
+      : []
+
+  // 3. Combine and Truncate
+  let combinedSegments = [...currentSegments, ...keywordSegments]
+
+  // Sort by offset to maintain chronological order in the prompt
+  combinedSegments.sort((a, b) => a.offset - b.offset)
+
+  // formatting
+  let formatted = combinedSegments
+    .map(
+      (t) =>
+        `[${Math.floor(t.offset / 60)}:${String(
+          Math.floor(t.offset % 60),
+        ).padStart(2, '0')}] ${t.text}`,
+    )
+    .join('\n')
+
+  // Truncate if too long (simple char limit)
+  if (formatted.length > maxChars) {
+    // detailed truncation logic could be better, but for now just slice
+    formatted = formatted.slice(0, maxChars) + '\n... (truncated)'
+  }
+
+  return formatted
+}
+
 const ChatBot = ({ transcript, currentTime }: ChatBotProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const { selectedChat, setSelectedChat, user, chats, setChats, theme } =
@@ -53,19 +111,16 @@ const ChatBot = ({ transcript, currentTime }: ChatBotProps) => {
       }))
 
       if (transcript && transcript.length > 0) {
-        const formattedTranscript = transcript
-          .map(
-            (t) =>
-              `[${Math.floor(t.offset / 60)}:${String(
-                Math.floor(t.offset % 60),
-              ).padStart(2, '0')}] ${t.text}`,
-          )
-          .join('\n')
+        const formattedTranscript = getRelevantTranscript(
+          transcript,
+          currentTime || 0,
+          currentPrompt,
+        )
 
         const systemMessage = {
           role: 'system' as const,
           content: `You are an AI assistant helping a user with a video. 
-Here is the transcript of the video:
+Here is the relevant transcript of the video (filtered for context):
 ${formattedTranscript}
 
 The user is currently watching at timestamp: ${
