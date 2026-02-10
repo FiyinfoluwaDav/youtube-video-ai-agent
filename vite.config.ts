@@ -1,12 +1,12 @@
-import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
 import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
-import tailwindcss from '@tailwindcss/vite'
 import neon from './neon-vite-plugin.ts'
 
-const config = defineConfig({
+export default defineConfig({
   plugins: [
     devtools(),
     neon,
@@ -18,9 +18,30 @@ const config = defineConfig({
     tanstackStart(),
     viteReact(),
   ],
+
   optimizeDeps: {
-    exclude: ['@prisma/client', '@prisma/adapter-pg', '@neondatabase/serverless'],
+    exclude: [
+      '@prisma/client',
+      '@prisma/adapter-pg',
+      '@neondatabase/serverless',
+    ],
+  },
+
+  server: {
+    // Listen on all interfaces so ngrok/tunnel can reach it
+    host: true,
+
+    // Allow ngrok domains (wildcard covers any random subdomain)
+    allowedHosts: [
+      '.ngrok-free.app', // ← allows *.ngrok-free.app
+      'localhost',
+      '127.0.0.1',
+    ],
+
+    // Optional: if you keep getting HMR or connection issues through tunnel
+    // hmr: {
+    //   clientPort: 443,           // ngrok uses HTTPS
+    //   protocol: 'wss',
+    // },
   },
 })
-
-export default config
