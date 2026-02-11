@@ -23,20 +23,17 @@ const getRelevantTranscript = (
 ) => {
   if (!transcript || transcript.length === 0) return ''
 
-  // 1. Always include context around current timestamp (+/- 2 minutes)
-  const currentContextWindow = 120 // seconds
+  const currentContextWindow = 300 // seconds
   const currentSegments = transcript.filter(
     (t) =>
       t.offset >= currentTime - currentContextWindow &&
       t.offset <= currentTime + currentContextWindow,
   )
 
-  // 2. keyword matching for other parts
-  // split query into significant words (remove stopwords ideally, but simple split for now)
   const keywords = query
     .toLowerCase()
     .split(' ')
-    .filter((w) => w.length > 3) // simple filter
+    .filter((w) => w.length > 3)
 
   const keywordSegments =
     keywords.length > 0
@@ -47,10 +44,8 @@ const getRelevantTranscript = (
         )
       : []
 
-  // 3. Combine and Truncate
   let combinedSegments = [...currentSegments, ...keywordSegments]
 
-  // Sort by offset to maintain chronological order in the prompt
   combinedSegments.sort((a, b) => a.offset - b.offset)
 
   // formatting
@@ -65,7 +60,6 @@ const getRelevantTranscript = (
 
   // Truncate if too long (simple char limit)
   if (formatted.length > maxChars) {
-    // detailed truncation logic could be better, but for now just slice
     formatted = formatted.slice(0, maxChars) + '\n... (truncated)'
   }
 
@@ -142,7 +136,7 @@ Answer questions based on this transcript and context.`,
       const assistantMessage: MessageType = {
         role: 'assistant',
         content: response.content,
-        isImage: false, // Assuming text response for now, update logic if response includes image
+        isImage: false,
         isPublished: false,
         timestamp: Date.now(),
       }
@@ -150,7 +144,6 @@ Answer questions based on this transcript and context.`,
       const finalMessages = [...newMessages, assistantMessage]
       setMessages(finalMessages)
 
-      // Save to Chat Storage
       let updatedChat: Chat
       let updatedChats: Chat[]
 
