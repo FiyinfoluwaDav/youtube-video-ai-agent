@@ -18,6 +18,8 @@ interface AppContextType {
   setSelectedChat: (chat: Chat | null) => void
   credits: number
   setCredits: (credits: number) => void
+  updateChat: (chat: Chat) => void
+  deleteChat: (chatId: string) => void
 }
 
 export interface User {
@@ -110,6 +112,35 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [theme])
 
+  const updateChat = (chat: Chat) => {
+    setChats(
+      (prevChats) =>
+        prevChats?.map((c) => (c.id === chat.id ? chat : c)) || null,
+    )
+    if (selectedChat?.id === chat.id) {
+      setSelectedChat(chat)
+    }
+    const storedChats = localStorage.getItem('chats')
+    if (storedChats) {
+      const parsedChats = JSON.parse(storedChats) as Chat[]
+      const updatedChats = parsedChats.map((c) => (c.id === chat.id ? chat : c))
+      localStorage.setItem('chats', JSON.stringify(updatedChats))
+    }
+  }
+
+  const deleteChat = (chatId: string) => {
+    setChats((prevChats) => prevChats?.filter((c) => c.id !== chatId) || null)
+    if (selectedChat?.id === chatId) {
+      setSelectedChat(null)
+    }
+    const storedChats = localStorage.getItem('chats')
+    if (storedChats) {
+      const parsedChats = JSON.parse(storedChats) as Chat[]
+      const updatedChats = parsedChats.filter((c) => c.id !== chatId)
+      localStorage.setItem('chats', JSON.stringify(updatedChats))
+    }
+  }
+
   const value = {
     user,
     setUser,
@@ -121,6 +152,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     setTheme,
     credits,
     setCredits,
+    updateChat,
+    deleteChat,
   }
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }
