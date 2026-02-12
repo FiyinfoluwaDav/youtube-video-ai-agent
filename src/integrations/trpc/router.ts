@@ -95,6 +95,24 @@ const chatRouter = {
         throw new Error('Failed to get response from AI')
       }
     }),
+  generateTitle: publicProcedure
+    .input(z.object({ message: z.string() }))
+    .mutation(async ({ input }) => {
+      try {
+        const response = await sendChatRequest([
+          {
+            role: 'system',
+            content:
+              'Generate a very short, concise title (max 4-5 words) for a chat that starts with the following message. Do not use quotes or anything else, just the title.',
+          },
+          { role: 'user', content: input.message },
+        ])
+        return { title: response }
+      } catch (error) {
+        console.error('Error in chat.generateTitle:', error)
+        return { title: 'New Chat' }
+      }
+    }),
 } satisfies TRPCRouterRecord
 
 export const trpcRouter = createTRPCRouter({
