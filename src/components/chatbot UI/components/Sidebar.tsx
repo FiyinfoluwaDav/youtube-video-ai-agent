@@ -169,13 +169,13 @@ const Sidebar = ({
                         e.stopPropagation()
                         deleteChat(chat.id)
                       }}
-                      className="p-1 hover:bg-red-500/10 rounded-full transition-colors group/delete"
+                      className="p-1 hover:bg-transparent rounded-full transition-colors group/delete"
                       title="Delete"
                     >
                       <img
                         src={assets.bin_icon}
                         alt="Delete"
-                        className="w-3.5 h-3.5 opacity-60 invert dark:invert-0 group-hover/delete:brightness-0 group-hover/delete:invert-[.25] group-hover/delete:sepia group-hover/delete:saturate-[50] group-hover/delete:hue-rotate-340"
+                        className="w-3.5 h-3.5 opacity-60 invert dark:invert-0 group-hover/delete:opacity-100 group-hover/delete:filter-[brightness(0)_saturate(100%)_invert(25%)_sepia(91%)_saturate(6250%)_hue-rotate(356deg)_brightness(94%)_contrast(113%)] dark:group-hover/delete:filter-[brightness(0)_saturate(100%)_invert(25%)_sepia(91%)_saturate(6250%)_hue-rotate(356deg)_brightness(94%)_contrast(113%)]"
                       />
                     </button>
                   </div>
