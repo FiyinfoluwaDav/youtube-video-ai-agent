@@ -19,9 +19,26 @@ const Sidebar = ({
     theme,
     setTheme,
     user,
+    updateChat,
+    deleteChat,
   } = useAppContext()
 
   const [search, setSearch] = useState('')
+  const [renamingChatId, setRenamingChatId] = useState<string | null>(null)
+  const [renameValue, setRenameValue] = useState('')
+
+  const handleRename = (chatId: string) => {
+    if (renamingChatId === chatId) {
+      if (renameValue.trim()) {
+        const chatToUpdate = chats?.find((c) => c.id === chatId)
+        if (chatToUpdate) {
+          updateChat({ ...chatToUpdate, name: renameValue })
+        }
+      }
+      setRenamingChatId(null)
+      setRenameValue('')
+    }
+  }
 
   return (
     <div
@@ -92,29 +109,77 @@ const Sidebar = ({
             .map((chat) => (
               <div
                 key={chat.id}
-                onClick={() => {
-                  setSelectedChat(chat)
-                  setIsMenuOpen(false)
-                  ;<Link to="/" />
-                }}
-                className={`p-2.5 px-3 rounded-lg cursor-pointer flex justify-between group transition-all duration-200 ${
+                className={`p-2.5 px-3 rounded-lg cursor-pointer flex justify-between group transition-all duration-200 relative ${
                   selectedChat?.id === chat.id
                     ? 'bg-gray-200 dark:bg-[#2c2c2c]'
                     : 'hover:bg-gray-200 dark:hover:bg-[#2c2c2c]'
                 }`}
               >
-                <div className="w-full overflow-hidden">
-                  <p
-                    className={`truncate w-full text-sm ${selectedChat?.id === chat.id ? 'font-medium text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}
-                  >
-                    {chat.messages.length > 0
-                      ? chat.messages[0].content.slice(0, 32)
-                      : chat.name}
-                  </p>
+                <div
+                  onClick={() => {
+                    setSelectedChat(chat)
+                    setIsMenuOpen(false)
+                    ;<Link to="/" />
+                  }}
+                  className="w-full overflow-hidden"
+                >
+                  {renamingChatId === chat.id ? (
+                    <input
+                      type="text"
+                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white border-b border-primary"
+                      value={renameValue}
+                      onChange={(e) => setRenameValue(e.target.value)}
+                      onBlur={() => handleRename(chat.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleRename(chat.id)
+                      }}
+                      autoFocus
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <p
+                      className={`truncate w-full text-sm ${selectedChat?.id === chat.id ? 'font-medium text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'}`}
+                    >
+                      {chat.name}
+                    </p>
+                  )}
                   <p className="text-xs text-gray-400 dark:text-gray-600 mt-0.5">
                     {moment(chat.updatedAt).fromNow()}
                   </p>
                 </div>
+                {renamingChatId !== chat.id && (
+                  <div className="absolute right-2 top-2.5 hidden group-hover:flex items-center gap-2 bg-gray-200 dark:bg-[#2c2c2c] pl-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setRenamingChatId(chat.id)
+                        setRenameValue(chat.name)
+                      }}
+                      className="p-1 hover:bg-gray-300 dark:hover:bg-gray-700 rounded-full transition-colors"
+                      title="Rename"
+                    >
+                      <img
+                        src={assets.rename_icon}
+                        alt="Rename"
+                        className="w-3.5 h-3.5 opacity-60 invert dark:invert-0"
+                      />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deleteChat(chat.id)
+                      }}
+                      className="p-1 hover:bg-red-500/10 rounded-full transition-colors group/delete"
+                      title="Delete"
+                    >
+                      <img
+                        src={assets.bin_icon}
+                        alt="Delete"
+                        className="w-3.5 h-3.5 opacity-60 invert dark:invert-0 group-hover/delete:brightness-0 group-hover/delete:invert-[.25] group-hover/delete:sepia group-hover/delete:saturate-[50] group-hover/delete:hue-rotate-340"
+                      />
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
         </div>
