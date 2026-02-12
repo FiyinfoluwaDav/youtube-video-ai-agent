@@ -68,8 +68,15 @@ const getRelevantTranscript = (
 
 const ChatBot = ({ transcript, currentTime }: ChatBotProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { selectedChat, setSelectedChat, user, chats, setChats, theme } =
-    useAppContext()
+  const {
+    selectedChat,
+    setSelectedChat,
+    user,
+    chats,
+    setChats,
+    theme,
+    updateChat,
+  } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState<MessageType[]>([])
 
@@ -79,6 +86,9 @@ const ChatBot = ({ transcript, currentTime }: ChatBotProps) => {
   const trpc = useTRPC()
   const { mutateAsync: sendMessage } = useMutation(
     trpc.chat.sendMessage.mutationOptions(),
+  )
+  const { mutateAsync: generateTitle } = useMutation(
+    trpc.chat.generateTitle.mutationOptions(),
   )
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -172,6 +182,19 @@ Answer questions based on this transcript and context but make sure you do not i
       setChats(updatedChats)
       setSelectedChat(updatedChat)
       localStorage.setItem('chats', JSON.stringify(updatedChats))
+
+      // Generate title for new chats
+      if (!selectedChat && messages.length === 0) {
+        try {
+          const { title } = await generateTitle({ message: currentPrompt })
+          if (title) {
+            updatedChat = { ...updatedChat, name: title }
+            updateChat(updatedChat)
+          }
+        } catch (error) {
+          console.error('Failed to generate title:', error)
+        }
+      }
     } catch (error) {
       console.error('Error sending message:', error)
       // Optionally add an error message to the chat
