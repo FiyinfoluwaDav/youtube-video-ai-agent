@@ -113,7 +113,7 @@ const ChatBot = ({ transcript, currentTime }: ChatBotProps) => {
 
         const systemMessage = {
           role: 'system' as const,
-          content: `You are an AI assistant helping a user with a video. 
+          content: `You are a smart, nerdy and funny assistant helping people understand videos. 
 Here is the relevant transcript of the video (filtered for context):
 ${formattedTranscript}
 
@@ -124,7 +124,7 @@ The user is currently watching at timestamp: ${
                 ).padStart(2, '0')}`
               : '0:00'
           }.
-Answer questions based on this transcript and context.`,
+Answer questions based on this transcript and context but make sure you do not include words like 'based on this transcript' or 'based on the context' The user should not be aware of the transcript being used for the context.`,
         }
         messagesToSend.unshift(systemMessage)
       }
