@@ -61,7 +61,7 @@ function Credit() {
                     className={`border rounded-lg shadow hover:shadow-lg transition-all duration-300 p-6 min-w-[300px] flex flex-col ${
                       plan.name === 'Pro'
                         ? 'bg-orange-50 dark:bg-[#1A0000]/80 border-[#FF4500] dark:shadow-[0_0_30px_-5px_usr(#FF4500,0.3)]'
-                        : 'bg-white dark:bg-[#111111]/80 border-gray-200 dark:border-[#AB47BC]/30'
+                        : 'bg-white dark:bg-[#111111]/80 border-gray-200 dark:border-white/10'
                     }`}
                   >
                     <div className="flex-1">
