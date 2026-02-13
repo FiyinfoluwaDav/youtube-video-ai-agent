@@ -78,7 +78,7 @@ function Credit() {
                       </p>
                       <ul className="list-disc space-y-1 text-sm list-inside text-gray-700 dark:text-gray-300">
                         {plan.features.map((feature, index) => (
-                          <li key={index} className="marker:text-[#AB47BC]">
+                          <li key={index} className="marker:text-[#FF4500]">
                             {feature}
                           </li>
                         ))}
