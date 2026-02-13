@@ -12,6 +12,7 @@ import Message from './Message'
 interface ChatBotProps {
   transcript?: { text: string; offset: number; duration: number }[]
   currentTime?: number
+  videoId: string
 }
 
 // Helper to get relevant transcript segments
@@ -66,7 +67,7 @@ const getRelevantTranscript = (
   return formatted
 }
 
-const ChatBot = ({ transcript, currentTime }: ChatBotProps) => {
+const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const {
     selectedChat,
@@ -175,6 +176,7 @@ Answer questions based on this transcript and context but make sure you do not i
           messages: finalMessages,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
+          videoId: videoId,
         }
         updatedChats = [updatedChat, ...(chats || [])]
       }

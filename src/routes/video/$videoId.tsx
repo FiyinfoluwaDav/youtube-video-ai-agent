@@ -137,7 +137,11 @@ function VideoPage() {
             className="flex flex-row border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a]"
           >
             <Sidebar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
-            <ChatBot transcript={transcript} currentTime={currentTime} />
+            <ChatBot
+              transcript={transcript}
+              currentTime={currentTime}
+              videoId={videoId}
+            />
           </Panel>
 
           <PanelResizeHandle className="w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30" />

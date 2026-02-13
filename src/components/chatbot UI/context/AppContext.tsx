@@ -40,6 +40,7 @@ export interface Message {
 export interface Chat {
   id: string
   userId: string
+  videoId: string
   name: string
   userName: string
   messages: Message[]

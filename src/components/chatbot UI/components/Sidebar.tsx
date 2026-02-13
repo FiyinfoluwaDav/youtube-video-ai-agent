@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import moment from 'moment'
 import { useState } from 'react'
 import { assets } from '../assets/assets'
@@ -22,6 +22,8 @@ const Sidebar = ({
     updateChat,
     deleteChat,
   } = useAppContext()
+
+  const navigate = useNavigate()
 
   const [search, setSearch] = useState('')
   const [renamingChatId, setRenamingChatId] = useState<string | null>(null)
@@ -57,6 +59,7 @@ const Sidebar = ({
         onClick={() => {
           setSelectedChat(null)
           setIsMenuOpen(false)
+          navigate({ to: '/' })
         }}
         className="flex justify-center items-center w-full py-2.5 mt-7 text-sm font-medium rounded-lg cursor-pointer
         bg-gray-900 text-white hover:bg-black
@@ -119,7 +122,10 @@ const Sidebar = ({
                   onClick={() => {
                     setSelectedChat(chat)
                     setIsMenuOpen(false)
-                    ;<Link to="/" />
+                    navigate({
+                      to: '/video/$videoId',
+                      params: { videoId: chat.videoId },
+                    })
                   }}
                   className="w-full overflow-hidden"
                 >
