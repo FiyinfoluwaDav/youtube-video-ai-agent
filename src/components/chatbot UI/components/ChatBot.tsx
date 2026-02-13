@@ -163,6 +163,7 @@ Answer questions based on this transcript and context but make sure you do not i
           ...selectedChat,
           messages: finalMessages,
           updatedAt: new Date().toISOString(),
+          videoId: videoId,
         }
         updatedChats = chats
           ? chats.map((c) => (c.id === selectedChat.id ? updatedChat : c))

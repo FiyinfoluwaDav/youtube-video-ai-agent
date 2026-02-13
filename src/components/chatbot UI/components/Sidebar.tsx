@@ -122,10 +122,16 @@ const Sidebar = ({
                   onClick={() => {
                     setSelectedChat(chat)
                     setIsMenuOpen(false)
-                    navigate({
-                      to: '/video/$videoId',
-                      params: { videoId: chat.videoId },
-                    })
+                    if (chat.videoId) {
+                      navigate({
+                        to: '/video/$videoId',
+                        params: { videoId: chat.videoId },
+                      })
+                    } else {
+                      alert(
+                        'This chat is missing video information and cannot be opened directly.',
+                      )
+                    }
                   }}
                   className="w-full overflow-hidden"
                 >
