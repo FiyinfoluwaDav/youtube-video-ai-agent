@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useParams } from '@tanstack/react-router'
 import moment from 'moment'
 import { useState } from 'react'
 import { assets } from '../assets/assets'
@@ -42,6 +42,8 @@ const Sidebar = ({
     }
   }
 
+  const { videoId } = useParams({ strict: false }) as { videoId?: string }
+
   return (
     <div
       className={`flex flex-col h-full min-w-72 p-5 bg-white dark:bg-[#0a0a0a] border-r border-gray-300 dark:border-white/13
@@ -59,7 +61,10 @@ const Sidebar = ({
         onClick={() => {
           setSelectedChat(null)
           setIsMenuOpen(false)
-          navigate({ to: '/' })
+          // Only navigate if we're not already on a video page
+          if (!videoId) {
+            navigate({ to: '/' })
+          }
         }}
         className="flex justify-center items-center w-full py-2.5 mt-7 text-sm font-medium rounded-lg cursor-pointer
         bg-gray-900 text-white hover:bg-black
