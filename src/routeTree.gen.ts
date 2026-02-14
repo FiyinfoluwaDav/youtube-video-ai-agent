@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CreditsRouteImport } from './routes/credits'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,6 +30,11 @@ import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.i
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/demo/clerk': typeof DemoClerkRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/prisma': typeof DemoPrismaRoute
@@ -150,6 +157,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/demo/clerk': typeof DemoClerkRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/prisma': typeof DemoPrismaRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/demo/clerk': typeof DemoClerkRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/prisma': typeof DemoPrismaRoute
@@ -195,6 +204,7 @@ export interface FileRouteTypes {
     | '/'
     | '/credits'
     | '/login'
+    | '/signup'
     | '/demo/clerk'
     | '/demo/neon'
     | '/demo/prisma'
@@ -216,6 +226,7 @@ export interface FileRouteTypes {
     | '/'
     | '/credits'
     | '/login'
+    | '/signup'
     | '/demo/clerk'
     | '/demo/neon'
     | '/demo/prisma'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/'
     | '/credits'
     | '/login'
+    | '/signup'
     | '/demo/clerk'
     | '/demo/neon'
     | '/demo/prisma'
@@ -259,6 +271,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreditsRoute: typeof CreditsRoute
   LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
   DemoClerkRoute: typeof DemoClerkRoute
   DemoNeonRoute: typeof DemoNeonRoute
   DemoPrismaRoute: typeof DemoPrismaRoute
@@ -279,6 +292,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -419,6 +439,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreditsRoute: CreditsRoute,
   LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
   DemoClerkRoute: DemoClerkRoute,
   DemoNeonRoute: DemoNeonRoute,
   DemoPrismaRoute: DemoPrismaRoute,
