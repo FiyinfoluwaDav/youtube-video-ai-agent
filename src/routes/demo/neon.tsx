@@ -1,8 +1,8 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 
-import { prisma } from '../../db'
-import { Todo } from '../../generated/prisma/client'
+import { Todo } from '@prisma/client'
+import { prisma } from '../../server/db'
 
 const getTodos = createServerFn({
   method: 'GET',

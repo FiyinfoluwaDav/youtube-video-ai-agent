@@ -136,7 +136,11 @@ function VideoPage() {
             minSize={30}
             className="flex flex-row border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a]"
           >
-            <Sidebar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+            <Sidebar
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+              videoId={videoId}
+            />
             <ChatBot
               transcript={transcript}
               currentTime={currentTime}

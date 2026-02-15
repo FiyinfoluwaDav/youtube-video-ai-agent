@@ -7,9 +7,11 @@ import { useAppContext } from '../context/AppContext'
 const Sidebar = ({
   isMenuOpen,
   setIsMenuOpen,
+  videoId: propVideoId,
 }: {
   isMenuOpen: boolean
   setIsMenuOpen: (isMenuOpen: boolean) => void
+  videoId?: string
 }) => {
   const {
     credits,
@@ -42,7 +44,10 @@ const Sidebar = ({
     }
   }
 
-  const { videoId } = useParams({ strict: false }) as { videoId?: string }
+  const { videoId: paramsVideoId } = useParams({
+    strict: false,
+  }) as { videoId?: string }
+  const videoId = propVideoId || paramsVideoId
 
   return (
     <div
@@ -61,7 +66,7 @@ const Sidebar = ({
         onClick={() => {
           setSelectedChat(null)
           setIsMenuOpen(false)
-          // Only navigate if we're not already on a video page
+          // Only navigate if we're not already on a video page or if we are on a DIFFERENT video page (which shouldn't happen here usually)
           if (!videoId) {
             navigate({ to: '/' })
           }

@@ -25,7 +25,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="p-4 flex items-center bg-gray-800 text-white shadow-lg">
+      <header className="p-4 flex items-center justify-between bg-gray-800 text-white shadow-lg">
         <button
           onClick={() => setIsOpen(true)}
           className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
@@ -42,6 +42,11 @@ export default function Header() {
             />
           </Link>
         </h1>
+
+        {/* Authentication Buttons */}
+        <div className="flex items-center gap-3">
+          <ClerkHeader />
+        </div>
       </header>
 
       <aside
@@ -224,7 +229,6 @@ export default function Header() {
           </div>
           {groupedExpanded.StartSSRDemo && (
             <div className="flex flex-col ml-4">
-
               <Link
                 to="/demo/start/ssr/full-ssr"
                 onClick={() => setIsOpen(false)}

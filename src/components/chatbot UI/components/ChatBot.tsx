@@ -1,5 +1,5 @@
 import { useTRPC } from '@/integrations/trpc/react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { assets } from '../assets/assets'
 import {
@@ -92,6 +92,14 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
     trpc.chat.generateTitle.mutationOptions(),
   )
 
+  const { mutateAsync: createChat } = useMutation(
+    trpc.chat.createChat.mutationOptions(),
+  )
+  const { mutateAsync: addMessage } = useMutation(
+    trpc.chat.addMessage.mutationOptions(),
+  )
+  const queryClient = useQueryClient()
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -110,6 +118,43 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
     setPrompt('')
 
     try {
+      let chatId = selectedChat?.id
+      let currentChat = selectedChat
+
+      if (!chatId) {
+        const newChatData = await createChat({
+          name: currentPrompt.slice(0, 40),
+          videoId,
+        })
+        chatId = newChatData.id
+
+        // Construct app chat object from response
+        const newChatApp: Chat = {
+          id: newChatData.id,
+          userId: newChatData.userId || user?.id || '',
+          videoId: newChatData.videoId,
+          name: newChatData.title || currentPrompt.slice(0, 40),
+          userName: user?.name || 'User',
+          messages: [],
+          createdAt: newChatData.createdAt.toISOString(),
+          updatedAt: newChatData.updatedAt.toISOString(),
+        }
+
+        currentChat = newChatApp
+        setSelectedChat(newChatApp)
+        // Invalidate chats query to update sidebar
+        queryClient.invalidateQueries({
+          queryKey: trpc.chat.getChats.queryOptions().queryKey,
+        })
+      }
+
+      // Save user message
+      await addMessage({
+        chatId: chatId!,
+        role: 'user',
+        content: currentPrompt,
+      })
+
       const messagesToSend = newMessages.map((m) => ({
         role: m.role as 'user' | 'assistant' | 'system',
         content: m.content,
@@ -155,44 +200,25 @@ Answer questions based on this transcript and context but make sure you do not i
       const finalMessages = [...newMessages, assistantMessage]
       setMessages(finalMessages)
 
-      let updatedChat: Chat
-      let updatedChats: Chat[]
+      // Save assistant message
+      await addMessage({
+        chatId: chatId!,
+        role: 'assistant',
+        content: response.content,
+      })
 
-      if (selectedChat) {
-        updatedChat = {
-          ...selectedChat,
-          messages: finalMessages,
-          updatedAt: new Date().toISOString(),
-          videoId: videoId,
-        }
-        updatedChats = chats
-          ? chats.map((c) => (c.id === selectedChat.id ? updatedChat : c))
-          : [updatedChat]
-      } else {
-        updatedChat = {
-          id: Date.now().toString(),
-          userId: user?.id || 'guest',
-          name: currentPrompt.slice(0, 40),
-          userName: user?.name || 'Guest',
-          messages: finalMessages,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          videoId: videoId,
-        }
-        updatedChats = [updatedChat, ...(chats || [])]
+      // Update selected chat messages in memory
+      if (currentChat) {
+        const updatedChat = { ...currentChat, messages: finalMessages }
+        setSelectedChat(updatedChat)
       }
-
-      setChats(updatedChats)
-      setSelectedChat(updatedChat)
-      localStorage.setItem('chats', JSON.stringify(updatedChats))
 
       // Generate title for new chats
       if (!selectedChat && messages.length === 0) {
         try {
           const { title } = await generateTitle({ message: currentPrompt })
           if (title) {
-            updatedChat = { ...updatedChat, name: title }
-            updateChat(updatedChat)
+            updateChat({ ...currentChat!, name: title })
           }
         } catch (error) {
           console.error('Failed to generate title:', error)
@@ -200,7 +226,17 @@ Answer questions based on this transcript and context but make sure you do not i
       }
     } catch (error) {
       console.error('Error sending message:', error)
-      // Optionally add an error message to the chat
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: 'Sorry, I encountered an error. Please try again later.',
+          isImage: false,
+          isPublished: false,
+          timestamp: Date.now(),
+        },
+      ])
+      console.error('Full error details:', JSON.stringify(error, null, 2))
     } finally {
       setLoading(false)
     }
@@ -244,6 +280,11 @@ Answer questions based on this transcript and context but make sure you do not i
         {messages.map((message, index) => (
           <Message message={message} key={index} />
         ))}
+
+        {/* Error Message */}
+        {/* Error Message */}
+        {/* Show error if last message failed or general error */}
+        {/* (Assuming we handle error state in component) */}
 
         {/* Three Dots Loading */}
         {loading && (

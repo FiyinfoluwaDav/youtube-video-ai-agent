@@ -1,9 +1,11 @@
 import type { TRPCRouterRecord } from '@trpc/server'
+import { TRPCError } from '@trpc/server'
 import { exec } from 'child_process'
 import path from 'path'
 import { promisify } from 'util'
 import { z } from 'zod'
 import { sendChatRequest } from '../../lib/ollama'
+import { prisma } from '../../server/db'
 import { createTRPCRouter, publicProcedure } from './init'
 import { MOCK_TRANSCRIPT } from './mockData'
 
@@ -112,6 +114,135 @@ const chatRouter = {
         console.error('Error in chat.generateTitle:', error)
         return { title: 'New Chat' }
       }
+    }),
+
+  getChats: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.userId) {
+      return []
+    }
+    return await prisma.chat.findMany({
+      where: {
+        userId: ctx.userId,
+      },
+      include: {
+        messages: true,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    })
+  }),
+
+  createChat: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        videoId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      console.log('🔴 CREATE CHAT MUTATION CALLED')
+      console.log('User ID:', ctx.userId)
+      console.log('Input:', input)
+
+      if (!ctx.userId) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' })
+      }
+
+      console.log('🔴 ABOUT TO CALL PRISMA.CHAT.CREATE')
+      try {
+        const result = await prisma.chat.create({
+          data: {
+            title: input.name,
+            videoId: input.videoId,
+            userId: ctx.userId,
+            messages: {
+              create: [],
+            },
+          },
+          include: {
+            messages: true,
+          },
+        })
+        console.log('🟢 PRISMA.CHAT.CREATE SUCCEEDED')
+        return result
+      } catch (error) {
+        console.error('🔴 PRISMA.CHAT.CREATE FAILED:', error)
+        throw error
+      }
+    }),
+
+  deleteChat: publicProcedure
+    .input(z.object({ chatId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.userId) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' })
+      }
+      // Ensure user owns the chat
+      const chat = await prisma.chat.findUnique({
+        where: { id: input.chatId },
+      })
+      if (!chat || chat.userId !== ctx.userId) {
+        throw new TRPCError({ code: 'NOT_FOUND' })
+      }
+      return await prisma.chat.delete({
+        where: { id: input.chatId },
+      })
+    }),
+
+  updateChat: publicProcedure
+    .input(
+      z.object({
+        chatId: z.string(),
+        name: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.userId) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' })
+      }
+      const chat = await prisma.chat.findUnique({
+        where: { id: input.chatId },
+      })
+      if (!chat || chat.userId !== ctx.userId) {
+        throw new TRPCError({ code: 'NOT_FOUND' })
+      }
+      return await prisma.chat.update({
+        where: { id: input.chatId },
+        data: {
+          title: input.name,
+        },
+        include: {
+          messages: true,
+        },
+      })
+    }),
+
+  addMessage: publicProcedure
+    .input(
+      z.object({
+        chatId: z.string(),
+        role: z.string(),
+        content: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.userId) {
+        throw new TRPCError({ code: 'UNAUTHORIZED' })
+      }
+      const chat = await prisma.chat.findUnique({
+        where: { id: input.chatId },
+      })
+      if (!chat || chat.userId !== ctx.userId) {
+        throw new TRPCError({ code: 'NOT_FOUND' })
+      }
+      return await prisma.message.create({
+        data: {
+          chatId: input.chatId,
+          role: input.role,
+          content: input.content,
+        },
+      })
     }),
 } satisfies TRPCRouterRecord
 

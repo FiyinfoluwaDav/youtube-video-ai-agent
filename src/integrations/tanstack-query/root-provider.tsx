@@ -1,7 +1,7 @@
 import { QueryClient } from '@tanstack/react-query'
-import superjson from 'superjson'
 import { createTRPCClient, httpBatchStreamLink } from '@trpc/client'
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
+import superjson from 'superjson'
 
 import type { TRPCRouter } from '@/integrations/trpc/router'
 
@@ -20,6 +20,16 @@ export const trpcClient = createTRPCClient<TRPCRouter>({
     httpBatchStreamLink({
       transformer: superjson,
       url: getUrl(),
+      headers: async () => {
+        const headers: Record<string, string> = {}
+        if (typeof window !== 'undefined' && (window as any).Clerk?.session) {
+          const token = await (window as any).Clerk.session.getToken()
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`
+          }
+        }
+        return headers
+      },
     }),
   ],
 })

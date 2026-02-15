@@ -1,3 +1,8 @@
+import { useTRPC } from '@/integrations/trpc/react'
+import type { TRPCRouter } from '@/integrations/trpc/router'
+import { useUser } from '@clerk/clerk-react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { inferRouterOutputs } from '@trpc/server'
 import {
   createContext,
   ReactNode,
@@ -5,7 +10,12 @@ import {
   useEffect,
   useState,
 } from 'react'
-import { dummyUserData } from '../assets/assets'
+
+type RouterOutput = inferRouterOutputs<TRPCRouter>
+type ServerChat = RouterOutput['chat']['getChats'][number]
+type ServerMessage = ServerChat['messages'][number]
+
+// import { dummyUserData } from '../assets/assets'
 
 interface AppContextType {
   user: User | null
@@ -37,6 +47,7 @@ export interface Message {
   timestamp: number
 }
 
+// Updated Chat interface to match frontend usage but mapped from backend
 export interface Chat {
   id: string
   userId: string
@@ -51,58 +62,77 @@ export interface Chat {
 const AppContext = createContext<AppContextType | null>(null)
 
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [chats, setChats] = useState<Chat[] | null>(null)
+  const { user: clerkUser } = useUser()
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
   const [theme, setTheme] = useState<string>('dark')
   const [credits, setCredits] = useState<number>(0)
+
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+
+  const chatInternal = trpc.chat.getChats.queryOptions()
+  const { data: serverChats } = useQuery({
+    queryKey: chatInternal.queryKey,
+    queryFn: chatInternal.queryFn,
+    enabled: !!clerkUser,
+  })
+
+  const updateChatMutation = useMutation({
+    ...trpc.chat.updateChat.mutationOptions(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: trpc.chat.getChats.queryOptions().queryKey,
+      })
+    },
+  })
+
+  const deleteChatMutation = useMutation({
+    ...trpc.chat.deleteChat.mutationOptions(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: trpc.chat.getChats.queryOptions().queryKey,
+      })
+    },
+  })
+
+  // Map server chats to app chats
+  // We use a safe mapping to avoid runtime crashes if data structure mismatches temporarily
+  const chats: Chat[] | null = serverChats
+    ? (serverChats as RouterOutput['chat']['getChats']).map(
+        (c: ServerChat) => ({
+          id: c.id,
+          userId: c.userId || '',
+          videoId: c.videoId,
+          name: c.title || 'New Chat',
+          userName: clerkUser?.fullName || 'User',
+          messages: c.messages.map((m: ServerMessage) => ({
+            role: m.role,
+            content: m.content,
+            isImage: false, // Default
+            isPublished: false, // Default
+            timestamp: new Date(m.createdAt).getTime(),
+          })),
+          createdAt: new Date(c.createdAt).toISOString(),
+          updatedAt: new Date(c.updatedAt).toISOString(),
+        }),
+      )
+    : []
+
+  // Derived user object
+  const user: User | null = clerkUser
+    ? {
+        id: clerkUser.id,
+        name: clerkUser.fullName || clerkUser.firstName || 'User',
+        email: clerkUser.primaryEmailAddress?.emailAddress || '',
+        credits: 10, // Placeholder until we persist credits
+      }
+    : null
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme')
     if (storedTheme) {
       setTheme(storedTheme)
     }
-  }, [])
-
-  const fetchUser = async () => {
-    setUser(dummyUserData)
-  }
-
-  const fetchUsersChat = async () => {
-    const storedChats = localStorage.getItem('chats')
-    if (storedChats) {
-      try {
-        const parsedChats = JSON.parse(storedChats)
-        setChats(parsedChats)
-        if (parsedChats.length > 0) {
-          setSelectedChat(parsedChats[0])
-        } else {
-          setSelectedChat(null)
-        }
-      } catch (error) {
-        console.error('Failed to parse chats from localStorage:', error)
-        setChats([])
-        setSelectedChat(null)
-      }
-    } else {
-      setChats([])
-      setSelectedChat(null)
-    }
-  }
-
-  useEffect(() => {
-    if (user) {
-      fetchUsersChat()
-      setCredits(user.credits)
-    } else {
-      setChats([])
-      setSelectedChat(null)
-      setCredits(0)
-    }
-  }, [user])
-
-  useEffect(() => {
-    fetchUser()
   }, [])
 
   useEffect(() => {
@@ -114,37 +144,32 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   }, [theme])
 
   const updateChat = (chat: Chat) => {
-    setChats(
-      (prevChats) =>
-        prevChats?.map((c) => (c.id === chat.id ? chat : c)) || null,
-    )
+    // We only update name via this function usually in Sidebar
+    // For local state, we rely on refetching, but for smooth UI we might want to update cache.
+    // For now, simple mutation.
+    updateChatMutation.mutate({ chatId: chat.id, name: chat.name })
+
+    // Also update selected chat if it's the one being updated
     if (selectedChat?.id === chat.id) {
       setSelectedChat(chat)
-    }
-    const storedChats = localStorage.getItem('chats')
-    if (storedChats) {
-      const parsedChats = JSON.parse(storedChats) as Chat[]
-      const updatedChats = parsedChats.map((c) => (c.id === chat.id ? chat : c))
-      localStorage.setItem('chats', JSON.stringify(updatedChats))
     }
   }
 
   const deleteChat = (chatId: string) => {
-    setChats((prevChats) => prevChats?.filter((c) => c.id !== chatId) || null)
+    deleteChatMutation.mutate({ chatId })
     if (selectedChat?.id === chatId) {
       setSelectedChat(null)
     }
-    const storedChats = localStorage.getItem('chats')
-    if (storedChats) {
-      const parsedChats = JSON.parse(storedChats) as Chat[]
-      const updatedChats = parsedChats.filter((c) => c.id !== chatId)
-      localStorage.setItem('chats', JSON.stringify(updatedChats))
-    }
+  }
+
+  // Deprecated, use mutations
+  const setChats = (newChats: Chat[] | null) => {
+    console.warn('setChats is deprecated. Use tRPC mutations instead.')
   }
 
   const value = {
     user,
-    setUser,
+    setUser: () => {}, // No-op
     chats,
     setChats,
     selectedChat,
