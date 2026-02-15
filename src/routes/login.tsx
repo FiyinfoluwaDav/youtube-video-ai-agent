@@ -82,7 +82,7 @@ function RouteComponent() {
           </div>
           <button
             type="submit"
-            className="w-full mb-3 bg-indigo-500 py-2.5 rounded-full text-white hover:bg-indigo-600 transition-colors"
+            className="w-full mb-3 bg-orange-500 py-2.5 rounded-full text-white hover:bg-orange-600 transition-colors"
           >
             Log in
           </button>
