@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SsoCallbackRouteImport } from './routes/sso-callback'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CreditsRouteImport } from './routes/credits'
@@ -30,6 +31,11 @@ import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.i
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 
+const SsoCallbackRoute = SsoCallbackRouteImport.update({
+  id: '/sso-callback',
+  path: '/sso-callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/sso-callback': typeof SsoCallbackRoute
   '/demo/clerk': typeof DemoClerkRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/prisma': typeof DemoPrismaRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/sso-callback': typeof SsoCallbackRoute
   '/demo/clerk': typeof DemoClerkRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/prisma': typeof DemoPrismaRoute
@@ -181,6 +189,7 @@ export interface FileRoutesById {
   '/credits': typeof CreditsRoute
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
+  '/sso-callback': typeof SsoCallbackRoute
   '/demo/clerk': typeof DemoClerkRoute
   '/demo/neon': typeof DemoNeonRoute
   '/demo/prisma': typeof DemoPrismaRoute
@@ -205,6 +214,7 @@ export interface FileRouteTypes {
     | '/credits'
     | '/login'
     | '/signup'
+    | '/sso-callback'
     | '/demo/clerk'
     | '/demo/neon'
     | '/demo/prisma'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/credits'
     | '/login'
     | '/signup'
+    | '/sso-callback'
     | '/demo/clerk'
     | '/demo/neon'
     | '/demo/prisma'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/credits'
     | '/login'
     | '/signup'
+    | '/sso-callback'
     | '/demo/clerk'
     | '/demo/neon'
     | '/demo/prisma'
@@ -272,6 +284,7 @@ export interface RootRouteChildren {
   CreditsRoute: typeof CreditsRoute
   LoginRoute: typeof LoginRoute
   SignupRoute: typeof SignupRoute
+  SsoCallbackRoute: typeof SsoCallbackRoute
   DemoClerkRoute: typeof DemoClerkRoute
   DemoNeonRoute: typeof DemoNeonRoute
   DemoPrismaRoute: typeof DemoPrismaRoute
@@ -292,6 +305,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sso-callback': {
+      id: '/sso-callback'
+      path: '/sso-callback'
+      fullPath: '/sso-callback'
+      preLoaderRoute: typeof SsoCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -440,6 +460,7 @@ const rootRouteChildren: RootRouteChildren = {
   CreditsRoute: CreditsRoute,
   LoginRoute: LoginRoute,
   SignupRoute: SignupRoute,
+  SsoCallbackRoute: SsoCallbackRoute,
   DemoClerkRoute: DemoClerkRoute,
   DemoNeonRoute: DemoNeonRoute,
   DemoPrismaRoute: DemoPrismaRoute,

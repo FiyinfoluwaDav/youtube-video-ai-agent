@@ -10,6 +10,8 @@ function RouteComponent() {
   const { isLoaded, signUp, setActive } = useSignUp()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [code, setCode] = useState('')
   const [error, setError] = useState('')
   const router = useRouter()
 
@@ -20,19 +22,44 @@ function RouteComponent() {
     }
 
     try {
-      const result = await signUp.create({
+      await signUp.create({
         emailAddress: email,
         password,
       })
 
-      if (result.status === 'complete') {
-        await setActive({ session: result.createdSessionId })
-        router.history.push('/')
-      } else {
-        console.log(result)
-      }
+      await signUp.prepareEmailAddressVerification({
+        strategy: 'email_code',
+      })
+
+      setVerifying(true)
     } catch (err: any) {
       console.error('error', err.errors[0].longMessage)
+      setError(err.errors[0].longMessage)
+    }
+  }
+
+  const handleVerification = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!isLoaded) {
+      return
+    }
+
+    try {
+      const completeSignUp = await signUp.attemptEmailAddressVerification({
+        code,
+      })
+
+      if (completeSignUp.status !== 'complete') {
+        /*  investigate the response, to see what is there */
+        console.log(JSON.stringify(completeSignUp, null, 2))
+      }
+
+      if (completeSignUp.status === 'complete') {
+        await setActive({ session: completeSignUp.createdSessionId })
+        router.history.push('/')
+      }
+    } catch (err: any) {
+      console.error(JSON.stringify(err, null, 2))
       setError(err.errors[0].longMessage)
     }
   }
@@ -44,6 +71,39 @@ function RouteComponent() {
       redirectUrl: '/sso-callback',
       redirectUrlComplete: '/',
     })
+  }
+
+  if (verifying) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+        <div className="bg-white text-gray-500 max-w-96 w-full mx-4 md:p-6 p-4 text-left text-sm rounded-xl shadow-[0px_0px_10px_0px] shadow-black/10">
+          <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+            Verify Email
+          </h2>
+          <p className="text-center mb-4 text-gray-600">
+            Enter the verification code sent to your email.
+          </p>
+          <form onSubmit={handleVerification}>
+            <input
+              id="code"
+              className="w-full bg-transparent border my-3 border-gray-500/30 outline-none rounded-full py-2.5 px-4"
+              type="text"
+              placeholder="Enter verification code"
+              required
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
+            <button
+              type="submit"
+              className="w-full mb-3 bg-orange-500 py-2.5 rounded-full text-white hover:bg-orange-600 transition-colors pt-4"
+            >
+              Verify
+            </button>
+          </form>
+        </div>
+      </div>
+    )
   }
 
   return (
