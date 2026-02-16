@@ -1,4 +1,5 @@
 import { extractVideoId } from '@/lib/utils'
+import { useClerk, useUser } from '@clerk/clerk-react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Search, Sparkles, Youtube } from 'lucide-react'
 import { useState } from 'react'
@@ -7,6 +8,8 @@ export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
   const navigate = useNavigate()
+  const { signOut } = useClerk()
+  const { isSignedIn, isLoaded } = useUser()
   const [url, setUrl] = useState('')
   const [error, setError] = useState('')
 
@@ -23,18 +26,32 @@ function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden text-slate-900 dark:text-white">
       <div className="absolute top-4 right-4 flex gap-4 z-20">
-        <a
-          href="/login"
-          className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
-        >
-          Login
-        </a>
-        <a
-          href="/signup"
-          className="px-4 py-2 text-sm font-medium bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg hover:opacity-90 transition-opacity"
-        >
-          Sign up
-        </a>
+        {isLoaded && isSignedIn ? (
+          <button
+            onClick={() => signOut()}
+            className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+          >
+            Sign Out
+          </button>
+        ) : isLoaded && !isSignedIn ? (
+          <>
+            <a
+              href="/login"
+              className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              Login
+            </a>
+            <a
+              href="/signup"
+              className="px-4 py-2 text-sm font-medium bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg hover:opacity-90 transition-opacity"
+            >
+              Sign up
+            </a>
+          </>
+        ) : (
+          // Loading state (invisible or skeleton)
+          <div className="w-20 h-8"></div>
+        )}
       </div>
 
       <div className="relative z-10 w-full max-w-2xl text-center space-y-8">

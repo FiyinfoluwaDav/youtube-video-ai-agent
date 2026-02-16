@@ -77,6 +77,15 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     enabled: !!clerkUser,
   })
 
+  useEffect(() => {
+    if (!clerkUser) {
+      queryClient.removeQueries({
+        queryKey: trpc.chat.getChats.queryOptions().queryKey,
+      })
+      setSelectedChat(null)
+    }
+  }, [clerkUser, queryClient, trpc])
+
   const updateChatMutation = useMutation({
     ...trpc.chat.updateChat.mutationOptions(),
     onSuccess: () => {
@@ -97,26 +106,29 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
 
   // Map server chats to app chats
   // We use a safe mapping to avoid runtime crashes if data structure mismatches temporarily
-  const chats: Chat[] | null = serverChats
-    ? (serverChats as RouterOutput['chat']['getChats']).map(
-        (c: ServerChat) => ({
-          id: c.id,
-          userId: c.userId || '',
-          videoId: c.videoId,
-          name: c.title || 'New Chat',
-          userName: clerkUser?.fullName || 'User',
-          messages: c.messages.map((m: ServerMessage) => ({
-            role: m.role,
-            content: m.content,
-            isImage: false, // Default
-            isPublished: false, // Default
-            timestamp: new Date(m.createdAt).getTime(),
-          })),
-          createdAt: new Date(c.createdAt).toISOString(),
-          updatedAt: new Date(c.updatedAt).toISOString(),
-        }),
-      )
-    : []
+  // Map server chats to app chats
+  // We use a safe mapping to avoid runtime crashes if data structure mismatches temporarily
+  const chats: Chat[] | null =
+    clerkUser && serverChats
+      ? (serverChats as RouterOutput['chat']['getChats']).map(
+          (c: ServerChat) => ({
+            id: c.id,
+            userId: c.userId || '',
+            videoId: c.videoId,
+            name: c.title || 'New Chat',
+            userName: clerkUser?.fullName || 'User',
+            messages: c.messages.map((m: ServerMessage) => ({
+              role: m.role,
+              content: m.content,
+              isImage: false, // Default
+              isPublished: false, // Default
+              timestamp: new Date(m.createdAt).getTime(),
+            })),
+            createdAt: new Date(c.createdAt).toISOString(),
+            updatedAt: new Date(c.updatedAt).toISOString(),
+          }),
+        )
+      : []
 
   // Derived user object
   const user: User | null = clerkUser

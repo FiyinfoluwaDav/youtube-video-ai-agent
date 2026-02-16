@@ -1,3 +1,4 @@
+import { useClerk, useUser } from '@clerk/clerk-react'
 import { Link, useNavigate, useParams } from '@tanstack/react-router'
 import moment from 'moment'
 import { useState } from 'react'
@@ -25,6 +26,8 @@ const Sidebar = ({
     deleteChat,
   } = useAppContext()
 
+  const { signOut } = useClerk()
+  const { isLoaded } = useUser()
   const navigate = useNavigate()
 
   const [search, setSearch] = useState('')
@@ -248,24 +251,60 @@ const Sidebar = ({
           </label>
         </div>
 
-        {/* User Account */}
-        <div className="flex items-center gap-3 cursor-pointer p-2.5 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-[#111] transition-colors duration-200">
-          <img
-            src={assets.user_icon}
-            className="w-8 h-8 rounded-full bg-gray-200"
-            alt=""
-          />
-          <p className="flex-1 text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
-            {user ? user.name : 'Login'}
-          </p>
-          {user && (
+        {/* User Account & Auth Actions */}
+        {!isLoaded ? (
+          // Loading skeleton or just empty space to match server if we want,
+          // but better to render a placeholder that matches "Login" size to minimize shift,
+          // OR just don't render this part until loaded.
+          // For hydration safety, if we render NOTHING here on server, we must match on client.
+          // But server might render "Login" or "Nothing".
+          // Simplest fix: Client Only render for this part.
+          <div className="animate-pulse flex items-center gap-3 p-2.5 px-3">
+            <div className="w-8 h-8 rounded-full bg-gray-200"></div>
+            <div className="h-4 bg-gray-200 rounded w-20"></div>
+          </div>
+        ) : user ? (
+          <>
+            <div className="flex items-center gap-3 p-2.5 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-[#111] transition-colors duration-200">
+              <img
+                src={assets.user_icon}
+                className="w-8 h-8 rounded-full bg-gray-200"
+                alt=""
+              />
+              <p className="flex-1 text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
+                {user.name}
+              </p>
+            </div>
+            <button
+              onClick={() => signOut(() => navigate({ to: '/' }))}
+              className="flex w-full items-center gap-3 cursor-pointer p-2.5 px-3 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2c2c2c] transition-colors duration-200 text-left"
+            >
+              <img
+                src={assets.logout_icon}
+                className="w-4.5 opacity-70 invert dark:invert-0"
+                alt=""
+              />
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                Log Out
+              </p>
+            </button>
+          </>
+        ) : (
+          <Link
+            to="/login"
+            className="flex items-center gap-3 cursor-pointer p-2.5 px-3 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2c2c2c] transition-colors duration-200"
+            onClick={() => setIsMenuOpen(false)}
+          >
             <img
-              src={assets.logout_icon}
-              className="h-4 w-4 opacity-50 hover:opacity-100 cursor-pointer dark:invert"
+              src={assets.user_icon}
+              className="w-4.5 h-4.5 opacity-70 invert dark:invert-0"
               alt=""
             />
-          )}
-        </div>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+              Log In
+            </p>
+          </Link>
+        )}
       </div>
 
       <div>
