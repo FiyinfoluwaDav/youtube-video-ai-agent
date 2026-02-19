@@ -143,7 +143,7 @@ function VideoPage() {
           <Panel
             defaultSize={65}
             minSize={30}
-            className={`flex flex-row border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-all duration-300 ease-in-out relative`}
+            className={`flex flex-row h-full overflow-hidden border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-all duration-300 ease-in-out relative ${!isSidebarCollapsed ? 'w-full md:w-auto flex-1' : ''}`}
           >
             {!isSidebarCollapsed && (
               <Sidebar
@@ -164,7 +164,7 @@ function VideoPage() {
           </Panel>
 
           <PanelResizeHandle
-            className={`w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30`}
+            className={`w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30 hidden md:block`}
           />
 
           {/* Expand Button when Sidebar is Collapsed */}
@@ -186,8 +186,9 @@ function VideoPage() {
             minSize={20}
             collapsible={true}
             collapsedSize={0}
+            className="hidden md:flex"
           >
-            <div className="h-full flex flex-col bg-gray-50 dark:bg-[#0a0a0a]">
+            <div className="h-full flex flex-col bg-gray-50 dark:bg-[#0a0a0a] w-full">
               {/* Video Section */}
               <div className="w-full bg-black shadow-xl shrink-0">
                 <div className="aspect-video w-full">

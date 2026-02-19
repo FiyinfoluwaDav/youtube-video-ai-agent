@@ -71,8 +71,14 @@ const Sidebar = ({
 
         {/* Collapse Button (Desktop Only) */}
         <button
-          onClick={toggleSidebar}
-          className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2c2c2c] transition-colors hidden md:block group"
+          onClick={() => {
+            if (window.innerWidth < 768) {
+              setIsMenuOpen(false)
+            } else {
+              toggleSidebar?.()
+            }
+          }}
+          className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2c2c2c] transition-colors block group"
           title="Collapse Sidebar"
         >
           <ChevronsLeft className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200" />

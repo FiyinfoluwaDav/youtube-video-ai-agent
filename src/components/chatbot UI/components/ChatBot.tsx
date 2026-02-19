@@ -259,7 +259,7 @@ Answer questions based on this transcript and context but make sure you do not i
   }, [messages])
 
   return (
-    <div className="flex-1 flex flex-col justify-between p-4 md:p-6 max-md:mt-14 h-full">
+    <div className="flex-1 flex flex-col justify-between p-4 md:p-6 max-md:pt-14 h-full min-h-0">
       {/* Chat Messages */}
       <div
         ref={containerRef}
