@@ -1,4 +1,3 @@
-import { assets } from '@/components/chatbot UI/assets/assets'
 import '@/components/chatbot UI/assets/prism.css'
 import ChatBot from '@/components/chatbot UI/components/ChatBot'
 import Sidebar from '@/components/chatbot UI/components/Sidebar'
@@ -22,6 +21,14 @@ export const Route = createFileRoute('/video/$videoId')({
 function VideoPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed)
@@ -130,12 +137,12 @@ function VideoPage() {
   return (
     <>
       {!isMenuOpen && (
-        <img
-          src={assets.menu_icon}
-          alt=""
-          className="absolute top-3 left-3 w-8 h-8 cursor-pointer md:hidden invert dark:invert-0"
+        <button
           onClick={() => setIsMenuOpen(true)}
-        />
+          className="absolute top-5 left-5 z-50 md:hidden p-2 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm"
+        >
+          <ChevronsRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+        </button>
       )}
       <div className="h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden">
         <PanelGroup orientation="horizontal">
@@ -163,9 +170,11 @@ function VideoPage() {
             />
           </Panel>
 
-          <PanelResizeHandle
-            className={`w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30 hidden md:block`}
-          />
+          {!isMobile && (
+            <PanelResizeHandle
+              className={`w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30 hidden md:block`}
+            />
+          )}
 
           {/* Expand Button when Sidebar is Collapsed */}
           {isSidebarCollapsed && (
@@ -180,75 +189,83 @@ function VideoPage() {
             </div>
           )}
 
-          {/* Right Panel: Video & Transcript (Default 35%) */}
-          <Panel
-            defaultSize={35}
-            minSize={20}
-            collapsible={true}
-            collapsedSize={0}
-            className="hidden md:flex"
-          >
-            <div className="h-full flex flex-col bg-gray-50 dark:bg-[#0a0a0a] w-full">
-              {/* Video Section */}
-              <div className="w-full bg-black shadow-xl shrink-0">
-                <div className="aspect-video w-full">
-                  <YouTube
-                    videoId={videoId}
-                    opts={opts}
-                    onReady={onPlayerReady}
-                    onStateChange={onPlayerStateChange}
-                    className="w-full h-full"
-                    iframeClassName="w-full h-full"
-                  />
-                </div>
-              </div>
+          {!isMobile && (
+            <>
+              <PanelResizeHandle
+                className={`w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30 hidden md:block`}
+              />
 
-              {/* Transcript Section */}
-              <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="p-3 border-b border-gray-300 dark:border-white/10 bg-white/50 dark:bg-[#0a0a0a]/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
-                  <h2 className="font-semibold flex items-center gap-2 text-slate-700 dark:text-slate-200 text-sm">
-                    <FileText className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                    Transcript
-                  </h2>
-                </div>
+              {/* Right Panel: Video & Transcript (Default 35%) */}
+              <Panel
+                defaultSize={35}
+                minSize={20}
+                collapsible={true}
+                collapsedSize={0}
+                className="hidden md:flex"
+              >
+                <div className="h-full flex flex-col bg-gray-50 dark:bg-[#0a0a0a] w-full">
+                  {/* Video Section */}
+                  <div className="w-full bg-black shadow-xl shrink-0">
+                    <div className="aspect-video w-full">
+                      <YouTube
+                        videoId={videoId}
+                        opts={opts}
+                        onReady={onPlayerReady}
+                        onStateChange={onPlayerStateChange}
+                        className="w-full h-full"
+                        iframeClassName="w-full h-full"
+                      />
+                    </div>
+                  </div>
 
-                <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
-                  {transcript.map((item, index) => {
-                    const isActive = index === activeIndex
-                    return (
-                      <div
-                        key={index}
-                        ref={isActive ? activeTranscriptRef : null}
-                        onClick={() => handleTranscriptClick(item.offset)}
-                        className={`group p-2.5 rounded-lg transition-all cursor-pointer text-sm leading-relaxed ${
-                          isActive
-                            ? 'bg-gray-200 dark:bg-[#202020] text-black dark:text-white font-medium'
-                            : 'hover:bg-gray-100 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300'
-                        }`}
-                      >
-                        <div className="flex gap-2 items-start">
-                          <span
-                            className={`text-xs font-mono mt-0.5 select-none transition-opacity min-w-[35px] ${
+                  {/* Transcript Section */}
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <div className="p-3 border-b border-gray-300 dark:border-white/10 bg-white/50 dark:bg-[#0a0a0a]/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
+                      <h2 className="font-semibold flex items-center gap-2 text-slate-700 dark:text-slate-200 text-sm">
+                        <FileText className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                        Transcript
+                      </h2>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
+                      {transcript.map((item, index) => {
+                        const isActive = index === activeIndex
+                        return (
+                          <div
+                            key={index}
+                            ref={isActive ? activeTranscriptRef : null}
+                            onClick={() => handleTranscriptClick(item.offset)}
+                            className={`group p-2.5 rounded-lg transition-all cursor-pointer text-sm leading-relaxed ${
                               isActive
-                                ? 'opacity-100 text-gray-600 dark:text-gray-400'
-                                : 'opacity-0 group-hover:opacity-100 text-slate-500'
+                                ? 'bg-gray-200 dark:bg-[#202020] text-black dark:text-white font-medium'
+                                : 'hover:bg-gray-100 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300'
                             }`}
                           >
-                            {Math.floor(item.offset / 60)}:
-                            {String(Math.floor(item.offset % 60)).padStart(
-                              2,
-                              '0',
-                            )}
-                          </span>
-                          <p>{item.text}</p>
-                        </div>
-                      </div>
-                    )
-                  })}
+                            <div className="flex gap-2 items-start">
+                              <span
+                                className={`text-xs font-mono mt-0.5 select-none transition-opacity min-w-[35px] ${
+                                  isActive
+                                    ? 'opacity-100 text-gray-600 dark:text-gray-400'
+                                    : 'opacity-0 group-hover:opacity-100 text-slate-500'
+                                }`}
+                              >
+                                {Math.floor(item.offset / 60)}:
+                                {String(Math.floor(item.offset % 60)).padStart(
+                                  2,
+                                  '0',
+                                )}
+                              </span>
+                              <p>{item.text}</p>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Panel>
+              </Panel>
+            </>
+          )}
         </PanelGroup>
       </div>
     </>
