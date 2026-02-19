@@ -30,7 +30,11 @@ function VideoPage() {
     data: transcript,
     isLoading,
     error,
-  } = useQuery(trpc.youtube.getTranscript.queryOptions({ videoId }))
+  } = useQuery({
+    ...trpc.youtube.getTranscript.queryOptions({ videoId }),
+    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+  })
 
   const [currentTime, setCurrentTime] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)

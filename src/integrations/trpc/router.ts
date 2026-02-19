@@ -32,9 +32,6 @@ const youtubeRouter = {
   getTranscript: publicProcedure
     .input(z.object({ videoId: z.string() }))
     .query(async ({ input }) => {
-      console.log('--- STARTING TRANSCRIPT FETCH ---')
-      console.log('Video ID:', input.videoId)
-
       if (input.videoId === 'mock-id') {
         console.log('Using Mock Data for Transcript')
         return MOCK_TRANSCRIPT
@@ -47,7 +44,6 @@ const youtubeRouter = {
           'scripts',
           'get_transcript.py',
         )
-        console.log('Script path:', scriptPath)
 
         const { stdout } = await execAsync(
           `python "${scriptPath}" "${input.videoId}"`,
@@ -141,15 +137,10 @@ const chatRouter = {
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      console.log('🔴 CREATE CHAT MUTATION CALLED')
-      console.log('User ID:', ctx.userId)
-      console.log('Input:', input)
-
       if (!ctx.userId) {
         throw new TRPCError({ code: 'UNAUTHORIZED' })
       }
 
-      console.log('🔴 ABOUT TO CALL PRISMA.CHAT.CREATE')
       try {
         const result = await prisma.chat.create({
           data: {
@@ -164,10 +155,9 @@ const chatRouter = {
             messages: true,
           },
         })
-        console.log('🟢 PRISMA.CHAT.CREATE SUCCEEDED')
+
         return result
       } catch (error) {
-        console.error('🔴 PRISMA.CHAT.CREATE FAILED:', error)
         throw error
       }
     }),
