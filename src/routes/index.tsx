@@ -1,7 +1,8 @@
+import { assets } from '@/components/chatbot UI/assets/assets'
 import { extractVideoId } from '@/lib/utils'
 import { useClerk, useUser } from '@clerk/clerk-react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { Search, Sparkles, Youtube } from 'lucide-react'
+import { Search, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/')({ component: Home })
@@ -57,7 +58,7 @@ function Home() {
       <div className="relative z-10 w-full max-w-2xl text-center space-y-8">
         <div className="flex flex-col items-center space-y-4">
           <div className="p-4 bg-white dark:bg-white/5 rounded-2xl ring-1 ring-slate-200 dark:ring-white/10 shadow-xl">
-            <Youtube className="w-12 h-12 text-red-500" />
+            <img src={assets.logo} alt="Summara Logo" className="w-12 h-12" />
           </div>
           <h1 className="text-4xl md:text-6xl font-bold text-slate-900 dark:text-white">
             YouTube AI Agent
