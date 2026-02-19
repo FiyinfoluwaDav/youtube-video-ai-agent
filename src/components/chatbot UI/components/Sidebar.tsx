@@ -1,5 +1,6 @@
 import { useClerk, useUser } from '@clerk/clerk-react'
 import { Link, useNavigate, useParams } from '@tanstack/react-router'
+import { ChevronsLeft } from 'lucide-react'
 import moment from 'moment'
 import { useState } from 'react'
 import { assets } from '../assets/assets'
@@ -9,10 +10,13 @@ const Sidebar = ({
   isMenuOpen,
   setIsMenuOpen,
   videoId: propVideoId,
+  toggleSidebar,
 }: {
   isMenuOpen: boolean
   setIsMenuOpen: (isMenuOpen: boolean) => void
   videoId?: string
+  toggleSidebar?: () => void
+  isSidebarCollapsed?: boolean
 }) => {
   const {
     credits,
@@ -57,12 +61,23 @@ const Sidebar = ({
       className={`flex flex-col h-full min-w-72 p-5 bg-white dark:bg-[#0a0a0a] border-r border-gray-300 dark:border-white/13
         transition-all duration-500 max-md:absolute left-0 z-50 ${!isMenuOpen && 'max-md:-translate-x-full'}`}
     >
-      {/*Logo */}
-      <img
-        src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
-        alt=""
-        className="w-full max-w-55 opacity-90"
-      />
+      <div className="flex items-center justify-between mb-2">
+        {/*Logo */}
+        <img
+          src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
+          alt=""
+          className="w-full max-w-[140px] opacity-90"
+        />
+
+        {/* Collapse Button (Desktop Only) */}
+        <button
+          onClick={toggleSidebar}
+          className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-[#2c2c2c] transition-colors hidden md:block group"
+          title="Collapse Sidebar"
+        >
+          <ChevronsLeft className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200" />
+        </button>
+      </div>
 
       {/*New Chat Button*/}
       <button

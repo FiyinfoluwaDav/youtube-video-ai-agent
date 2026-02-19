@@ -6,7 +6,7 @@ import Loading from '@/components/chatbot UI/pages/Loading'
 import { useTRPC } from '@/integrations/trpc/react'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, useLocation } from '@tanstack/react-router'
-import { AlertCircle, FileText, Loader2 } from 'lucide-react'
+import { AlertCircle, ChevronsRight, FileText, Loader2 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import {
   Panel,
@@ -21,6 +21,11 @@ export const Route = createFileRoute('/video/$videoId')({
 
 function VideoPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed)
+  }
   const { pathname } = useLocation()
 
   if (pathname === '/loading') return <Loading />
@@ -138,13 +143,19 @@ function VideoPage() {
           <Panel
             defaultSize={65}
             minSize={30}
-            className="flex flex-row border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a]"
+            className={`flex flex-row border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-all duration-300 ease-in-out relative`}
           >
-            <Sidebar
-              isMenuOpen={isMenuOpen}
-              setIsMenuOpen={setIsMenuOpen}
-              videoId={videoId}
-            />
+            {!isSidebarCollapsed && (
+              <Sidebar
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+                videoId={videoId}
+                toggleSidebar={toggleSidebar}
+                isSidebarCollapsed={isSidebarCollapsed}
+              />
+            )}
+
+            {/* ChatBot always rendered, takes available space */}
             <ChatBot
               transcript={transcript}
               currentTime={currentTime}
@@ -152,7 +163,22 @@ function VideoPage() {
             />
           </Panel>
 
-          <PanelResizeHandle className="w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30" />
+          <PanelResizeHandle
+            className={`w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30`}
+          />
+
+          {/* Expand Button when Sidebar is Collapsed */}
+          {isSidebarCollapsed && (
+            <div className="absolute top-4 left-4 z-50 hidden md:block">
+              <button
+                onClick={toggleSidebar}
+                className="p-2 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group"
+                title="Expand Sidebar"
+              >
+                <ChevronsRight className="w-5 h-5 text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-200" />
+              </button>
+            </div>
+          )}
 
           {/* Right Panel: Video & Transcript (Default 35%) */}
           <Panel
