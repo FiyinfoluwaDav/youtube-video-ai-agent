@@ -1,3 +1,4 @@
+import { getCreditsState } from '@/hooks/useCredits'
 import { useTRPC } from '@/integrations/trpc/react'
 import type { TRPCRouter } from '@/integrations/trpc/router'
 import { useUser } from '@clerk/clerk-react'
@@ -6,6 +7,7 @@ import { inferRouterOutputs } from '@trpc/server'
 import {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -27,6 +29,8 @@ interface AppContextType {
   selectedChat: Chat | null
   setSelectedChat: (chat: Chat | null) => void
   credits: number
+  maxCredits: number
+  consumeCredit: () => boolean
   setCredits: (credits: number) => void
   updateChat: (chat: Chat) => void
   deleteChat: (chatId: string) => void
@@ -65,7 +69,27 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const { user: clerkUser } = useUser()
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
   const [theme, setTheme] = useState<string>('dark')
-  const [credits, setCredits] = useState<number>(0)
+
+  // Credit state — re-derived from localStorage whenever userId changes
+  const userId = clerkUser?.id ?? null
+  const [credits, setCredits] = useState<number>(
+    () => getCreditsState(userId).credits,
+  )
+
+  // Sync credits whenever login state changes
+  useEffect(() => {
+    const state = getCreditsState(userId)
+    setCredits(state.credits)
+  }, [userId])
+
+  const consumeCredit = useCallback((): boolean => {
+    const state = getCreditsState(userId)
+    const consumed = state.consume()
+    if (consumed) {
+      setCredits(getCreditsState(userId).credits)
+    }
+    return consumed
+  }, [userId])
 
   const trpc = useTRPC()
   const queryClient = useQueryClient()
@@ -175,7 +199,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   }
 
   // Deprecated, use mutations
-  const setChats = (newChats: Chat[] | null) => {
+  const setChats = (_newChats: Chat[] | null) => {
     console.warn('setChats is deprecated. Use tRPC mutations instead.')
   }
 
@@ -189,6 +213,8 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     theme,
     setTheme,
     credits,
+    maxCredits: getCreditsState(userId).maxCredits,
+    consumeCredit,
     setCredits,
     updateChat,
     deleteChat,

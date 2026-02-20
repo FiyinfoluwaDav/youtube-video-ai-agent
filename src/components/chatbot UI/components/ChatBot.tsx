@@ -73,10 +73,11 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
     selectedChat,
     setSelectedChat,
     user,
-    chats,
-    setChats,
     theme,
     updateChat,
+    credits,
+    maxCredits,
+    consumeCredit,
   } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [messages, setMessages] = useState<MessageType[]>([])
@@ -102,6 +103,18 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Credit check — block if no credits remaining
+    if (credits <= 0) {
+      return
+    }
+
+    // Consume one credit before proceeding
+    const consumed = consumeCredit()
+    if (!consumed) {
+      return
+    }
+
     setLoading(true)
 
     const currentPrompt = prompt
@@ -296,6 +309,27 @@ Answer questions based on this transcript and context but make sure you do not i
         )}
       </div>
 
+      {/* Credit Counter */}
+      <div className="flex justify-center mb-2">
+        {credits <= 0 ? (
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium">
+            <span>No credits left, come back tomorrow or login</span>
+          </div>
+        ) : (
+          <div
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${
+              credits <= 2
+                ? 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
+                : 'bg-gray-100/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-gray-400'
+            }`}
+          >
+            <span>
+              {credits} / {maxCredits} credits
+            </span>
+          </div>
+        )}
+      </div>
+
       {/* Prompt Input Box */}
       <form
         onSubmit={onSubmit}
@@ -313,7 +347,7 @@ Answer questions based on this transcript and context but make sure you do not i
             Image
           </option>
         </select>
-        <div className="w-[1px] h-6 bg-gray-300 dark:bg-gray-700 mx-1"></div>
+        <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1"></div>
         <input
           onChange={(e) => setPrompt(e.target.value)}
           value={prompt}
@@ -323,9 +357,9 @@ Answer questions based on this transcript and context but make sure you do not i
           className="flex-1 w-full text-sm outline-none bg-transparent dark:text-white placeholder:text-gray-500"
         />
         <button
-          disabled={loading}
+          disabled={loading || credits <= 0}
           type="submit"
-          className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+          className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <img
             src={loading ? assets.stop_icon : assets.send_icon}
