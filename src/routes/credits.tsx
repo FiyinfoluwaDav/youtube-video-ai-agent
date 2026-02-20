@@ -42,8 +42,8 @@ function Credit() {
       <div className="flex h-screen bg-gray-50 dark:bg-[#000000] text-slate-900 dark:text-white overflow-hidden relative">
         {/* Background Gradients */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#1A0000] rounded-full blur-[120px] opacity-50"></div>
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#1A0000] rounded-full blur-[120px] opacity-50"></div>
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#1A0000] rounded-full blur-[120px] opacity-0 dark:opacity-50"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#1A0000] rounded-full blur-[120px] opacity-0 dark:opacity-50"></div>
         </div>
 
         <div className="relative z-10 flex w-full h-full">
