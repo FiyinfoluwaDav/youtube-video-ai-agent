@@ -5,6 +5,7 @@ import HowItWorks from '@/components/Landing Page UI/components/HowItWorks'
 import Pricing from '@/components/Landing Page UI/components/Pricing'
 import { useClerk, useUser } from '@clerk/clerk-react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import '../../index.css'
 
 export const Route = createFileRoute('/')({ component: Home })
 
@@ -14,7 +15,7 @@ function Home() {
   const { isSignedIn, isLoaded } = useUser()
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex flex-col items-center justify-center p-4 relative overflow-hidden text-slate-900 dark:text-white">
+    <div className="landing-page-theme min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
       <div className="absolute top-4 right-4 flex gap-4 z-20">
         {isLoaded && isSignedIn ? (
           <button
@@ -43,7 +44,7 @@ function Home() {
           <div className="w-20 h-8"></div>
         )}
       </div>
-      <main className="min-h-screen bg-background overflow-x-hidden">
+      <main className="min-h-screen bg-background overflow-x-hidden w-full">
         <Hero />
         <FeaturesSection />
         <HowItWorks />
