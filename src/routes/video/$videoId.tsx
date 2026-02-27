@@ -136,34 +136,49 @@ function VideoPage() {
 
   return (
     <>
-      {/* Mobile Overlay */}
-      {isMobile && isMenuOpen && (
-        <div
-          className="absolute inset-0 bg-black/50 z-40 md:hidden transition-opacity"
-          onClick={() => setIsMenuOpen(false)}
-        />
-      )}
-      {!isMenuOpen && (
-        <button
-          onClick={() => setIsMenuOpen(true)}
-          className="absolute top-5 left-5 z-40 md:hidden p-2 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm"
-        >
-          <ChevronsRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-        </button>
-      )}
       <div className="h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden relative">
+        {/* Mobile Overlay */}
+        {isMobile && isMenuOpen && (
+          <div
+            className="absolute inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+            onClick={() => setIsMenuOpen(false)}
+          />
+        )}
+
+        {/* Mobile Sidebar (Floating) */}
+        {isMobile && (
+          <div
+            className={`absolute top-0 left-0 h-full z-50 w-72 bg-white dark:bg-[#0a0a0a] border-r border-gray-300 dark:border-white/10 shadow-xl transition-transform duration-300 ease-in-out md:hidden ${
+              !isMenuOpen ? '-translate-x-full' : 'translate-x-0'
+            }`}
+          >
+            <Sidebar
+              isMenuOpen={isMenuOpen}
+              setIsMenuOpen={setIsMenuOpen}
+              videoId={videoId}
+              toggleSidebar={toggleSidebar}
+              isSidebarCollapsed={isSidebarCollapsed}
+            />
+          </div>
+        )}
+
+        {!isMenuOpen && (
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="absolute top-5 left-5 z-40 md:hidden p-2 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm"
+          >
+            <ChevronsRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+          </button>
+        )}
+
         <PanelGroup orientation="horizontal">
-          {/* Left Panel: Sidebar (Resizable) */}
-          {!isSidebarCollapsed && (
+          {/* Left Panel: Sidebar (Resizable - Desktop Only) */}
+          {!isMobile && !isSidebarCollapsed && (
             <>
               <Panel
                 defaultSize={20}
                 minSize={15}
-                className={`flex flex-col h-full overflow-hidden border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-transform duration-300 ease-in-out relative max-md:absolute max-md:z-50 max-md:w-72 max-md:h-full max-md:border-r max-md:shadow-lg ${
-                  !isMenuOpen
-                    ? 'max-md:-translate-x-full'
-                    : 'max-md:translate-x-0'
-                }`}
+                className="flex flex-col h-full overflow-hidden border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-all duration-300 ease-in-out relative"
               >
                 <Sidebar
                   isMenuOpen={isMenuOpen}
@@ -173,9 +188,7 @@ function VideoPage() {
                   isSidebarCollapsed={isSidebarCollapsed}
                 />
               </Panel>
-              {!isMobile && (
-                <PanelResizeHandle className="w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30 hidden md:block" />
-              )}
+              <PanelResizeHandle className="w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30 hidden md:block" />
             </>
           )}
 
