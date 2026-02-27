@@ -136,15 +136,22 @@ function VideoPage() {
 
   return (
     <>
+      {/* Mobile Overlay */}
+      {isMobile && isMenuOpen && (
+        <div
+          className="absolute inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+          onClick={() => setIsMenuOpen(false)}
+        />
+      )}
       {!isMenuOpen && (
         <button
           onClick={() => setIsMenuOpen(true)}
-          className="absolute top-5 left-5 z-50 md:hidden p-2 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm"
+          className="absolute top-5 left-5 z-40 md:hidden p-2 bg-white dark:bg-[#0a0a0a] border border-gray-200 dark:border-white/10 rounded-lg shadow-sm"
         >
           <ChevronsRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
         </button>
       )}
-      <div className="h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden">
+      <div className="h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden relative">
         <PanelGroup orientation="horizontal">
           {/* Left Panel: Sidebar (Resizable) */}
           {!isSidebarCollapsed && (
@@ -152,7 +159,11 @@ function VideoPage() {
               <Panel
                 defaultSize={20}
                 minSize={15}
-                className={`flex flex-col h-full overflow-hidden border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-all duration-300 ease-in-out relative max-md:absolute max-md:z-50 max-md:w-72 max-md:h-full max-md:border-r max-md:shadow-lg`}
+                className={`flex flex-col h-full overflow-hidden border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-transform duration-300 ease-in-out relative max-md:absolute max-md:z-50 max-md:w-72 max-md:h-full max-md:border-r max-md:shadow-lg ${
+                  !isMenuOpen
+                    ? 'max-md:-translate-x-full'
+                    : 'max-md:translate-x-0'
+                }`}
               >
                 <Sidebar
                   isMenuOpen={isMenuOpen}

@@ -7,7 +7,6 @@ import { assets } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
 
 const Sidebar = ({
-  isMenuOpen,
   setIsMenuOpen,
   videoId: propVideoId,
   toggleSidebar,
@@ -59,7 +58,7 @@ const Sidebar = ({
   return (
     <div
       className={`flex flex-col h-full w-full p-5 bg-white dark:bg-[#0a0a0a] border-r border-gray-300 dark:border-white/13
-        transition-all duration-500 max-md:absolute left-0 z-50 ${!isMenuOpen && 'max-md:-translate-x-full'}`}
+        transition-all duration-500`}
     >
       <div className="flex items-center justify-between mb-2">
         {/*Logo */}
