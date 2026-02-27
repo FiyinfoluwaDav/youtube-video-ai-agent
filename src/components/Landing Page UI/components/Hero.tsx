@@ -50,7 +50,8 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
-          className="font-display text-xl font-bold text-gradient-cosmic tracking-widest flex items-center gap-3"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="font-display text-xl font-bold text-gradient-cosmic tracking-widest flex items-center gap-3 cursor-pointer"
         >
           <img src={logo} alt="Summara Logo" className="w-8 h-8" />
           SUMMARA
