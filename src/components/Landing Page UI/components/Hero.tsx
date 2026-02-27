@@ -1,6 +1,8 @@
 import nebulaBg from '@/assets/nebula-bg.jpg'
 import logo from '@/components/chatbot UI/assets/logo.svg'
+import { useAppContext } from '@/components/chatbot UI/context/AppContext'
 import { extractVideoId } from '@/lib/utils'
+import { useClerk, useUser } from '@clerk/clerk-react'
 import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import { lazy, Suspense, useState } from 'react'
@@ -12,6 +14,9 @@ export default function Hero() {
   const navigate = useNavigate()
   const [url, setUrl] = useState('')
   const [error, setError] = useState('')
+  const { theme, setTheme } = useAppContext()
+  const { isSignedIn, isLoaded } = useUser()
+  const { signOut } = useClerk()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -66,9 +71,25 @@ export default function Hero() {
               {item}
             </a>
           ))}
-          <button className="bg-primary/80 hover:bg-primary transition-colors text-white px-5 py-2 rounded-full text-xs font-medium shadow-[0_0_15px_rgba(255,94,0,0.3)]">
-            Get Started
-          </button>
+          {isLoaded ? (
+            isSignedIn ? (
+              <button
+                onClick={() => signOut()}
+                className="bg-primary/80 hover:bg-primary transition-colors text-white px-5 py-2 rounded-full text-xs font-medium shadow-[0_0_15px_rgba(255,94,0,0.3)]"
+              >
+                Log Out
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate({ to: '/signup' })}
+                className="bg-primary/80 hover:bg-primary transition-colors text-white px-5 py-2 rounded-full text-xs font-medium shadow-[0_0_15px_rgba(255,94,0,0.3)]"
+              >
+                Sign Up
+              </button>
+            )
+          ) : (
+            <div className="w-20 h-8"></div>
+          )}
         </motion.div>
       </nav>
 
