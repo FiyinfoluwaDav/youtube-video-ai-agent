@@ -1,6 +1,5 @@
 import nebulaBg from '@/assets/nebula-bg.jpg'
 import logo from '@/components/chatbot UI/assets/logo.svg'
-import { useAppContext } from '@/components/chatbot UI/context/AppContext'
 import { extractVideoId } from '@/lib/utils'
 import { useClerk, useUser } from '@clerk/clerk-react'
 import { useNavigate } from '@tanstack/react-router'
@@ -14,7 +13,6 @@ export default function Hero() {
   const navigate = useNavigate()
   const [url, setUrl] = useState('')
   const [error, setError] = useState('')
-  const { theme, setTheme } = useAppContext()
   const { isSignedIn, isLoaded } = useUser()
   const { signOut } = useClerk()
 
