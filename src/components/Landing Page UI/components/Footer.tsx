@@ -1,41 +1,41 @@
-import { motion, useInView } from "framer-motion";
-import { Github, Linkedin, Twitter } from "lucide-react";
-import { useRef, useState } from "react";
+import { motion, useInView } from 'framer-motion'
+import { Github, Linkedin, Twitter } from 'lucide-react'
+import { useRef, useState } from 'react'
 
 const socials = [
   {
-    label: "Twitter",
+    label: 'Twitter',
     icon: <Twitter size={20} />,
-    href: "https://twitter.com/OsokoyaF",
+    href: 'https://twitter.com/OsokoyaF',
   },
   {
-    label: "LinkedIn",
+    label: 'LinkedIn',
     icon: <Linkedin size={20} />,
-    href: "https://www.linkedin.com/in/fiyinfoluwa-osokoya/",
+    href: 'https://www.linkedin.com/in/fiyinfoluwa-osokoya/',
   },
   {
-    label: "GitHub",
+    label: 'GitHub',
     icon: <Github size={20} />,
-    href: "https://github.com/FiyinfoluwaDav",
+    href: 'https://github.com/FiyinfoluwaDav',
   },
-];
+]
 
 export default function Footer() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-100px' })
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [sent, setSent] = useState(false);
+    name: '',
+    email: '',
+    message: '',
+  })
+  const [sent, setSent] = useState(false)
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 3000);
-    setFormData({ name: "", email: "", message: "" });
-  };
+    e.preventDefault()
+    setSent(true)
+    setTimeout(() => setSent(false), 3000)
+    setFormData({ name: '', email: '', message: '' })
+  }
 
   return (
     <footer
@@ -119,7 +119,7 @@ export default function Footer() {
                 type="submit"
                 className="w-full py-4 rounded-xl text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                <span>{sent ? "✓ Message Sent!" : "Send Message →"}</span>
+                <span>{sent ? '✓ Message Sent!' : 'Send Message →'}</span>
               </button>
             </form>
           </motion.div>
@@ -136,7 +136,7 @@ export default function Footer() {
                 SUMMARA
               </div>
               <p className="font-body text-muted-foreground text-sm leading-relaxed mb-8 max-w-xs">
-                Built by Fiyinfoluwa @ OrizenLabs
+                Built by Fiyinfoluwa @ Orizen AI Labs
               </p>
 
               {/* Social */}
@@ -175,5 +175,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }
