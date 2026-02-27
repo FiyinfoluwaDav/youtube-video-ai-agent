@@ -146,22 +146,34 @@ function VideoPage() {
       )}
       <div className="h-screen bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-white overflow-hidden">
         <PanelGroup orientation="horizontal">
-          {/* Left Panel: Sidebar & Chat Interface (Default 65%) */}
-          <Panel
-            defaultSize={65}
-            minSize={30}
-            className={`flex flex-row h-full overflow-hidden border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-all duration-300 ease-in-out relative ${!isSidebarCollapsed ? 'w-full md:w-auto flex-1' : ''}`}
-          >
-            {!isSidebarCollapsed && (
-              <Sidebar
-                isMenuOpen={isMenuOpen}
-                setIsMenuOpen={setIsMenuOpen}
-                videoId={videoId}
-                toggleSidebar={toggleSidebar}
-                isSidebarCollapsed={isSidebarCollapsed}
-              />
-            )}
+          {/* Left Panel: Sidebar (Resizable) */}
+          {!isSidebarCollapsed && (
+            <>
+              <Panel
+                defaultSize={20}
+                minSize={15}
+                className={`flex flex-col h-full overflow-hidden border-r border-gray-300 dark:border-white/10 bg-white dark:bg-[#0a0a0a] transition-all duration-300 ease-in-out relative max-md:absolute max-md:z-50 max-md:w-72 max-md:h-full max-md:border-r max-md:shadow-lg`}
+              >
+                <Sidebar
+                  isMenuOpen={isMenuOpen}
+                  setIsMenuOpen={setIsMenuOpen}
+                  videoId={videoId}
+                  toggleSidebar={toggleSidebar}
+                  isSidebarCollapsed={isSidebarCollapsed}
+                />
+              </Panel>
+              {!isMobile && (
+                <PanelResizeHandle className="w-1.5 bg-gray-300 dark:bg-[#0a0a0a] border-l border-gray-200 dark:border-white/5 hover:bg-gray-400 dark:hover:bg-white/20 transition-colors cursor-col-resize active:bg-gray-500 dark:active:bg-white/30 hidden md:block" />
+              )}
+            </>
+          )}
 
+          {/* Middle Panel: Chat Interface */}
+          <Panel
+            defaultSize={isSidebarCollapsed ? 65 : 45}
+            minSize={30}
+            className="flex flex-col h-full overflow-hidden bg-white dark:bg-[#0a0a0a] transition-all duration-300 ease-in-out relative flex-1"
+          >
             {/* ChatBot always rendered, takes available space */}
             <ChatBot
               transcript={transcript}
