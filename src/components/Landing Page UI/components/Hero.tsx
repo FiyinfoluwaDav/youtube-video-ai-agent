@@ -1,4 +1,5 @@
 import nebulaBg from '@/assets/nebula-bg.jpg'
+import logo from '@/components/chatbot UI/assets/logo.svg'
 import { extractVideoId } from '@/lib/utils'
 import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
@@ -46,8 +47,9 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
-          className="font-display text-xl font-bold text-gradient-cosmic tracking-widest"
+          className="font-display text-xl font-bold text-gradient-cosmic tracking-widest flex items-center gap-3"
         >
+          <img src={logo} alt="Summara Logo" className="w-8 h-8" />
           SUMMARA
         </motion.div>
         <motion.div
