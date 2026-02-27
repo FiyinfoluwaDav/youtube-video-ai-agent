@@ -28,13 +28,13 @@ function Home() {
           <>
             <a
               href="/login"
-              className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+              className="px-4 py-2 text-sm font-medium text-grey-700 dark:text-slate-300 hover:text-slate-400 dark:hover:text-white transition-colors"
             >
               Login
             </a>
             <a
               href="/signup"
-              className="px-4 py-2 text-sm font-medium bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg hover:opacity-90 transition-opacity"
+              className="px-4 py-2 text-sm font-medium bg-slate-700 dark:bg-white text-white dark:text-slate-900 rounded-lg hover:opacity-90 transition-opacity"
             >
               Sign up
             </a>
