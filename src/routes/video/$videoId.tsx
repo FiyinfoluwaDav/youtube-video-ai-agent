@@ -203,9 +203,9 @@ function VideoPage() {
         )}
 
         {/* New Video Input Field */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 w-[80%] max-w-md transition-all duration-300 focus-within:max-w-lg">
+        <div className="absolute top-5 left-1/2 -translate-x-1/2 md:top-4 md:left-auto md:translate-x-0 md:right-4 z-40 md:z-50 w-[calc(100%-9rem)] md:w-auto transition-all duration-300">
           <form onSubmit={handleNewVideoSubmit}>
-            <div className="flex items-center bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-xl rounded-full shadow-[0_4px_20px_rgb(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10 px-4 py-2.5 hover:shadow-lg transition-shadow">
+            <div className="flex items-center bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-xl rounded-full shadow-[0_4px_20px_rgb(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10 px-4 py-2.5 hover:shadow-lg transition-all duration-300 w-full md:w-[320px] lg:w-[400px] focus-within:md:w-[400px] focus-within:lg:w-[480px]">
               <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2.5 shrink-0" />
               <input
                 type="text"
