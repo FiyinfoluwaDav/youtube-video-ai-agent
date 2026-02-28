@@ -173,7 +173,7 @@ export default function Pricing() {
           transition={{ delay: 0.8 }}
           className="text-center font-body text-muted-foreground text-sm mt-12"
         >
-          All plans include a 14-day free trial. No credit card required. Cancel
+          All plans include a 7-day free trial. No credit card required. Cancel
           anytime.
         </motion.p>
       </div>
