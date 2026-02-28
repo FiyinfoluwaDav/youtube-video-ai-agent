@@ -62,11 +62,13 @@ const Sidebar = ({
     >
       <div className="flex items-center justify-between mb-2">
         {/*Logo */}
-        <img
-          src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
-          alt=""
-          className="w-full max-w-[140px] opacity-90"
-        />
+        <Link to="/" onClick={() => setIsMenuOpen(false)}>
+          <img
+            src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
+            alt="Summara Logo"
+            className="w-full max-w-[140px] opacity-90 cursor-pointer"
+          />
+        </Link>
 
         {/* Collapse Button (Desktop Only) */}
         <button
