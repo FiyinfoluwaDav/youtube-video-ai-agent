@@ -1,51 +1,51 @@
-import { motion, useInView } from "framer-motion";
-import { FileText, Network, Scissors, Zap } from "lucide-react";
-import { useRef, useState } from "react";
-import StarField from "./StarField";
+import { motion, useInView } from 'framer-motion'
+import { FileText, Network, Scissors, Zap } from 'lucide-react'
+import { useRef, useState } from 'react'
+import StarField from './StarField'
 
 const features = [
   {
     icon: Zap,
-    title: "Instant Summaries",
+    title: 'Instant Summaries',
     description:
-      "Paste a YouTube link and get a clear, concise summary of the key points, takeaways, and structure in seconds. Grasp the essence without watching the full video.",
-    color: "hsl(var(--vibrant-orange))",
-    colorClass: "primary",
+      'Paste a YouTube link and get a clear, concise summary of the key points, takeaways, and structure in seconds. Grasp the essence without watching the full video.',
+    color: 'hsl(var(--vibrant-orange))',
+    colorClass: 'primary',
     delay: 0,
   },
   {
     icon: FileText,
-    title: "Convert Videos to PDF",
+    title: 'Convert Videos to PDF',
     description:
-      "Transform any summarized video (including full transcripts, highlights, and notes) into a clean, downloadable PDF. Perfect for offline reading, studying, archiving, or sharing.",
-    color: "hsl(var(--vibrant-orange))",
-    colorClass: "primary",
+      'Transform any summarized video (including full transcripts, highlights, and notes) into a clean, downloadable PDF. Perfect for offline reading, studying, archiving, or sharing.',
+    color: 'hsl(var(--vibrant-orange))',
+    colorClass: 'primary',
     delay: 0.15,
   },
   {
     icon: Network,
-    title: "Generate Mind Maps",
+    title: 'Generate Mind Maps',
     description:
-      "Automatically create visual mind maps from video content — see main ideas, branches, connections, and hierarchies at a glance. Boost retention and make complex topics easier to understand and review.",
-    color: "hsl(var(--vibrant-orange))",
-    colorClass: "primary",
+      'Automatically create visual mind maps from video content — see main ideas, branches, connections, and hierarchies at a glance. Boost retention and make complex topics easier to understand and review.',
+    color: 'hsl(var(--vibrant-orange))',
+    colorClass: 'primary',
     delay: 0.3,
   },
   {
     icon: Scissors,
-    title: "Highlight key timestamps",
+    title: 'Highlight key timestamps',
     description:
-      "Summara automatically identifies and highlights the most important moments in any video, letting you jump straight to the content that matters most.",
-    color: "hsl(var(--vibrant-orange))",
-    colorClass: "primary",
+      'Summara automatically identifies and highlights the most important moments in any video, letting you jump straight to the content that matters most.',
+    color: 'hsl(var(--vibrant-orange))',
+    colorClass: 'primary',
     delay: 0.45,
   },
-];
+]
 
 export default function FeaturesSection() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-100px' })
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
   return (
     <section id="features" className="relative py-32 overflow-hidden" ref={ref}>
@@ -63,7 +63,7 @@ export default function FeaturesSection() {
             Summara: Your Video Intelligence
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">
-            Ask. Extract.{" "}
+            Ask. Extract.{' '}
             <span className="text-gradient-cosmic">Understand.</span>
           </h2>
           <p className="font-body text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -80,14 +80,14 @@ export default function FeaturesSection() {
               <div
                 key={feature.title}
                 className={`flex flex-col items-center gap-12 lg:gap-24 pb-16 lg:pb-24 ${
-                  i % 2 === 1 ? "lg:flex-row-reverse" : "lg:flex-row"
+                  i % 2 === 1 ? 'lg:flex-row-reverse' : 'lg:flex-row'
                 }`}
               >
                 {/* Feature Text Location */}
                 <motion.div
                   initial={{ opacity: 0, x: i % 2 === 1 ? 40 : -40 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: true, margin: '-100px' }}
                   transition={{ duration: 0.8 }}
                   className="w-full lg:w-1/2 flex flex-col items-start"
                 >
@@ -106,7 +106,7 @@ export default function FeaturesSection() {
                 <motion.div
                   initial={{ opacity: 0, x: i % 2 === 1 ? -40 : 40 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ once: true, margin: '-100px' }}
                   transition={{ duration: 0.8, delay: 0.2 }}
                   className="w-full lg:w-1/2 aspect-video rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-white/20"
                   style={{
@@ -133,5 +133,5 @@ export default function FeaturesSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

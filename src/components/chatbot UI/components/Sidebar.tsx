@@ -1,10 +1,10 @@
 import { useClerk, useUser } from '@clerk/clerk-react'
 import { Link, useNavigate, useParams } from '@tanstack/react-router'
 import { ChevronsLeft } from 'lucide-react'
-import moment from 'moment'
 import { useState } from 'react'
 import { assets } from '../assets/assets'
 import { useAppContext } from '../context/AppContext'
+import { ClientDate } from './ClientDate'
 
 const Sidebar = ({
   setIsMenuOpen,
@@ -188,9 +188,11 @@ const Sidebar = ({
                       {chat.name}
                     </p>
                   )}
-                  <p className="text-xs text-gray-400 dark:text-gray-600 mt-0.5">
-                    {moment(chat.updatedAt).fromNow()}
-                  </p>
+                  <ClientDate
+                    timestamp={chat.updatedAt}
+                    format="fromNow"
+                    className="text-xs text-gray-400 dark:text-gray-600 mt-0.5"
+                  />
                 </div>
                 {renamingChatId !== chat.id && (
                   <div className="absolute right-2 top-2.5 hidden group-hover:flex items-center gap-2 bg-gray-200 dark:bg-[#2c2c2c] pl-2">

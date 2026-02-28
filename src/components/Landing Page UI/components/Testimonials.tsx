@@ -1,14 +1,13 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'framer-motion';
-import { useRef } from 'react';
-import StarField from './StarField';
+import { motion, useInView } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
+import StarField from './StarField'
 
 const testimonials = [
   {
     name: 'Zara Ahmed',
     role: 'Research Scientist, MIT',
-    quote: 'Summara compressed 400 pages of literature into a 2-minute cosmic brief. It\'s like having a supermind assistant.',
+    quote:
+      "Summara compressed 400 pages of literature into a 2-minute cosmic brief. It's like having a supermind assistant.",
     size: 180,
     color: 'hsl(195 100% 50%)',
     delay: 0,
@@ -19,7 +18,8 @@ const testimonials = [
   {
     name: 'Marcus Chen',
     role: 'CEO, NeuralTech',
-    quote: 'I process 50 investor reports weekly. Summara distills them in minutes. Absolute game-changer.',
+    quote:
+      'I process 50 investor reports weekly. Summara distills them in minutes. Absolute game-changer.',
     size: 200,
     color: 'hsl(265 85% 55%)',
     delay: 1.5,
@@ -30,7 +30,8 @@ const testimonials = [
   {
     name: 'Lucia Ferrara',
     role: 'Journalist, The Global Times',
-    quote: 'Breaking news across 20 sources, summarized before my coffee cools. Summara is pure magic.',
+    quote:
+      'Breaking news across 20 sources, summarized before my coffee cools. Summara is pure magic.',
     size: 165,
     color: 'hsl(315 90% 65%)',
     delay: 0.8,
@@ -41,7 +42,8 @@ const testimonials = [
   {
     name: 'Raj Patel',
     role: 'PhD Student, Oxford',
-    quote: 'My thesis research went from months to weeks. Summara is the scholarly wormhole I needed.',
+    quote:
+      'My thesis research went from months to weeks. Summara is the scholarly wormhole I needed.',
     size: 155,
     color: 'hsl(195 100% 50%)',
     delay: 2,
@@ -49,7 +51,7 @@ const testimonials = [
     x: '20%',
     y: '55%',
   },
-];
+]
 
 function PulsarStar() {
   return (
@@ -57,7 +59,9 @@ function PulsarStar() {
       {/* Core */}
       <div
         className="w-6 h-6 rounded-full animate-pulse-glow"
-        style={{ background: 'radial-gradient(circle, white, hsl(195 100% 50%))' }}
+        style={{
+          background: 'radial-gradient(circle, white, hsl(195 100% 50%))',
+        }}
       />
       {/* Pulse rings */}
       {[1, 2, 3].map((i) => (
@@ -74,38 +78,58 @@ function PulsarStar() {
         />
       ))}
     </div>
-  );
+  )
 }
 
 function MeteorShower() {
+  const [meteors, setMeteors] = useState<any[]>([])
+
+  useEffect(() => {
+    setMeteors(
+      Array.from({ length: 8 }, () => ({
+        height: `${40 + Math.random() * 80}px`,
+        top: `${Math.random() * 60}%`,
+        left: `${Math.random() * 100}%`,
+        animationDuration: `${6 + Math.random() * 6}s`,
+        animationDelay: `${Math.random() * 8}s`,
+      })),
+    )
+  }, [])
+
+  if (meteors.length === 0) return null
+
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {Array.from({ length: 8 }, (_, i) => (
+      {meteors.map((m, i) => (
         <div
           key={i}
           className="absolute w-0.5 rounded-full"
           style={{
-            height: `${40 + Math.random() * 80}px`,
+            height: m.height,
             background: `linear-gradient(to bottom, transparent, hsl(195 100% 50% / 0.8))`,
-            top: `${Math.random() * 60}%`,
-            left: `${Math.random() * 100}%`,
-            animation: `meteor ${6 + Math.random() * 6}s linear infinite`,
-            animationDelay: `${Math.random() * 8}s`,
+            top: m.top,
+            left: m.left,
+            animation: `meteor ${m.animationDuration} linear infinite`,
+            animationDelay: m.animationDelay,
             transform: 'rotate(35deg)',
           }}
         />
       ))}
     </div>
-  );
+  )
 }
 
 export default function Testimonials() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-100px' });
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-100px' })
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
   return (
-    <section id="testimonials" className="relative py-32 overflow-hidden min-h-screen" ref={ref}>
+    <section
+      id="testimonials"
+      className="relative py-32 overflow-hidden min-h-screen"
+      ref={ref}
+    >
       <StarField count={100} />
       <MeteorShower />
       <div className="absolute inset-0 nebula-section" />
@@ -121,11 +145,11 @@ export default function Testimonials() {
             Crazy Cosmic Reviews
           </p>
           <h2 className="font-display text-3xl md:text-5xl font-bold text-foreground mb-6">
-            Voices from{' '}
-            <span className="text-gradient-cosmic">the Cosmos</span>
+            Voices from <span className="text-gradient-cosmic">the Cosmos</span>
           </h2>
           <p className="font-body text-muted-foreground text-lg max-w-2xl mx-auto">
-            Explorers who dove into Summara's knowledge singularity and never looked back.
+            Explorers who dove into Summara's knowledge singularity and never
+            looked back.
           </p>
         </motion.div>
 
@@ -138,7 +162,11 @@ export default function Testimonials() {
               key={t.name}
               initial={{ opacity: 0, scale: 0 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.8, delay: t.delay * 0.3, type: 'spring' }}
+              transition={{
+                duration: 0.8,
+                delay: t.delay * 0.3,
+                type: 'spring',
+              }}
               className="absolute"
               style={{ left: t.x, top: t.y }}
               onHoverStart={() => setHoveredIdx(i)}
@@ -146,7 +174,12 @@ export default function Testimonials() {
             >
               <motion.div
                 animate={{ y: [0, -20, 0] }}
-                transition={{ duration: t.floatDuration, repeat: Infinity, ease: 'easeInOut', delay: t.delay * 0.2 }}
+                transition={{
+                  duration: t.floatDuration,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: t.delay * 0.2,
+                }}
               >
                 <div
                   className="bubble-testimonial relative p-6 text-center transition-all duration-500"
@@ -156,7 +189,8 @@ export default function Testimonials() {
                     minHeight: hoveredIdx === i ? t.size : undefined,
                     borderRadius: hoveredIdx === i ? '1.5rem' : '50%',
                     borderColor: `${t.color}50`,
-                    boxShadow: hoveredIdx === i ? `0 0 30px ${t.color}40` : 'none',
+                    boxShadow:
+                      hoveredIdx === i ? `0 0 30px ${t.color}40` : 'none',
                   }}
                 >
                   {hoveredIdx === i ? (
@@ -165,14 +199,29 @@ export default function Testimonials() {
                         "{t.quote}"
                       </p>
                       <div>
-                        <p className="font-display text-xs font-bold" style={{ color: t.color }}>{t.name}</p>
-                        <p className="font-body text-muted-foreground text-xs">{t.role}</p>
+                        <p
+                          className="font-display text-xs font-bold"
+                          style={{ color: t.color }}
+                        >
+                          {t.name}
+                        </p>
+                        <p className="font-body text-muted-foreground text-xs">
+                          {t.role}
+                        </p>
                       </div>
                     </div>
                   ) : (
                     <div>
-                      <div className="font-display text-2xl mb-1" style={{ color: t.color }}>★★★★★</div>
-                      <p className="font-display text-xs font-bold text-foreground" style={{ color: t.color }}>
+                      <div
+                        className="font-display text-2xl mb-1"
+                        style={{ color: t.color }}
+                      >
+                        ★★★★★
+                      </div>
+                      <p
+                        className="font-display text-xs font-bold text-foreground"
+                        style={{ color: t.color }}
+                      >
                         {t.name.split(' ')[0]}
                       </p>
                       <p className="font-body text-muted-foreground text-xs mt-1 leading-tight hidden md:block">
@@ -199,12 +248,16 @@ export default function Testimonials() {
             { value: '4.9★', label: 'Average Rating' },
           ].map((stat) => (
             <div key={stat.label} className="card-cosmic rounded-2xl p-6">
-              <div className="font-display text-2xl font-bold text-gradient-cosmic">{stat.value}</div>
-              <div className="font-body text-muted-foreground text-xs mt-1">{stat.label}</div>
+              <div className="font-display text-2xl font-bold text-gradient-cosmic">
+                {stat.value}
+              </div>
+              <div className="font-body text-muted-foreground text-xs mt-1">
+                {stat.label}
+              </div>
             </div>
           ))}
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

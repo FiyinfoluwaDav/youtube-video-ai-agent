@@ -1,8 +1,8 @@
-import moment from 'moment'
 import Prism from 'prismjs'
 import { useEffect } from 'react'
 import Markdown from 'react-markdown'
 import { Message as MessageType } from '../context/AppContext'
+import { ClientDate } from './ClientDate'
 
 interface MessageProps {
   message: MessageType
@@ -21,9 +21,11 @@ const Message = ({ message }: MessageProps) => {
               {message.content}
             </p>
             {/* Timestamp hidden or minimal for user to match Grok clean look, or kept subtle */}
-            <span className="text-[10px] text-gray-500 dark:text-gray-400 self-end">
-              {moment(message.timestamp).format('LT')}
-            </span>
+            <ClientDate
+              timestamp={message.timestamp}
+              format="LT"
+              className="text-[10px] text-gray-500 dark:text-gray-400 self-end"
+            />
           </div>
           {/* User Icon removed or kept minimal outside bubble? Grok usually minimal. Keeping icon for now as per structure */}
           {/* <img src={assets.user_icon} alt="" className="w-8 rounded-full" /> */}
@@ -46,9 +48,11 @@ const Message = ({ message }: MessageProps) => {
                 </div>
               )}
               {/* Timestamp for bot */}
-              <div className="mt-2 text-[10px] text-gray-400 dark:text-gray-500">
-                {moment(message.timestamp).fromNow()}
-              </div>
+              <ClientDate
+                timestamp={message.timestamp}
+                format="fromNow"
+                className="mt-2 text-[10px] text-gray-400 dark:text-gray-500 block"
+              />
             </div>
           </div>
         </div>

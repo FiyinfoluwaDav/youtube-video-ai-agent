@@ -1,39 +1,39 @@
-import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import StarField from "./StarField";
+import { motion, useInView } from 'framer-motion'
+import { useRef, useState } from 'react'
+import StarField from './StarField'
 
 const steps = [
   {
-    title: "Paste YouTube Link",
+    title: 'Paste YouTube Link',
     description:
-      "Simply copy and paste the YouTube video URL into Summara. No downloads required.",
+      'Simply copy and paste the YouTube video URL into Summara. No downloads required.',
   },
   {
-    title: "AI Analysis",
+    title: 'AI Analysis',
     description:
       "AI analyzes the video's content, identifying key themes, arguments, and insights.",
   },
   {
-    title: "View Transcript",
+    title: 'View Transcript',
     description:
-      "Receive a clear, structured summary with bullet points or paragraphs, plus a readable transcript.",
+      'Receive a clear, structured summary with bullet points or paragraphs, plus a readable transcript.',
   },
   {
-    title: "Share & Export",
+    title: 'Share & Export',
     description:
-      "Export PDF summaries and mindmaps, or share via direct link. Download transcripts as PDF.",
+      'Export PDF summaries and mindmaps, or share via direct link. Download transcripts as PDF.',
   },
-];
+]
 
 export default function HowItWorks() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [explodedStep, setExplodedStep] = useState<number | null>(null);
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-100px' })
+  const [explodedStep, setExplodedStep] = useState<number | null>(null)
 
   const handleStepClick = (idx: number) => {
-    setExplodedStep(idx);
-    setTimeout(() => setExplodedStep(null), 800);
-  };
+    setExplodedStep(idx)
+    setTimeout(() => setExplodedStep(null), 800)
+  }
 
   return (
     <section
@@ -46,7 +46,7 @@ export default function HowItWorks() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at 30% 60%, hsl(195 100% 10% / 0.2), transparent 60%)",
+            'radial-gradient(ellipse at 30% 60%, hsl(195 100% 10% / 0.2), transparent 60%)',
         }}
       />
 
@@ -99,11 +99,11 @@ export default function HowItWorks() {
             className="hidden lg:block absolute top-12 left-1/8 right-1/8 h-px"
             style={{
               background:
-                "linear-gradient(90deg, hsl(var(--vibrant-orange) / 0.3), hsl(var(--magenta) / 0.3), hsl(var(--light-peach) / 0.3), hsl(var(--vibrant-orange) / 0.3))",
-              top: "3rem",
-              left: "12.5%",
-              right: "12.5%",
-              position: "absolute",
+                'linear-gradient(90deg, hsl(var(--vibrant-orange) / 0.3), hsl(var(--magenta) / 0.3), hsl(var(--light-peach) / 0.3), hsl(var(--vibrant-orange) / 0.3))',
+              top: '3rem',
+              left: '12.5%',
+              right: '12.5%',
+              position: 'absolute',
             }}
           />
 
@@ -121,7 +121,7 @@ export default function HowItWorks() {
                 <div
                   className="absolute inset-0 rounded-full border-2 animate-supernova pointer-events-none"
                   style={{
-                    borderColor: "hsl(var(--vibrant-orange))",
+                    borderColor: 'hsl(var(--vibrant-orange))',
                     zIndex: 20,
                   }}
                 />
@@ -135,7 +135,7 @@ export default function HowItWorks() {
               >
                 <h3
                   className="font-display text-xl font-bold mb-3 tracking-wide"
-                  style={{ color: "hsl(var(--vibrant-orange))" }}
+                  style={{ color: 'hsl(var(--vibrant-orange))' }}
                 >
                   {step.title}
                 </h3>
@@ -148,5 +148,5 @@ export default function HowItWorks() {
         </div>
       </div>
     </section>
-  );
+  )
 }

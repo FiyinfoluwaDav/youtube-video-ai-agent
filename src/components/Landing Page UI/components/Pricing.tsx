@@ -1,72 +1,72 @@
-import { motion, useInView } from "framer-motion";
-import { Check } from "lucide-react";
-import { useRef, useState } from "react";
+import { motion, useInView } from 'framer-motion'
+import { Check } from 'lucide-react'
+import { useRef, useState } from 'react'
 
 const plans = [
   {
-    name: "Free",
-    tier: "Free",
-    price: "$0",
-    period: "/forever",
-    description: "Perfect for getting started.",
+    name: 'Free',
+    tier: 'Free',
+    price: '$0',
+    period: '/forever',
+    description: 'Perfect for getting started.',
     features: [
-      "10 prompts per day",
-      "3 PDF generations per week",
-      "Watermarked PDF export",
-      "Limited storage (7-day history)",
-      "Max 20 min video length",
-      "Basic summary (short paragraph)",
-      "1 mindmap per week",
-      "Free transcript download",
+      '10 prompts per day',
+      '3 PDF generations per week',
+      'Watermarked PDF export',
+      'Limited storage (7-day history)',
+      'Max 20 min video length',
+      'Basic summary (short paragraph)',
+      '1 mindmap per week',
+      'Free transcript download',
     ],
-    color: "hsl(var(--primary))",
-    glowColor: "hsl(var(--primary) / 0.3)",
+    color: 'hsl(var(--primary))',
+    glowColor: 'hsl(var(--primary) / 0.3)',
     popular: false,
   },
   {
-    name: "Go",
-    tier: "Go",
-    price: "$2.5",
-    period: "/month",
-    description: "For growing needs and better exports.",
+    name: 'Go',
+    tier: 'Go',
+    price: '$2.5',
+    period: '/month',
+    description: 'For growing needs and better exports.',
     features: [
-      "25 prompts per day",
-      "Max 60-minute videos",
-      "10 PDF generations per week",
-      "7 mindmaps per week",
-      "Clean PDF export (no watermark)",
-      "30-day history",
-      "Free transcript download",
+      '25 prompts per day',
+      'Max 60-minute videos',
+      '10 PDF generations per week',
+      '7 mindmaps per week',
+      'Clean PDF export (no watermark)',
+      '30-day history',
+      'Free transcript download',
     ],
-    color: "hsl(var(--primary))",
-    glowColor: "hsl(var(--primary) / 0.4)",
+    color: 'hsl(var(--primary))',
+    glowColor: 'hsl(var(--primary) / 0.4)',
     popular: true,
   },
   {
-    name: "Pro",
-    tier: "Pro",
-    price: "$5",
-    period: "/month",
-    description: "Unlimited access and advanced features.",
+    name: 'Pro',
+    tier: 'Pro',
+    price: '$5',
+    period: '/month',
+    description: 'Unlimited access and advanced features.',
     features: [
-      "40 prompts per day",
-      "Unlimited history",
-      "Early access to new features",
-      "Unlimited video length",
-      "25 PDF generations per week",
-      "15 mindmaps per week",
-      "Free transcript download",
+      '40 prompts per day',
+      'Unlimited history',
+      'Early access to new features',
+      'Unlimited video length',
+      '25 PDF generations per week',
+      '15 mindmaps per week',
+      'Free transcript download',
     ],
-    color: "hsl(var(--primary))",
-    glowColor: "hsl(var(--primary) / 0.5)",
+    color: 'hsl(var(--primary))',
+    glowColor: 'hsl(var(--primary) / 0.5)',
     popular: false,
   },
-];
+]
 
 export default function Pricing() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [hoveredPlan, setHoveredPlan] = useState<number | null>(1); // Go hovered by default
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-100px' })
+  const [hoveredPlan, setHoveredPlan] = useState<number | null>(1) // Go hovered by default
 
   return (
     <section
@@ -112,15 +112,15 @@ export default function Pricing() {
               <div
                 className={`bg-card border rounded-3xl p-8 text-center h-full flex flex-col transition-all duration-500 relative overflow-hidden ${
                   hoveredPlan === i
-                    ? "border-primary shadow-2xl"
-                    : "border-border"
+                    ? 'border-primary shadow-2xl'
+                    : 'border-border'
                 }`}
                 style={{
-                  transform: hoveredPlan === i ? "translateY(-8px)" : "none",
+                  transform: hoveredPlan === i ? 'translateY(-8px)' : 'none',
                   boxShadow:
                     hoveredPlan === i
                       ? `0 20px 40px -15px ${plan.glowColor}`
-                      : "none",
+                      : 'none',
                 }}
               >
                 {hoveredPlan === i && (
@@ -156,11 +156,11 @@ export default function Pricing() {
                 <button
                   className={`w-full py-3 rounded-full font-display text-sm font-semibold transition-all duration-300 relative z-10 ${
                     hoveredPlan === i
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"
-                      : "bg-primary/10 text-primary hover:bg-primary/20"
+                      ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/30'
+                      : 'bg-primary/10 text-primary hover:bg-primary/20'
                   }`}
                 >
-                  {plan.tier === "Free" ? "Start Free" : `Get ${plan.tier}`}
+                  {plan.tier === 'Free' ? 'Start Free' : `Get ${plan.tier}`}
                 </button>
               </div>
             </motion.div>
@@ -178,5 +178,5 @@ export default function Pricing() {
         </motion.p>
       </div>
     </section>
-  );
+  )
 }

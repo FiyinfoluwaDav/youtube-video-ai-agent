@@ -1,4 +1,4 @@
-import { getCreditsState } from '@/hooks/useCredits'
+import { getCreditsState, getMaxCredits } from '@/hooks/useCredits'
 import { useTRPC } from '@/integrations/trpc/react'
 import type { TRPCRouter } from '@/integrations/trpc/router'
 import { useUser } from '@clerk/clerk-react'
@@ -70,13 +70,11 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
   const [theme, setTheme] = useState<string>('dark')
 
-  // Credit state — re-derived from localStorage whenever userId changes
+  // Credit state — initialize with max credits to avoid hydration mismatches between server/client
   const userId = clerkUser?.id ?? null
-  const [credits, setCredits] = useState<number>(
-    () => getCreditsState(userId).credits,
-  )
+  const [credits, setCredits] = useState<number>(() => getMaxCredits(userId))
 
-  // Sync credits whenever login state changes
+  // Sync credits with localStorage whenever login state changes or on initial mount
   useEffect(() => {
     const state = getCreditsState(userId)
     setCredits(state.credits)

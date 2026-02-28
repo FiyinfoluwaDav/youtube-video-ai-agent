@@ -1,45 +1,45 @@
-import { OrbitControls, Stars } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useEffect, useMemo, useRef, useState } from "react";
-import * as THREE from "three";
+import { OrbitControls, Stars } from '@react-three/drei'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import * as THREE from 'three'
 
 function GlobeDots() {
-  const points = useRef<THREE.Points>(null!);
-  const materialRef = useRef<THREE.ShaderMaterial>(null!);
-  const [positions, setPositions] = useState<Float32Array | null>(null);
+  const points = useRef<THREE.Points>(null!)
+  const materialRef = useRef<THREE.ShaderMaterial>(null!)
+  const [positions, setPositions] = useState<Float32Array | null>(null)
 
   useEffect(() => {
-    fetch("/globe-points.json")
+    fetch('/globe-points.json')
       .then((res) => res.json())
       .then((data: number[]) => {
-        setPositions(new Float32Array(data));
-      });
-  }, []);
+        setPositions(new Float32Array(data))
+      })
+  }, [])
 
   const uniforms = useMemo(
     () => ({
-      uColor: { value: new THREE.Color("#FF5E00") },
+      uColor: { value: new THREE.Color('#FF5E00') },
       uAlpha: { value: 0.0 },
     }),
     [],
-  );
+  )
 
   useFrame((state) => {
     if (points.current) {
-      points.current.rotation.y = state.clock.elapsedTime * 0.05;
-      points.current.rotation.x = 0.2;
+      points.current.rotation.y = state.clock.elapsedTime * 0.05
+      points.current.rotation.x = 0.2
     }
     if (materialRef.current) {
       if (materialRef.current.uniforms.uAlpha.value < 1.0) {
         materialRef.current.uniforms.uAlpha.value = Math.min(
           1.0,
           materialRef.current.uniforms.uAlpha.value + 0.02,
-        );
+        )
       }
     }
-  });
+  })
 
-  if (!positions) return null;
+  if (!positions) return null
 
   return (
     <points ref={points} renderOrder={2} frustumCulled={false}>
@@ -83,18 +83,18 @@ function GlobeDots() {
         `}
       />
     </points>
-  );
+  )
 }
 
 function GlobeCore() {
-  const meshRef = useRef<THREE.Mesh>(null!);
+  const meshRef = useRef<THREE.Mesh>(null!)
 
   useFrame((state) => {
     if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.05;
-      meshRef.current.rotation.x = 0.2;
+      meshRef.current.rotation.y = state.clock.elapsedTime * 0.05
+      meshRef.current.rotation.x = 0.2
     }
-  });
+  })
 
   return (
     <mesh ref={meshRef} renderOrder={1}>
@@ -107,7 +107,7 @@ function GlobeCore() {
         opacity={0.95}
       />
     </mesh>
-  );
+  )
 }
 
 function AtmosphereGlow() {
@@ -121,7 +121,7 @@ function AtmosphereGlow() {
         side={THREE.BackSide}
       />
     </mesh>
-  );
+  )
 }
 
 export default function Globe() {
@@ -130,7 +130,7 @@ export default function Globe() {
       <Canvas
         camera={{ position: [0, 0, 6], fov: 45 }}
         gl={{ antialias: true, alpha: true }}
-        style={{ background: "transparent" }}
+        style={{ background: 'transparent' }}
       >
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} intensity={1.5} color="#FF5E00" />
@@ -164,5 +164,5 @@ export default function Globe() {
         />
       </Canvas>
     </div>
-  );
+  )
 }

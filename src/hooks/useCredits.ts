@@ -15,7 +15,7 @@ function getStorageKey(userId: string | null): string {
   return userId ? `credits_${userId}` : GUEST_KEY
 }
 
-function getMaxCredits(userId: string | null): number {
+export function getMaxCredits(userId: string | null): number {
   return userId ? MAX_CREDITS_LOGGED_IN : MAX_CREDITS_GUEST
 }
 
