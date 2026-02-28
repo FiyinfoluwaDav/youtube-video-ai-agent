@@ -4,7 +4,8 @@ import { extractVideoId } from '@/lib/utils'
 import { useClerk, useUser } from '@clerk/clerk-react'
 import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
-import { lazy, Suspense, useState } from 'react'
+import { Menu, X } from 'lucide-react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import StarField from './StarField'
 
 const Globe = lazy(() => import('./Globe'))
@@ -15,6 +16,19 @@ export default function Hero() {
   const [error, setError] = useState('')
   const { isSignedIn, isLoaded } = useUser()
   const { signOut } = useClerk()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  // Prevent scrolling when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isMobileMenuOpen])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -90,7 +104,62 @@ export default function Hero() {
             <div className="w-20 h-8"></div>
           )}
         </motion.div>
+
+        {/* Mobile menu toggle */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="md:hidden flex items-center"
+        >
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="text-white p-2 focus:outline-none"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </motion.div>
       </nav>
+
+      {/* Mobile Dropdown Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 animate-in fade-in zoom-in-95 duration-200">
+          {['Features', 'How It Works', 'Pricing', 'Contact'].map((item) => (
+            <a
+              key={item}
+              href={`#${item.toLowerCase().replace(/ /g, '-')}`}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white/80 hover:text-white text-2xl font-display tracking-widest transition-colors duration-300"
+            >
+              {item}
+            </a>
+          ))}
+          <div className="pt-4">
+            {isLoaded ? (
+              isSignedIn ? (
+                <button
+                  onClick={() => {
+                    signOut()
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="bg-primary/90 hover:bg-primary transition-colors text-white px-8 py-3 rounded-full text-lg font-medium shadow-[0_0_20px_rgba(255,94,0,0.4)]"
+                >
+                  Log Out
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    navigate({ to: '/signup' })
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="bg-primary/90 hover:bg-primary transition-colors text-white px-8 py-3 rounded-full text-lg font-medium shadow-[0_0_20px_rgba(255,94,0,0.4)]"
+                >
+                  Sign Up
+                </button>
+              )
+            ) : null}
+          </div>
+        </div>
+      )}
 
       {/* Globe */}
       <div className="absolute inset-0 z-10 flex items-center justify-center">
