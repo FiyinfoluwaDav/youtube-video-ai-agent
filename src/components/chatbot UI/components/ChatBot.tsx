@@ -148,7 +148,7 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
           videoId: newChatData.videoId,
           name: newChatData.title || currentPrompt.slice(0, 40),
           userName: user?.name || 'User',
-          messages: [],
+          messages: newMessages,
           createdAt: newChatData.createdAt.toISOString(),
           updatedAt: newChatData.updatedAt.toISOString(),
         }
@@ -278,7 +278,7 @@ Answer questions based on this transcript and context but make sure you do not i
         ref={containerRef}
         className="flex-1 mb-5 overflow-y-auto custom-scrollbar"
       >
-        {messages.length === 0 && (
+        {messages.length === 0 && !loading && (
           <div className="flex flex-col items-center justify-center gap-2 text-primary h-full">
             <img
               src={theme === 'light' ? assets.logo_full_dark : assets.logo_full}
