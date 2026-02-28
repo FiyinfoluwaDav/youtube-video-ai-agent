@@ -83,7 +83,6 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
   const [messages, setMessages] = useState<MessageType[]>([])
 
   const [prompt, setPrompt] = useState('')
-  const [mode, setMode] = useState('text')
 
   const trpc = useTRPC()
   const { mutateAsync: sendMessage } = useMutation(
@@ -335,19 +334,6 @@ Answer questions based on this transcript and context but make sure you do not i
         onSubmit={onSubmit}
         className="bg-gray-100 dark:bg-[#202020] rounded-full w-full max-w-2xl p-2 px-4 mx-auto flex gap-4 items-center focus-within:ring-1 focus-within:ring-gray-300 dark:focus-within:ring-gray-700 transition-all shadow-sm"
       >
-        <select
-          onChange={(e) => setMode(e.target.value)}
-          value={mode}
-          className="text-sm pl-2 pr-2 outline-none bg-transparent dark:text-gray-300 font-medium"
-        >
-          <option className="dark:bg-[#202020]" value="text">
-            Text
-          </option>
-          <option className="dark:bg-[#202020]" value="image">
-            Image
-          </option>
-        </select>
-        <div className="w-px h-6 bg-gray-300 dark:bg-gray-700 mx-1"></div>
         <input
           onChange={(e) => setPrompt(e.target.value)}
           value={prompt}
