@@ -1,11 +1,22 @@
 import '@/components/chatbot UI/assets/prism.css'
 import ChatBot from '@/components/chatbot UI/components/ChatBot'
 import Sidebar from '@/components/chatbot UI/components/Sidebar'
+import { useAppContext } from '@/components/chatbot UI/context/AppContext'
 import Loading from '@/components/chatbot UI/pages/Loading'
 import { useTRPC } from '@/integrations/trpc/react'
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, useLocation } from '@tanstack/react-router'
-import { AlertCircle, ChevronsRight, FileText, Loader2 } from 'lucide-react'
+import {
+  createFileRoute,
+  useLocation,
+  useNavigate,
+} from '@tanstack/react-router'
+import {
+  AlertCircle,
+  ChevronsRight,
+  FileText,
+  Loader2,
+  Search,
+} from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import {
   Panel,
@@ -34,6 +45,26 @@ function VideoPage() {
     setIsSidebarCollapsed(!isSidebarCollapsed)
   }
   const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const { setSelectedChat } = useAppContext()
+  const [newVideoUrl, setNewVideoUrl] = useState('')
+
+  const handleNewVideoSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newVideoUrl.trim()) return
+
+    const match = newVideoUrl.match(
+      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
+    )
+    if (match && match[1]) {
+      const newId = match[1]
+      setSelectedChat(null)
+      navigate({ to: '/video/$videoId', params: { videoId: newId } })
+      setNewVideoUrl('')
+    } else {
+      alert('Please enter a valid YouTube URL.')
+    }
+  }
 
   if (pathname === '/loading') return <Loading />
   const { videoId } = Route.useParams()
@@ -170,6 +201,22 @@ function VideoPage() {
             <ChevronsRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
           </button>
         )}
+
+        {/* New Video Input Field */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 w-[80%] max-w-md transition-all duration-300 focus-within:max-w-lg">
+          <form onSubmit={handleNewVideoSubmit}>
+            <div className="flex items-center bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-xl rounded-full shadow-[0_4px_20px_rgb(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgb(0,0,0,0.4)] border border-gray-200/60 dark:border-white/10 px-4 py-2.5 hover:shadow-lg transition-shadow">
+              <Search className="w-4 h-4 text-gray-400 dark:text-gray-500 mr-2.5 shrink-0" />
+              <input
+                type="text"
+                value={newVideoUrl}
+                onChange={(e) => setNewVideoUrl(e.target.value)}
+                placeholder="Paste new YouTube link..."
+                className="flex-1 bg-transparent border-none outline-none text-sm text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 w-full"
+              />
+            </div>
+          </form>
+        </div>
 
         <PanelGroup orientation="horizontal">
           {/* Left Panel: Sidebar (Resizable - Desktop Only) */}
