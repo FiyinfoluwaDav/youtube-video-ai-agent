@@ -83,6 +83,13 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
   const [messages, setMessages] = useState<MessageType[]>([])
 
   const [prompt, setPrompt] = useState('')
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    if (prompt === '' && textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+    }
+  }, [prompt])
 
   const trpc = useTRPC()
   const { mutateAsync: sendMessage } = useMutation(
@@ -332,20 +339,36 @@ Answer questions based on this transcript and context but make sure you do not i
       {/* Prompt Input Box */}
       <form
         onSubmit={onSubmit}
-        className="bg-gray-100 dark:bg-[#202020] rounded-full w-full max-w-2xl p-2 px-4 mx-auto flex gap-4 items-center focus-within:ring-1 focus-within:ring-gray-300 dark:focus-within:ring-gray-700 transition-all shadow-sm"
+        className="bg-gray-100 dark:bg-[#202020] rounded-3xl w-full max-w-2xl p-2 px-4 mx-auto flex gap-4 items-end focus-within:ring-1 focus-within:ring-gray-300 dark:focus-within:ring-gray-700 transition-all shadow-sm"
       >
-        <input
+        <textarea
+          ref={textareaRef}
           onChange={(e) => setPrompt(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              if (prompt.trim() && !loading && credits > 0) {
+                const fakeEvent = {
+                  preventDefault: () => {},
+                } as React.FormEvent
+                onSubmit(fakeEvent)
+              }
+            }
+          }}
+          onInput={(e) => {
+            const target = e.target as HTMLTextAreaElement
+            target.style.height = 'auto'
+            target.style.height = `${target.scrollHeight}px`
+          }}
           value={prompt}
-          type="text"
+          rows={1}
           placeholder="Ask anything..."
-          required
-          className="flex-1 w-full text-sm outline-none bg-transparent dark:text-white placeholder:text-gray-500"
+          className="flex-1 w-full text-sm outline-none bg-transparent dark:text-white placeholder:text-gray-500 resize-none py-2 my-0.5 custom-scrollbar max-h-48"
         />
         <button
-          disabled={loading || credits <= 0}
+          disabled={loading || credits <= 0 || !prompt.trim()}
           type="submit"
-          className="p-1.5 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="p-1.5 mb-1 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <img
             src={loading ? assets.stop_icon : assets.send_icon}
