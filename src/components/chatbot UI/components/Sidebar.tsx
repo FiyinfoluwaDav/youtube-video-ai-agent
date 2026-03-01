@@ -236,12 +236,8 @@ const Sidebar = ({
 
       {/* Bottom Actions */}
       <div className="mt-4 pt-4 border-t border-gray-200 dark:border-white/5 space-y-1">
-        {/*Credit Purchase Option*/}
-        <Link
-          to="/credits"
-          className="flex items-center gap-3 cursor-pointer p-2.5 px-3 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2c2c2c] transition-colors duration-200"
-          onClick={() => setIsMenuOpen(false)}
-        >
+        {/*Credit Display*/}
+        <div className="flex items-center gap-3 p-2.5 px-3 rounded-lg">
           <img
             src={assets.diamond_icon}
             className="w-4.5 opacity-70 dark:invert"
@@ -252,7 +248,7 @@ const Sidebar = ({
               Credits: {credits}
             </p>
           </div>
-        </Link>
+        </div>
 
         {/* Dark Mode Toggle */}
         <div className="flex items-center justify-between gap-3 cursor-pointer p-2.5 px-3 rounded-lg hover:bg-gray-200 dark:hover:bg-[#2c2c2c] transition-colors duration-200">
