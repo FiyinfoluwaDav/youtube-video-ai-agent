@@ -336,6 +336,92 @@ Answer questions based on this transcript and context but make sure you do not i
         )}
       </div>
 
+      {/* Quick Actions */}
+      <div className="flex justify-center gap-3 mb-4 w-full max-w-2xl mx-auto px-2">
+        <button
+          onClick={() => {
+            if (credits > 0) {
+              setPrompt(
+                'Summarize this video to a PDF. Please ensure it is properly formatted with bold text, H1, H3, and contains all the important information in the video.',
+              )
+              // Wait for React to update state, then submit
+              setTimeout(() => {
+                if (textareaRef.current) {
+                  const fakeEvent = {
+                    preventDefault: () => {},
+                  } as React.FormEvent
+                  onSubmit(fakeEvent)
+                }
+              }, 50)
+            }
+          }}
+          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-blue-500/50 dark:hover:border-blue-500/50 transition-all text-left group shadow-sm"
+        >
+          <div className="flex items-center gap-2 mb-1.5 text-blue-500 dark:text-blue-400">
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span className="font-medium text-sm">Summarize video to PDF</span>
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
+            Detailed summary with H1, H3, and bold formatting.
+          </p>
+        </button>
+
+        <button
+          onClick={() => {
+            if (credits > 0) {
+              setPrompt(
+                'Generate a comprehensive mindmap for this video detailing all the key topics and subtopics.',
+              )
+              setTimeout(() => {
+                if (textareaRef.current) {
+                  const fakeEvent = {
+                    preventDefault: () => {},
+                  } as React.FormEvent
+                  onSubmit(fakeEvent)
+                }
+              }, 50)
+            }
+          }}
+          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-purple-500/50 dark:hover:border-purple-500/50 transition-all text-left group shadow-sm"
+        >
+          <div className="flex items-center gap-2 mb-1.5 text-purple-500 dark:text-purple-400">
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span className="font-medium text-sm">Generate Mindmap</span>
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
+            Visual mapping of topics and concepts.
+          </p>
+        </button>
+      </div>
+
       {/* Prompt Input Box */}
       <form
         onSubmit={onSubmit}
