@@ -355,9 +355,9 @@ Answer questions based on this transcript and context but make sure you do not i
               }, 50)
             }
           }}
-          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-blue-500/50 dark:hover:border-blue-500/50 transition-all text-left group shadow-sm"
+          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm"
         >
-          <div className="flex items-center gap-2 mb-1.5 text-blue-500 dark:text-blue-400">
+          <div className="flex items-center gap-2 mb-1.5 text-orange-500 dark:text-orange-400">
             <svg
               className="w-4 h-4"
               viewBox="0 0 24 24"
@@ -396,9 +396,9 @@ Answer questions based on this transcript and context but make sure you do not i
               }, 50)
             }
           }}
-          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-purple-500/50 dark:hover:border-purple-500/50 transition-all text-left group shadow-sm"
+          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm"
         >
-          <div className="flex items-center gap-2 mb-1.5 text-purple-500 dark:text-purple-400">
+          <div className="flex items-center gap-2 mb-1.5 text-orange-500 dark:text-orange-400">
             <svg
               className="w-4 h-4"
               viewBox="0 0 24 24"
