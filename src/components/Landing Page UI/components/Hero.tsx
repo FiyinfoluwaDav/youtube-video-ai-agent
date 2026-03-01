@@ -75,7 +75,7 @@ export default function Hero() {
           animate={{ opacity: 1, x: 0 }}
           className="hidden md:flex items-center gap-6 font-body text-sm"
         >
-          {['Features', 'How It Works', 'Pricing', 'Contact'].map((item) => (
+          {['Features', 'How It Works', 'Contact'].map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase().replace(/ /g, '-')}`}
@@ -123,7 +123,7 @@ export default function Hero() {
       {/* Mobile Dropdown Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 animate-in fade-in zoom-in-95 duration-200">
-          {['Features', 'How It Works', 'Pricing', 'Contact'].map((item) => (
+          {['Features', 'How It Works', 'Contact'].map((item) => (
             <a
               key={item}
               href={`#${item.toLowerCase().replace(/ /g, '-')}`}

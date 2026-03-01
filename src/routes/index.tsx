@@ -2,7 +2,6 @@ import FeaturesSection from '@/components/Landing Page UI/components/FeaturesSec
 import Footer from '@/components/Landing Page UI/components/Footer'
 import Hero from '@/components/Landing Page UI/components/Hero'
 import HowItWorks from '@/components/Landing Page UI/components/HowItWorks'
-import Pricing from '@/components/Landing Page UI/components/Pricing'
 import { createFileRoute } from '@tanstack/react-router'
 import '../../index.css'
 
@@ -15,8 +14,6 @@ function Home() {
         <Hero />
         <FeaturesSection />
         <HowItWorks />
-
-        <Pricing />
         <Footer />
       </main>
     </div>
