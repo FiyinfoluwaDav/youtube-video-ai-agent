@@ -27,6 +27,7 @@
     "@prisma/adapter-neon": "^7.4.0",
     "@prisma/adapter-pg": "^7.0.0",
     "@prisma/client": "^7.4.0",
+    "@radix-ui/react-slot": "^1.2.4",
     "@sentry/tanstackstart-react": "^10.22.0",
     "@t3-oss/env-core": "^0.13.8",
     "@tailwindcss/vite": "^4.0.6",
