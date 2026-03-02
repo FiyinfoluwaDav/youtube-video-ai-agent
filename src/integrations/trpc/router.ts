@@ -4,6 +4,7 @@ import { exec } from 'child_process'
 import path from 'path'
 import { promisify } from 'util'
 import { z } from 'zod'
+import { summarizeVideoMapReduce } from '../../lib/mapReduce'
 import { sendChatRequest } from '../../lib/ollama'
 import { prisma } from '../../server/db'
 import { createTRPCRouter, publicProcedure } from './init'
@@ -91,6 +92,53 @@ const chatRouter = {
       } catch (error) {
         console.error('Error in chat.sendMessage:', error)
         throw new Error('Failed to get response from AI')
+      }
+    }),
+
+  summarizeVideoMapReduce: publicProcedure
+    .input(
+      z.object({
+        videoId: z.string(),
+        prompt: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      try {
+        if (input.videoId === 'mock-id') {
+          const finalSummary = await summarizeVideoMapReduce(
+            MOCK_TRANSCRIPT,
+            input.prompt,
+          )
+          return { content: finalSummary }
+        }
+
+        const scriptPath = path.join(
+          process.cwd(),
+          'src',
+          'scripts',
+          'get_transcript.py',
+        )
+
+        const { stdout } = await execAsync(
+          `python "${scriptPath}" "${input.videoId}"`,
+        )
+
+        const result = JSON.parse(stdout)
+
+        if (result.error) {
+          throw new Error(result.error)
+        }
+
+        if (!Array.isArray(result)) {
+          throw new Error('Invalid transcript format returned from script')
+        }
+
+        const finalSummary = await summarizeVideoMapReduce(result, input.prompt)
+
+        return { content: finalSummary }
+      } catch (error) {
+        console.error('Error in chat.summarizeVideoMapReduce:', error)
+        throw new Error('Failed to generate summary via Map-Reduce')
       }
     }),
   generateTitle: publicProcedure
