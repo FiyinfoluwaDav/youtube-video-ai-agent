@@ -98,6 +98,9 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
   const { mutateAsync: generateTitle } = useMutation(
     trpc.chat.generateTitle.mutationOptions(),
   )
+  const { mutateAsync: summarizeMapReduce } = useMutation(
+    trpc.chat.summarizeVideoMapReduce.mutationOptions(),
+  )
 
   const { mutateAsync: createChat } = useMutation(
     trpc.chat.createChat.mutationOptions(),
@@ -107,7 +110,7 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
   )
   const queryClient = useQueryClient()
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent, isMapReduce: boolean = false) => {
     e.preventDefault()
 
     // Credit check — block if no credits remaining
@@ -204,13 +207,23 @@ Answer questions based on this transcript and context but make sure you do not i
         messagesToSend.unshift(systemMessage)
       }
 
-      const response = await sendMessage({
-        messages: messagesToSend,
-      })
+      let responseContent = ''
+      if (isMapReduce) {
+        const res = await summarizeMapReduce({
+          videoId,
+          prompt: currentPrompt,
+        })
+        responseContent = res.content
+      } else {
+        const response = await sendMessage({
+          messages: messagesToSend,
+        })
+        responseContent = response.content
+      }
 
       const assistantMessage: MessageType = {
         role: 'assistant',
-        content: response.content,
+        content: responseContent,
         isImage: false,
         isPublished: false,
         timestamp: Date.now(),
@@ -223,7 +236,7 @@ Answer questions based on this transcript and context but make sure you do not i
       await addMessage({
         chatId: chatId!,
         role: 'assistant',
-        content: response.content,
+        content: responseContent,
       })
 
       // Update selected chat messages in memory
@@ -350,7 +363,7 @@ Answer questions based on this transcript and context but make sure you do not i
                   const fakeEvent = {
                     preventDefault: () => {},
                   } as React.FormEvent
-                  onSubmit(fakeEvent)
+                  onSubmit(fakeEvent, true)
                 }
               }, 50)
             }
