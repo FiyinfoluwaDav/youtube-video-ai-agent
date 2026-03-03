@@ -124,25 +124,27 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
   ) => {
     if (e) e.preventDefault()
     setPdfReady(false)
-    if (isMapReduce && overridePrompt?.includes('PDF')) {
+    const currentPrompt = overridePrompt || prompt
+    const isPdfFlow = isMapReduce && overridePrompt?.includes('PDF')
+
+    if (isPdfFlow) {
       setIsGeneratingPdf(true)
     }
 
-    // Credit check — block if no credits remaining
-    if (credits <= 0) {
+    const creditCost = isPdfFlow ? 2 : 1
+
+    // Credit check — block if not enough credits
+    if (credits < creditCost) {
       return
     }
 
-    // Consume one credit before proceeding
-    const consumed = consumeCredit()
+    // Consume credit before proceeding
+    const consumed = consumeCredit(creditCost)
     if (!consumed) {
       return
     }
 
     setLoading(true)
-
-    const currentPrompt = overridePrompt || prompt
-    const isPdfFlow = isMapReduce && overridePrompt?.includes('PDF')
 
     const userMessage: MessageType = {
       role: 'user',
@@ -486,8 +488,9 @@ Answer questions based on this transcript and context but make sure you do not i
       {/* Quick Actions */}
       <div className="flex justify-center gap-3 mb-4 w-full max-w-2xl mx-auto px-2">
         <button
+          disabled={credits < 2}
           onClick={() => {
-            if (credits > 0) {
+            if (credits >= 2) {
               onSubmit(
                 undefined,
                 true,
@@ -495,7 +498,7 @@ Answer questions based on this transcript and context but make sure you do not i
               )
             }
           }}
-          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm"
+          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <div className="flex items-center gap-2 mb-1.5 text-orange-500 dark:text-orange-400">
             <svg
@@ -513,7 +516,9 @@ Answer questions based on this transcript and context but make sure you do not i
               <line x1="16" y1="17" x2="8" y2="17"></line>
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
-            <span className="font-medium text-sm">Summarize video to PDF</span>
+            <span className="font-medium text-sm">
+              Summarize video to PDF (2 Credits)
+            </span>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
             Detailed summary with H1, H3, and bold formatting.
@@ -521,8 +526,9 @@ Answer questions based on this transcript and context but make sure you do not i
         </button>
 
         <button
+          disabled={credits < 1}
           onClick={() => {
-            if (credits > 0) {
+            if (credits >= 1) {
               onSubmit(
                 undefined,
                 false,
@@ -530,7 +536,7 @@ Answer questions based on this transcript and context but make sure you do not i
               )
             }
           }}
-          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm"
+          className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <div className="flex items-center gap-2 mb-1.5 text-orange-500 dark:text-orange-400">
             <svg
