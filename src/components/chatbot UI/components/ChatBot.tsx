@@ -1,4 +1,5 @@
 import { useTRPC } from '@/integrations/trpc/react'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { assets } from '../assets/assets'
@@ -8,6 +9,7 @@ import {
   useAppContext,
 } from '../context/AppContext'
 import Message from './Message'
+import { SummaryPDFDocument } from './SummaryPDFDocument'
 
 interface ChatBotProps {
   transcript?: { text: string; offset: number; duration: number }[]
@@ -85,6 +87,11 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
   const [prompt, setPrompt] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  const [pdfContent, setPdfContent] = useState('')
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
+  const [pdfReady, setPdfReady] = useState(false)
+  const [pdfName, setPdfName] = useState('')
+
   useEffect(() => {
     if (prompt === '' && textareaRef.current) {
       textareaRef.current.style.height = 'auto'
@@ -110,8 +117,16 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
   )
   const queryClient = useQueryClient()
 
-  const onSubmit = async (e: React.FormEvent, isMapReduce: boolean = false) => {
-    e.preventDefault()
+  const onSubmit = async (
+    e?: React.FormEvent,
+    isMapReduce: boolean = false,
+    overridePrompt?: string,
+  ) => {
+    if (e) e.preventDefault()
+    setPdfReady(false)
+    if (isMapReduce && overridePrompt?.includes('PDF')) {
+      setIsGeneratingPdf(true)
+    }
 
     // Credit check — block if no credits remaining
     if (credits <= 0) {
@@ -126,7 +141,7 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
 
     setLoading(true)
 
-    const currentPrompt = prompt
+    const currentPrompt = overridePrompt || prompt
     const userMessage: MessageType = {
       role: 'user',
       content: currentPrompt,
@@ -209,11 +224,35 @@ Answer questions based on this transcript and context but make sure you do not i
 
       let responseContent = ''
       if (isMapReduce) {
-        const res = await summarizeMapReduce({
-          videoId,
-          prompt: currentPrompt,
-        })
-        responseContent = res.content
+        // Set processing state to show explicitly for slow map-reduce
+        const slowMessage: MessageType = {
+          role: 'assistant',
+          content:
+            'Generating a comprehensive summary via Map-Reduce for PDF... This will take a moment.',
+          isImage: false,
+          isPublished: false,
+          timestamp: Date.now(),
+        }
+        setMessages([...newMessages, slowMessage])
+
+        try {
+          const res = await summarizeMapReduce({
+            videoId,
+            prompt: currentPrompt,
+          })
+          responseContent = res.content
+
+          // Generate PDF Content
+          setPdfContent(responseContent)
+          setPdfName(currentChat?.name || 'Video')
+
+          if (overridePrompt?.includes('PDF')) {
+            setIsGeneratingPdf(false)
+            setPdfReady(true)
+          }
+        } catch (e) {
+          throw e
+        }
       } else {
         const response = await sendMessage({
           messages: messagesToSend,
@@ -291,7 +330,91 @@ Answer questions based on this transcript and context but make sure you do not i
   }, [messages])
 
   return (
-    <div className="flex-1 flex flex-col justify-between p-4 md:p-6 max-md:pt-14 h-full min-h-0">
+    <div className="flex-1 flex flex-col justify-between p-4 md:p-6 max-md:pt-14 h-full min-h-0 relative">
+      {/* PDF Generation Overlay */}
+      {(isGeneratingPdf || pdfReady) && (
+        <div className="absolute inset-0 bg-black/50 z-50 flex flex-col items-center justify-center rounded-xl backdrop-blur-sm m-2">
+          <div className="bg-white dark:bg-[#202020] p-6 rounded-2xl shadow-xl flex flex-col items-center max-w-sm w-[90%] text-center">
+            {isGeneratingPdf ? (
+              <>
+                <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4" />
+                <h3 className="text-lg font-semibold dark:text-gray-100 mb-2">
+                  Generating PDF Summary...
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  This might take a few moments. We are analyzing the entire
+                  video.
+                </p>
+              </>
+            ) : (
+              <>
+                <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 text-green-500 rounded-full flex items-center justify-center mb-4">
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold dark:text-gray-100 mb-2">
+                  PDF Ready!
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  Your summary has been generated successfully.
+                </p>
+                <div className="flex gap-3 w-full">
+                  <button
+                    onClick={() => {
+                      setPdfReady(false)
+                      setPdfContent('')
+                      setIsGeneratingPdf(false)
+                    }}
+                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-white/10 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
+                  >
+                    Close
+                  </button>
+                  <PDFDownloadLink
+                    document={
+                      <SummaryPDFDocument
+                        title={pdfName || 'Video Summary'}
+                        content={pdfContent}
+                      />
+                    }
+                    fileName={`${pdfName || 'Video'} Summary.pdf`}
+                    className="flex-1 px-4 py-2 rounded-xl bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
+                  >
+                    {({ loading: pdfLoading }) => (
+                      <>
+                        <svg
+                          className="w-4 h-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="7 10 12 15 17 10"></polyline>
+                          <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        {pdfLoading ? 'Loading PDF...' : 'Download'}
+                      </>
+                    )}
+                  </PDFDownloadLink>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       {/* Chat Messages */}
       <div
         ref={containerRef}
@@ -354,18 +477,11 @@ Answer questions based on this transcript and context but make sure you do not i
         <button
           onClick={() => {
             if (credits > 0) {
-              setPrompt(
+              onSubmit(
+                undefined,
+                true,
                 'Summarize this video to a PDF. Please ensure it is properly formatted with bold text, H1, H3, and contains all the important information in the video.',
               )
-              // Wait for React to update state, then submit
-              setTimeout(() => {
-                if (textareaRef.current) {
-                  const fakeEvent = {
-                    preventDefault: () => {},
-                  } as React.FormEvent
-                  onSubmit(fakeEvent, true)
-                }
-              }, 50)
             }
           }}
           className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm"
@@ -396,17 +512,11 @@ Answer questions based on this transcript and context but make sure you do not i
         <button
           onClick={() => {
             if (credits > 0) {
-              setPrompt(
+              onSubmit(
+                undefined,
+                false,
                 'Generate a comprehensive mindmap for this video detailing all the key topics and subtopics.',
               )
-              setTimeout(() => {
-                if (textareaRef.current) {
-                  const fakeEvent = {
-                    preventDefault: () => {},
-                  } as React.FormEvent
-                  onSubmit(fakeEvent)
-                }
-              }, 50)
             }
           }}
           className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm"
