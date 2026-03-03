@@ -142,6 +142,8 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
     setLoading(true)
 
     const currentPrompt = overridePrompt || prompt
+    const isPdfFlow = isMapReduce && overridePrompt?.includes('PDF')
+
     const userMessage: MessageType = {
       role: 'user',
       content: currentPrompt,
@@ -150,7 +152,11 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
       timestamp: Date.now(),
     }
 
-    const newMessages = [...messages, userMessage]
+    const newMessages = [...messages]
+    // Only show user prompt in UI if it's NOT a background PDF flow
+    if (!isPdfFlow) {
+      newMessages.push(userMessage)
+    }
     setMessages(newMessages)
     setPrompt('')
 
@@ -192,7 +198,7 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
         content: currentPrompt,
       })
 
-      const messagesToSend = newMessages.map((m) => ({
+      const messagesToSend = [...messages, userMessage].map((m) => ({
         role: m.role as 'user' | 'assistant' | 'system',
         content: m.content,
       }))
@@ -225,15 +231,17 @@ Answer questions based on this transcript and context but make sure you do not i
       let responseContent = ''
       if (isMapReduce) {
         // Set processing state to show explicitly for slow map-reduce
-        const slowMessage: MessageType = {
-          role: 'assistant',
-          content:
-            'Generating a comprehensive summary via Map-Reduce for PDF... This will take a moment.',
-          isImage: false,
-          isPublished: false,
-          timestamp: Date.now(),
+        if (!isPdfFlow) {
+          const slowMessage: MessageType = {
+            role: 'assistant',
+            content:
+              'Generating a comprehensive summary via Map-Reduce for PDF... This will take a moment.',
+            isImage: false,
+            isPublished: false,
+            timestamp: Date.now(),
+          }
+          setMessages([...newMessages, slowMessage])
         }
-        setMessages([...newMessages, slowMessage])
 
         try {
           const res = await summarizeMapReduce({
@@ -268,7 +276,10 @@ Answer questions based on this transcript and context but make sure you do not i
         timestamp: Date.now(),
       }
 
-      const finalMessages = [...newMessages, assistantMessage]
+      const finalMessages = [...newMessages]
+      if (!isPdfFlow) {
+        finalMessages.push(assistantMessage)
+      }
       setMessages(finalMessages)
 
       // Save assistant message
@@ -387,7 +398,7 @@ Answer questions based on this transcript and context but make sure you do not i
                         content={pdfContent}
                       />
                     }
-                    fileName={`${pdfName || 'Video'} Summary.pdf`}
+                    fileName={`${pdfName || 'Video'}_summary.pdf`}
                     className="flex-1 px-4 py-2 rounded-xl bg-orange-500 text-white hover:bg-orange-600 transition-colors flex items-center justify-center gap-2"
                   >
                     {({ loading: pdfLoading }) => (
