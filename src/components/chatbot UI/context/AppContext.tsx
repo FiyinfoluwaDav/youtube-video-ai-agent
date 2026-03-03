@@ -30,7 +30,7 @@ interface AppContextType {
   setSelectedChat: (chat: Chat | null) => void
   credits: number
   maxCredits: number
-  consumeCredit: () => boolean
+  consumeCredit: (amount?: number) => boolean
   setCredits: (credits: number) => void
   updateChat: (chat: Chat) => void
   deleteChat: (chatId: string) => void
@@ -80,14 +80,17 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     setCredits(state.credits)
   }, [userId])
 
-  const consumeCredit = useCallback((): boolean => {
-    const state = getCreditsState(userId)
-    const consumed = state.consume()
-    if (consumed) {
-      setCredits(getCreditsState(userId).credits)
-    }
-    return consumed
-  }, [userId])
+  const consumeCredit = useCallback(
+    (amount?: number): boolean => {
+      const state = getCreditsState(userId)
+      const consumed = state.consume(amount)
+      if (consumed) {
+        setCredits(getCreditsState(userId).credits)
+      }
+      return consumed
+    },
+    [userId],
+  )
 
   const trpc = useTRPC()
   const queryClient = useQueryClient()
