@@ -53,7 +53,7 @@ export function getCreditsState(userId: string | null): {
   credits: number
   maxCredits: number
   canSend: boolean
-  consume: () => boolean
+  consume: (amount?: number) => boolean
 } {
   const key = getStorageKey(userId)
   const max = getMaxCredits(userId)
@@ -63,11 +63,11 @@ export function getCreditsState(userId: string | null): {
     credits: stored.count,
     maxCredits: max,
     canSend: stored.count > 0,
-    consume: () => {
+    consume: (amount = 1) => {
       const current = loadCredits(key, max)
-      if (current.count <= 0) return false
+      if (current.count < amount) return false
       const updated: StoredCredits = {
-        count: current.count - 1,
+        count: current.count - amount,
         date: getTodayDateString(),
       }
       saveCredits(key, updated)
