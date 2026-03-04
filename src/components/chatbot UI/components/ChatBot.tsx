@@ -15,6 +15,7 @@ interface ChatBotProps {
   transcript?: { text: string; offset: number; duration: number }[]
   currentTime?: number
   videoId: string
+  videoTitle?: string
 }
 
 // Helper to get relevant transcript segments
@@ -69,7 +70,12 @@ const getRelevantTranscript = (
   return formatted
 }
 
-const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
+const ChatBot = ({
+  transcript,
+  currentTime,
+  videoId,
+  videoTitle,
+}: ChatBotProps) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const {
     selectedChat,
@@ -167,8 +173,12 @@ const ChatBot = ({ transcript, currentTime, videoId }: ChatBotProps) => {
       let currentChat = selectedChat
 
       if (!chatId) {
+        const chatName =
+          isPdfFlow && videoTitle
+            ? videoTitle.slice(0, 40)
+            : currentPrompt.slice(0, 40)
         const newChatData = await createChat({
-          name: currentPrompt.slice(0, 40),
+          name: chatName,
           videoId,
         })
         chatId = newChatData.id
@@ -253,8 +263,15 @@ Answer questions based on this transcript and context but make sure you do not i
           responseContent = res.content
 
           // Generate PDF Content
-          setPdfContent(responseContent)
-          setPdfName(currentChat?.name || 'Video')
+          // Clean up potential AI preamble in case the LLM disobeys the prompt
+          const cleanedResponse = responseContent.replace(
+            /^(Of course|Here is|Sure|Okay).*?\n\n/i,
+            '',
+          )
+          setPdfContent(cleanedResponse)
+
+          const titleToUse = videoTitle || currentChat?.name || 'Video'
+          setPdfName(titleToUse)
 
           if (overridePrompt?.includes('PDF')) {
             setIsGeneratingPdf(false)
@@ -494,7 +511,7 @@ Answer questions based on this transcript and context but make sure you do not i
               onSubmit(
                 undefined,
                 true,
-                'Summarize this video to a PDF. Please ensure it is properly formatted with bold text, H1, H3, and contains all the important information in the video.',
+                'Summarize this video to a PDF. Use markdown formatting exclusively (like # for headings, ** for bold) and do NOT write "H1:", "H3:", or "Bold" literally in the text. Do not include any conversational preamble or introduction—start immediately with the summary content.',
               )
             }
           }}
