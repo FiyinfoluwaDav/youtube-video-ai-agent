@@ -346,7 +346,7 @@ Answer questions based on this transcript and context but make sure you do not i
     <div className="flex-1 flex flex-col justify-between p-4 md:p-6 max-md:pt-14 h-full min-h-0 relative">
       {/* PDF Generation Overlay */}
       {(isGeneratingPdf || pdfReady) && (
-        <div className="absolute inset-0 bg-black/50 z-50 flex flex-col items-center justify-center rounded-xl backdrop-blur-sm m-2">
+        <div className="fixed inset-0 bg-black/50 z-50 flex flex-col items-center justify-center backdrop-blur-sm">
           <div className="bg-white dark:bg-[#202020] p-6 rounded-2xl shadow-xl flex flex-col items-center max-w-sm w-[90%] text-center">
             {isGeneratingPdf ? (
               <>
