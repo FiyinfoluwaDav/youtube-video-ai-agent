@@ -81,6 +81,7 @@ function VideoPage() {
 
   const [currentTime, setCurrentTime] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [videoTitle, setVideoTitle] = useState('')
   const playerRef = useRef<any>(null)
   const activeTranscriptRef = useRef<HTMLDivElement>(null)
 
@@ -110,6 +111,9 @@ function VideoPage() {
 
   const onPlayerReady: YouTubeProps['onReady'] = (event) => {
     playerRef.current = event.target
+    if (event.target.getVideoData) {
+      setVideoTitle(event.target.getVideoData().title || '')
+    }
   }
 
   const onPlayerStateChange: YouTubeProps['onStateChange'] = (event) => {
@@ -250,6 +254,7 @@ function VideoPage() {
               transcript={transcript}
               currentTime={currentTime}
               videoId={videoId}
+              videoTitle={videoTitle}
             />
           </Panel>
 
