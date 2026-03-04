@@ -287,9 +287,9 @@ const Sidebar = ({
           <>
             <div className="flex items-center gap-3 p-2.5 px-3 rounded-lg hover:bg-gray-50 dark:hover:bg-[#111] transition-colors duration-200">
               <img
-                src={assets.user_icon}
-                className="w-8 h-8 rounded-full bg-gray-200"
-                alt=""
+                src={user.imageUrl || assets.user_icon}
+                className="w-8 h-8 rounded-full bg-gray-200 object-cover"
+                alt="User Profile"
               />
               <p className="flex-1 text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
                 {user.name}

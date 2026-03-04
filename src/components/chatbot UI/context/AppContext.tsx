@@ -41,6 +41,7 @@ export interface User {
   name: string
   email: string
   credits: number
+  imageUrl?: string
 }
 
 export interface Message {
@@ -172,6 +173,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
         name: clerkUser.fullName || clerkUser.firstName || 'User',
         email: clerkUser.primaryEmailAddress?.emailAddress || '',
         credits: 10, // Placeholder until we persist credits
+        imageUrl: clerkUser.imageUrl,
       }
     : null
 
