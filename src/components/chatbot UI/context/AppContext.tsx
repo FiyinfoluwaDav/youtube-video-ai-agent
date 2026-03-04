@@ -68,7 +68,17 @@ const AppContext = createContext<AppContextType | null>(null)
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const { user: clerkUser } = useUser()
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null)
-  const [theme, setTheme] = useState<string>('dark')
+  const [theme, setThemeState] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') || 'dark'
+    }
+    return 'dark'
+  })
+
+  const setTheme = useCallback((newTheme: string) => {
+    setThemeState(newTheme)
+    localStorage.setItem('theme', newTheme)
+  }, [])
 
   // Credit state — initialize with max credits to avoid hydration mismatches between server/client
   const userId = clerkUser?.id ?? null
@@ -165,13 +175,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
       }
     : null
 
-  useEffect(() => {
-    const storedTheme = localStorage.getItem('theme')
-    if (storedTheme) {
-      setTheme(storedTheme)
-    }
-  }, [])
-
+  // Theme effect for document class
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark')
