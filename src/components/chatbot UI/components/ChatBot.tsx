@@ -137,7 +137,7 @@ const ChatBot = ({
       setIsGeneratingPdf(true)
     }
 
-    const creditCost = isPdfFlow ? 2 : 1
+    const creditCost = isPdfFlow ? 3 : 1
 
     // Credit check — block if not enough credits
     if (credits < creditCost) {
@@ -505,9 +505,9 @@ Answer questions based on this transcript and context but make sure you do not i
       {/* Quick Actions */}
       <div className="flex justify-center gap-3 mb-4 w-full max-w-2xl mx-auto px-2">
         <button
-          disabled={credits < 2}
+          disabled={credits < 3}
           onClick={() => {
-            if (credits >= 2) {
+            if (credits >= 3) {
               onSubmit(
                 undefined,
                 true,
@@ -534,7 +534,7 @@ Answer questions based on this transcript and context but make sure you do not i
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
             <span className="font-medium text-sm">
-              Summarize video to PDF (2 Credits)
+              Summarize video to PDF (3 Credits)
             </span>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300">
