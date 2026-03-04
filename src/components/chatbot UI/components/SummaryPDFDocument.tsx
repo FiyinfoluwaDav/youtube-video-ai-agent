@@ -101,19 +101,19 @@ const parseMarkdownToComponents = (markdownText: string) => {
     if (line.startsWith('# ')) {
       components.push(
         <Text key={i} style={styles.h1}>
-          {line.substring(2)}
+          {line.substring(2).replace(/\*\*/g, '')}
         </Text>,
       )
     } else if (line.startsWith('## ')) {
       components.push(
         <Text key={i} style={styles.h2}>
-          {line.substring(3)}
+          {line.substring(3).replace(/\*\*/g, '')}
         </Text>,
       )
     } else if (line.startsWith('### ')) {
       components.push(
         <Text key={i} style={styles.h3}>
-          {line.substring(4)}
+          {line.substring(4).replace(/\*\*/g, '')}
         </Text>,
       )
     } else if (line.startsWith('- ') || line.startsWith('* ')) {
