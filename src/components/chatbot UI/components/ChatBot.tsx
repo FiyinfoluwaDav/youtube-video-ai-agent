@@ -9,6 +9,7 @@ import {
   useAppContext,
 } from '../context/AppContext'
 import Message from './Message'
+import MindMapComponent from './MindMapComponent'
 import { SummaryPDFDocument } from './SummaryPDFDocument'
 
 interface ChatBotProps {
@@ -98,6 +99,13 @@ const ChatBot = ({
   const [pdfReady, setPdfReady] = useState(false)
   const [pdfName, setPdfName] = useState('')
 
+  const [mindMapData, setMindMapData] = useState<{
+    nodes: any[]
+    edges: any[]
+  } | null>(null)
+  const [isGeneratingMindMap, setIsGeneratingMindMap] = useState(false)
+  const [mindMapError, setMindMapError] = useState('')
+
   useEffect(() => {
     if (prompt === '' && textareaRef.current) {
       textareaRef.current.style.height = 'auto'
@@ -113,6 +121,9 @@ const ChatBot = ({
   )
   const { mutateAsync: summarizeMapReduce } = useMutation(
     trpc.chat.summarizeVideoMapReduce.mutationOptions(),
+  )
+  const { mutateAsync: generateMindMap } = useMutation(
+    trpc.chat.generateMindMap.mutationOptions(),
   )
 
   const { mutateAsync: createChat } = useMutation(
@@ -445,6 +456,102 @@ Answer questions based on this transcript and context but make sure you do not i
           </div>
         </div>
       )}
+
+      {/* Mind Map Generation Overlay */}
+      {(isGeneratingMindMap || mindMapData || mindMapError) && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex flex-col items-center justify-center backdrop-blur-sm p-4">
+          {isGeneratingMindMap && (
+            <div className="bg-white dark:bg-[#202020] p-6 rounded-2xl shadow-xl flex flex-col items-center max-w-sm w-[90%] text-center">
+              <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mb-4" />
+              <h3 className="text-lg font-semibold dark:text-gray-100 mb-2">
+                Generating Mind Map...
+              </h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                This might take a moment.
+              </p>
+            </div>
+          )}
+          {mindMapError && (
+            <div className="bg-white dark:bg-[#202020] p-6 rounded-2xl shadow-xl flex flex-col items-center max-w-sm w-[90%] text-center">
+              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 text-red-500 rounded-full flex items-center justify-center mb-4">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold dark:text-gray-100 mb-2">
+                Error
+              </h3>
+              <p className="text-sm text-red-500 dark:text-red-400 mb-6">
+                {mindMapError}
+              </p>
+              <button
+                onClick={() => setMindMapError('')}
+                className="w-full px-4 py-2 rounded-xl bg-orange-500 text-white hover:bg-orange-600 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          )}
+          {mindMapData && !isGeneratingMindMap && !mindMapError && (
+            <div className="w-full h-full max-w-6xl max-h-[90vh] bg-white dark:bg-[#202020] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+              <div className="p-4 border-b border-gray-200 dark:border-white/10 flex justify-between items-center bg-gray-50 dark:bg-[#1a1a1a]">
+                <h3 className="text-lg font-semibold dark:text-gray-100 flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5 text-orange-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <circle cx="18" cy="5" r="3"></circle>
+                    <circle cx="6" cy="12" r="3"></circle>
+                    <circle cx="18" cy="19" r="3"></circle>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                  </svg>
+                  Video Mind Map
+                </h3>
+                <button
+                  onClick={() => setMindMapData(null)}
+                  className="p-2 hover:bg-gray-200 dark:hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <svg
+                    className="w-5 h-5 dark:text-gray-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <MindMapComponent
+                  initialNodes={mindMapData.nodes}
+                  initialEdges={mindMapData.edges}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      )}
       {/* Chat Messages */}
       <div
         ref={containerRef}
@@ -544,13 +651,23 @@ Answer questions based on this transcript and context but make sure you do not i
 
         <button
           disabled={credits < 1}
-          onClick={() => {
+          onClick={async () => {
             if (credits >= 1) {
-              onSubmit(
-                undefined,
-                false,
-                'Generate a comprehensive mindmap for this video detailing all the key topics and subtopics.',
-              )
+              const consumed = consumeCredit(1)
+              if (!consumed) return
+              setIsGeneratingMindMap(true)
+              setMindMapError('')
+              try {
+                const data = await generateMindMap({ videoId })
+                setMindMapData({
+                  nodes: data.nodes || [],
+                  edges: data.edges || [],
+                })
+              } catch (e: any) {
+                setMindMapError(e.message || 'Failed to generate mind map')
+              } finally {
+                setIsGeneratingMindMap(false)
+              }
             }
           }}
           className="flex-1 flex flex-col items-start p-3 rounded-xl border border-gray-200 dark:border-white/10 bg-white dark:bg-[#202020] hover:bg-gray-50 dark:hover:bg-white/5 hover:border-orange-500/50 dark:hover:border-orange-500/50 transition-all text-left group shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
