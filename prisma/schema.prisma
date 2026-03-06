@@ -37,3 +37,11 @@ model Message {
   @@index([chatId])
   @@map("messages")
 }
+
+model MindMap {
+  id        String   @id @default(uuid())
+  videoId   String   @unique @map("video_id")
+  data      Json
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("mind_maps")
+}
