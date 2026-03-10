@@ -348,9 +348,10 @@ const chatRouter = {
         const systemPrompt = `You are a strict data formatter. Your task is to generate a JSON representing a mind map based on the user's input.
 Rules:
 1. Output ONLY valid JSON. No explanations, no markdown formatting blocks outside of the JSON itself (or just raw text that is purely JSON).
-2. The format must exactly match: { "nodes": [{ "id": "string", "data": { "label": "string" }, "position": { "x": 0, "y": 0 } }], "edges": [{ "id": "string", "source": "string", "target": "string" }] }
-3. Constraints: max 25 nodes, concise labels (max 4 words), 4-6 main branches radiating from a central root node, depth 2-3 levels.
-4. Set position { x: 0, y: 0 } for all nodes (auto-layout will handle it).`
+2. The format must exactly match: { "nodes": [{ "id": "string", "data": { "label": "string", "description": "string" }, "position": { "x": 0, "y": 0 } }], "edges": [{ "id": "string", "source": "string", "target": "string" }] }
+3. The 'description' field in 'data' is strictly REQUIRED and must be a short explanation (1-2 sentences) of what the node represents in context.
+4. Constraints: max 25 nodes, concise labels (max 4 words), 4-6 main branches radiating from a central root node, depth 2-3 levels.
+5. Set position { x: 0, y: 0 } for all nodes (auto-layout will handle it).`
 
         const userPrompt = `Generate a JSON mind map for the following video content:\n\n${contentToProcess}`
 
