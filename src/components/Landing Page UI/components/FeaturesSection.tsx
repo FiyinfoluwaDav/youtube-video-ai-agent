@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { FileText, Network, Scissors, Zap } from 'lucide-react'
 import { useRef, useState } from 'react'
 import StarField from './StarField'
+import instantSummaryVideo from '../../../assets/landing_page_videos/Instant_Summary.mp4'
 
 const features = [
   {
@@ -12,6 +13,7 @@ const features = [
     color: 'hsl(var(--vibrant-orange))',
     colorClass: 'primary',
     delay: 0,
+    videoSrc: instantSummaryVideo,
   },
   {
     icon: FileText,
@@ -113,19 +115,32 @@ export default function FeaturesSection() {
                     boxShadow: `0 20px 40px -20px ${feature.color}40, inset 0 0 40px ${feature.color}10`,
                   }}
                 >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                  {'videoSrc' in feature && feature.videoSrc ? (
+                    <video
+                      src={feature.videoSrc as string}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover absolute inset-0 z-0 opacity-90 transition-opacity duration-500 group-hover:opacity-100"
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
 
-                  {/* Play Button Placeholder */}
-                  <div
-                    className="w-20 h-20 rounded-full flex items-center justify-center backdrop-blur-xl border border-white/20 transition-transform duration-500 group-hover:scale-110 group-hover:bg-white/10"
-                    style={{ background: `${feature.color}20` }}
-                  >
-                    <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-white border-b-[10px] border-b-transparent ml-1.5 opacity-90 shadow-2xl" />
-                  </div>
+                      {/* Play Button Placeholder */}
+                      <div
+                        className="w-20 h-20 rounded-full flex items-center justify-center backdrop-blur-xl border border-white/20 transition-transform duration-500 group-hover:scale-110 group-hover:bg-white/10 z-10"
+                        style={{ background: `${feature.color}20` }}
+                      >
+                        <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-white border-b-[10px] border-b-transparent ml-1.5 opacity-90 shadow-2xl" />
+                      </div>
 
-                  <p className="mt-6 font-display text-xs tracking-[0.2em] text-white/40 uppercase font-medium">
-                    Video Placeholder
-                  </p>
+                      <p className="mt-6 font-display text-xs tracking-[0.2em] text-white/40 uppercase font-medium z-10">
+                        Video Placeholder
+                      </p>
+                    </>
+                  )}
                 </motion.div>
               </div>
             ))}
