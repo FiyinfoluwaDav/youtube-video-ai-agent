@@ -1,6 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { FileText, Network, Scissors, Zap } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import StarField from './StarField'
 import instantSummaryVideo from '../../../assets/landing_page_videos/Instant_Summary.mp4'
 
@@ -47,7 +47,6 @@ const features = [
 export default function FeaturesSection() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
   return (
     <section id="features" className="relative py-32 overflow-hidden" ref={ref}>
@@ -91,7 +90,7 @@ export default function FeaturesSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: '-100px' }}
                   transition={{ duration: 0.8 }}
-                  className="w-full lg:w-1/2 flex flex-col items-start"
+                  className="w-full lg:w-2/5 flex flex-col items-start"
                 >
                   <h3
                     className="font-display text-3xl md:text-4xl font-bold mb-6"
@@ -110,7 +109,7 @@ export default function FeaturesSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true, margin: '-100px' }}
                   transition={{ duration: 0.8, delay: 0.2 }}
-                  className="w-full lg:w-1/2 aspect-video rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-white/20"
+                  className="w-full lg:w-3/5 aspect-video rounded-2xl bg-black/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500"
                   style={{
                     boxShadow: `0 20px 40px -20px ${feature.color}40, inset 0 0 40px ${feature.color}10`,
                   }}
@@ -126,14 +125,14 @@ export default function FeaturesSection() {
                     />
                   ) : (
                     <>
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
+                      <div className="absolute inset-0 bg-linear-to-br from-white/5 to-transparent pointer-events-none" />
 
                       {/* Play Button Placeholder */}
                       <div
                         className="w-20 h-20 rounded-full flex items-center justify-center backdrop-blur-xl border border-white/20 transition-transform duration-500 group-hover:scale-110 group-hover:bg-white/10 z-10"
                         style={{ background: `${feature.color}20` }}
                       >
-                        <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-white border-b-[10px] border-b-transparent ml-1.5 opacity-90 shadow-2xl" />
+                        <div className="w-0 h-0 border-t-10 border-t-transparent border-l-18 border-l-white border-b-10 border-b-transparent ml-1.5 opacity-90 shadow-2xl" />
                       </div>
 
                       <p className="mt-6 font-display text-xs tracking-[0.2em] text-white/40 uppercase font-medium z-10">
