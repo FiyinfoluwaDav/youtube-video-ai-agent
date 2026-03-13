@@ -17,7 +17,7 @@ export async function summarizeVideoMapReduce(
   finalPrompt: string,
 ): Promise<string> {
   if (!transcript || transcript.length === 0) {
-    throw new Error('Transcript is empty')
+    throw new Error('Transcript is empty now')
   }
 
   // 1. Format the transcript with timestamps
