@@ -1,6 +1,17 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
 import StarField from './StarField'
+import instantSummaryVideo from '../../../assets/landing_page_videos/Instant_Summary.mp4'
+import video2pdfVideo from '../../../assets/landing_page_videos/Video2pdf_demo.mp4'
+import mindmapVideo from '../../../assets/landing_page_videos/Mindmap_vid.mp4'
+import timestampVideo from '../../../assets/landing_page_videos/Timestamp_vid.mp4'
+
+const processVideos = [
+  instantSummaryVideo,
+  video2pdfVideo,
+  mindmapVideo,
+  timestampVideo,
+]
 
 const steps = [
   {
@@ -29,6 +40,11 @@ export default function HowItWorks() {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
   const [explodedStep, setExplodedStep] = useState<number | null>(null)
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0)
+
+  const handleVideoEnded = () => {
+    setCurrentVideoIndex((prev) => (prev + 1) % processVideos.length)
+  }
 
   const handleStepClick = (idx: number) => {
     setExplodedStep(idx)
@@ -72,24 +88,19 @@ export default function HowItWorks() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 1.2 }}
-          className="w-full max-w-4xl mx-auto aspect-video rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 hover:border-white/20 mb-20"
+          className="w-full mx-auto aspect-video rounded-2xl bg-black/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 mb-20"
           style={{
             boxShadow: `0 20px 40px -20px rgba(255,255,255,0.1), inset 0 0 40px rgba(255,255,255,0.05)`,
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
-
-          {/* Play Button Placeholder */}
-          <div
-            className="w-20 h-20 rounded-full flex items-center justify-center backdrop-blur-xl border border-white/20 transition-transform duration-500 group-hover:scale-110 group-hover:bg-white/10 relative z-10"
-            style={{ background: `rgba(255,255,255,0.05)` }}
-          >
-            <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-white border-b-[10px] border-b-transparent ml-1.5 opacity-90 shadow-2xl" />
-          </div>
-
-          <p className="mt-6 font-display text-xs tracking-[0.2em] text-white/40 uppercase font-medium relative z-10">
-            Video Placeholder
-          </p>
+          <video
+            src={processVideos[currentVideoIndex]}
+            autoPlay
+            muted
+            playsInline
+            onEnded={handleVideoEnded}
+            className="w-full h-full object-cover absolute inset-0 z-0 opacity-90 transition-opacity duration-500 group-hover:opacity-100"
+          />
         </motion.div>
 
         {/* Steps grid */}
