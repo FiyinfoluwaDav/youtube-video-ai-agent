@@ -88,7 +88,7 @@ export default function HowItWorks() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={inView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 1.2 }}
-          className="w-full mx-auto aspect-video rounded-2xl bg-black/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 mb-20"
+          className="w-full max-w-5xl mx-auto aspect-video rounded-2xl bg-black/40 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden group transition-all duration-500 mb-20"
           style={{
             boxShadow: `0 20px 40px -20px rgba(255,255,255,0.1), inset 0 0 40px rgba(255,255,255,0.05)`,
           }}
