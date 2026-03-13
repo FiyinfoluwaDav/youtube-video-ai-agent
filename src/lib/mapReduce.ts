@@ -1,6 +1,6 @@
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
 import pLimit from 'p-limit'
-import { sendChatRequest } from './ollama'
+import { sendChatRequest } from './groq'
 
 export interface TranscriptSegment {
   text: string

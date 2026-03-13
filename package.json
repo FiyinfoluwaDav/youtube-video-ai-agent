@@ -57,6 +57,7 @@
     "clsx": "^2.1.1",
     "dagre": "^0.8.5",
     "framer-motion": "^12.34.4",
+    "groq-sdk": "^1.1.1",
     "html2pdf.js": "^0.14.0",
     "lucide-react": "^0.544.0",
     "moment": "^2.30.1",

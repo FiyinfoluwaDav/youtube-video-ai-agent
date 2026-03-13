@@ -5,7 +5,7 @@ import path from 'path'
 import { promisify } from 'util'
 import { z } from 'zod'
 import { summarizeVideoMapReduce } from '../../lib/mapReduce'
-import { sendChatRequest } from '../../lib/ollama'
+import { sendChatRequest, type ChatMessage } from '../../lib/groq'
 import { prisma } from '../../server/db'
 import { createTRPCRouter, publicProcedure } from './init'
 import { MOCK_TRANSCRIPT } from './mockData'
@@ -355,10 +355,12 @@ Rules:
 
         const userPrompt = `Generate a JSON mind map for the following video content:\n\n${contentToProcess}`
 
-        const response = await sendChatRequest([
+        const messages: ChatMessage[] = [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
-        ])
+        ]
+
+        const response = await sendChatRequest(messages)
 
         // Parse JSON
         let jsonStr = response.trim()
