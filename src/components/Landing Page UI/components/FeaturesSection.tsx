@@ -4,6 +4,7 @@ import { useRef } from 'react'
 import StarField from './StarField'
 import instantSummaryVideo from '../../../assets/landing_page_videos/Instant_Summary.mp4'
 import video2pdfVideo from '../../../assets/landing_page_videos/Video2pdf_demo.mp4'
+import mindmapVideo from '../../../assets/landing_page_videos/Mindmap_vid.mp4'
 
 const features = [
   {
@@ -34,6 +35,7 @@ const features = [
     color: 'hsl(var(--vibrant-orange))',
     colorClass: 'primary',
     delay: 0.3,
+    videoSrc: mindmapVideo,
   },
   {
     icon: Scissors,
