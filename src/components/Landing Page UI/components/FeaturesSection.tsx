@@ -3,6 +3,7 @@ import { FileText, Network, Scissors, Zap } from 'lucide-react'
 import { useRef } from 'react'
 import StarField from './StarField'
 import instantSummaryVideo from '../../../assets/landing_page_videos/Instant_Summary.mp4'
+import video2pdfVideo from '../../../assets/landing_page_videos/Video2pdf_demo.mp4'
 
 const features = [
   {
@@ -23,6 +24,7 @@ const features = [
     color: 'hsl(var(--vibrant-orange))',
     colorClass: 'primary',
     delay: 0.15,
+    videoSrc: video2pdfVideo,
   },
   {
     icon: Network,
