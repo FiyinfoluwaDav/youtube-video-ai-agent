@@ -5,6 +5,7 @@ import StarField from './StarField'
 import instantSummaryVideo from '../../../assets/landing_page_videos/Instant_Summary.mp4'
 import video2pdfVideo from '../../../assets/landing_page_videos/Video2pdf_demo.mp4'
 import mindmapVideo from '../../../assets/landing_page_videos/Mindmap_vid.mp4'
+import timestampVideo from '../../../assets/landing_page_videos/Timestamp_vid.mp4'
 
 const features = [
   {
@@ -45,6 +46,7 @@ const features = [
     color: 'hsl(var(--vibrant-orange))',
     colorClass: 'primary',
     delay: 0.45,
+    videoSrc: timestampVideo,
   },
 ]
 
