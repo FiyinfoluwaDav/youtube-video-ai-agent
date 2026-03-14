@@ -1,9 +1,3 @@
-import * as dotenv from 'dotenv'
-import path from 'path'
-
-// Load environment variables
-dotenv.config({ path: path.resolve(process.cwd(), '.env') })
-
 import { neonConfig } from '@neondatabase/serverless'
 import { PrismaNeon } from '@prisma/adapter-neon'
 import { PrismaClient } from '@prisma/client'
