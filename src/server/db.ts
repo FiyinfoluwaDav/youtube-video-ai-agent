@@ -1,8 +1,8 @@
-import { config } from 'dotenv'
+import * as dotenv from 'dotenv'
 import path from 'path'
 
 // Load environment variables from .env file
-config({ path: path.resolve(process.cwd(), '.env') })
+dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
 import { neonConfig } from '@neondatabase/serverless'
 import { PrismaNeon } from '@prisma/adapter-neon'
