@@ -6,7 +6,8 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
 import { neonConfig } from '@neondatabase/serverless'
 import { PrismaNeon } from '@prisma/adapter-neon'
-import { PrismaClient } from '@prisma/client'
+import pkg from '@prisma/client'
+const { PrismaClient } = pkg
 import { WebSocket } from 'ws'
 
 // Configure Neon to use WebSocket
