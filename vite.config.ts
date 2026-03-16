@@ -5,7 +5,6 @@ import path from 'path'
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') })
 
 import tailwindcss from '@tailwindcss/vite'
-import { devtools } from '@tanstack/devtools-vite'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import { nitro } from 'nitro/vite'
@@ -20,7 +19,6 @@ console.log(
 
 export default defineConfig({
   plugins: [
-    devtools(),
     neon,
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
@@ -29,7 +27,12 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart(),
     // Nitro builds server output for Vercel (and other serverless hosts)
-    nitro({ preset: 'vercel' }),
+    nitro({
+      preset: 'vercel',
+      commonJS: {
+        dynamicRequireTargets: ['node_modules/proxy-agent'],
+      },
+    }),
     viteReact(),
   ],
 
