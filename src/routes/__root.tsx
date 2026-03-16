@@ -4,7 +4,6 @@ import {
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 
-import Header from '../components/Header'
 
 import { AppContextProvider } from '../components/chatbot UI/context/AppContext'
 
@@ -86,7 +85,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ClerkProvider>
           <AppContextProvider>
-            <Header />
             {children}
           </AppContextProvider>
         </ClerkProvider>
