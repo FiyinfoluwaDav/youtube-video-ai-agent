@@ -1,16 +1,12 @@
 import type { TRPCRouterRecord } from '@trpc/server'
 import { TRPCError } from '@trpc/server'
-import { exec } from 'child_process'
-import path from 'path'
-import { promisify } from 'util'
 import { z } from 'zod'
+import { fetchTranscriptFromApify } from '../../lib/apify'
 import { summarizeVideoMapReduce } from '../../lib/mapReduce'
 import { sendChatRequest, type ChatMessage } from '../../lib/groq'
 import { prisma } from '../../server/db'
 import { createTRPCRouter, publicProcedure } from './init'
 import { MOCK_TRANSCRIPT } from './mockData'
-
-const execAsync = promisify(exec)
 
 const todos = [
   { id: 1, name: 'Get groceries' },
@@ -38,30 +34,8 @@ const youtubeRouter = {
         return MOCK_TRANSCRIPT
       }
       try {
-        // Use Python script to fetch video transcript... If no transcript, use model to generate transcript
-        const scriptPath = path.join(
-          process.cwd(),
-          'src',
-          'scripts',
-          'get_transcript.py',
-        )
-
-        const { stdout } = await execAsync(
-          `python "${scriptPath}" "${input.videoId}"`,
-        )
-
-        const result = JSON.parse(stdout)
-
-        if (result.error) {
-          throw new Error(result.error)
-        }
-
-        // Ensure result is an array
-        if (!Array.isArray(result)) {
-          throw new Error('Invalid transcript format returned from script')
-        }
-
-        return result
+        const transcriptData = await fetchTranscriptFromApify(input.videoId)
+        return transcriptData
       } catch (error) {
         console.error('Error fetching transcript for video:', input.videoId)
         console.error(error)
@@ -112,28 +86,9 @@ const chatRouter = {
           return { content: finalSummary }
         }
 
-        const scriptPath = path.join(
-          process.cwd(),
-          'src',
-          'scripts',
-          'get_transcript.py',
-        )
+        const transcriptData = await fetchTranscriptFromApify(input.videoId)
 
-        const { stdout } = await execAsync(
-          `python "${scriptPath}" "${input.videoId}"`,
-        )
-
-        const result = JSON.parse(stdout)
-
-        if (result.error) {
-          throw new Error(result.error)
-        }
-
-        if (!Array.isArray(result)) {
-          throw new Error('Invalid transcript format returned from script')
-        }
-
-        const finalSummary = await summarizeVideoMapReduce(result, input.prompt)
+        const finalSummary = await summarizeVideoMapReduce(transcriptData, input.prompt)
 
         return { content: finalSummary }
       } catch (error) {
@@ -310,21 +265,7 @@ const chatRouter = {
           if (input.videoId === 'mock-id') {
             transcriptData = MOCK_TRANSCRIPT
           } else {
-            const scriptPath = path.join(
-              process.cwd(),
-              'src',
-              'scripts',
-              'get_transcript.py',
-            )
-
-            const { stdout } = await execAsync(
-              `python "${scriptPath}" "${input.videoId}"`,
-            )
-            const result = JSON.parse(stdout)
-            if (result.error) throw new Error(result.error)
-            if (!Array.isArray(result))
-              throw new Error('Invalid transcript format returned from script')
-            transcriptData = result
+            transcriptData = await fetchTranscriptFromApify(input.videoId)
           }
 
           const fullText = transcriptData
