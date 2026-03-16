@@ -4,11 +4,10 @@ import { extractVideoId } from '@/lib/utils'
 import { useClerk, useUser } from '@clerk/clerk-react'
 import { useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Loader2, Menu, X } from 'lucide-react'
 import { lazy, Suspense, useEffect, useState } from 'react'
-import StarField from './StarField'
-
 const Globe = lazy(() => import('./Globe'))
+const StarField = lazy(() => import('./StarField'))
 
 export default function Hero() {
   const navigate = useNavigate()
@@ -17,6 +16,7 @@ export default function Hero() {
   const { isSignedIn, isLoaded } = useUser()
   const { signOut } = useClerk()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Prevent scrolling when mobile menu is open
   useEffect(() => {
@@ -37,6 +37,7 @@ export default function Hero() {
       setError('Invalid YouTube URL')
       return
     }
+    setIsSubmitting(true)
     navigate({ to: '/video/$videoId', params: { videoId } })
   }
   return (
@@ -57,7 +58,9 @@ export default function Hero() {
         style={{ background: 'var(--gradient-hero)' }}
       />
 
-      <StarField count={120} />
+      <Suspense fallback={null}>
+        <StarField count={120} />
+      </Suspense>
 
       {/* Navbar */}
       <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-between px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.1)] w-[90%] max-w-4xl">
@@ -223,23 +226,27 @@ export default function Hero() {
                   />
                   <button
                     type="submit"
-                    disabled={!url}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary/80 hover:bg-primary text-white rounded-full p-3 md:p-3.5 transition-colors shadow-[0_0_15px_rgba(255,94,0,0.3)] flex items-center justify-center"
+                    disabled={!url || isSubmitting}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 bg-primary/80 hover:bg-primary text-white rounded-full p-3 md:p-3.5 transition-colors shadow-[0_0_15px_rgba(255,94,0,0.3)] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="M5 12h14"></path>
-                      <path d="m12 5 7 7-7 7"></path>
-                    </svg>
+                    {isSubmitting ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                      </svg>
+                    )}
                   </button>
                 </div>
               </div>
