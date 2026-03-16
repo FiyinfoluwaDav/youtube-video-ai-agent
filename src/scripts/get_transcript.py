@@ -5,7 +5,7 @@ from youtube_transcript_api import YouTubeTranscriptApi
 
 def get_video_id(youtube_url):
     """
-    Extract the video ID from a YouTube URL.
+    Extract the video ID from a YouTube URL link being pasted.
     """
     if len(youtube_url) == 11 and ' ' not in youtube_url:
         return youtube_url 
