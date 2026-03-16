@@ -1,5 +1,3 @@
-import { ApifyClient } from 'apify-client'
-
 export interface TranscriptItem {
   text: string
   offset: number
@@ -7,7 +5,7 @@ export interface TranscriptItem {
 }
 
 /**
- * Fetches the transcript for a YouTube video using the Apify starvibe/youtube-video-transcript actor.
+ * Fetches the transcript for a YouTube video using the Apify starvibe/youtube-video-transcript actor via REST API.
  * @param videoId The 11-character YouTube video ID.
  * @returns A promise that resolves to an array of TranscriptItems.
  */
@@ -18,33 +16,41 @@ export async function fetchTranscriptFromApify(videoId: string): Promise<Transcr
     throw new Error('APIFY_API_KEY environment variable is missing')
   }
 
-  const client = new ApifyClient({
-    token: apiKey,
-  })
-
-  // Prepare the input for the actor
-  const input = {
-    youtube_url: `https://www.youtube.com/watch?v=${videoId}`,
-    language: 'en', // Prefer English
-  }
+  // Example of using dynamic import as requested
+  // const { ApifyClient } = await import('apify-client')
+  // const client = new ApifyClient({ token: apiKey })
 
   try {
-    console.log(`Starting Apify actor for video ID: ${videoId}`)
-    
-    // Run the actor and wait for it to finish
-    const run = await client.actor('starvibe/youtube-video-transcript').call(input)
+    console.log(`Starting Apify actor for video ID: ${videoId} via REST API`)
 
-    console.log(`Apify actor finished. Fetching results from dataset: ${run.defaultDatasetId}`)
+    // Using the synchronous run endpoint which returns dataset items directly
+    const response = await fetch(
+      `https://api.apify.com/v2/acts/starvibe~youtube-video-transcript/run-sync-get-dataset-items?token=${apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          youtube_url: `https://www.youtube.com/watch?v=${videoId}`,
+          language: 'en',
+        }),
+      },
+    )
 
-    // Fetch the results from the run's dataset
-    const { items } = await client.dataset(run.defaultDatasetId).listItems()
+    if (!response.ok) {
+      const errorText = await response.text()
+      throw new Error(`Apify API error (${response.status}): ${errorText}`)
+    }
+
+    const items = (await response.json()) as any[]
 
     if (!items || items.length === 0) {
       throw new Error('No transcript items found in Apify results')
     }
 
     // The actor returns a single item with a 'transcript' array
-    const firstItem = items[0] as any
+    const firstItem = items[0]
     const transcript = firstItem.transcript
 
     if (!transcript || !Array.isArray(transcript)) {
@@ -52,8 +58,6 @@ export async function fetchTranscriptFromApify(videoId: string): Promise<Transcr
     }
 
     // Map Apify fields to our internal TranscriptItem format
-    // Apify: { text: string, start: number, duration: number, end: number }
-    // Our format: { text: string, offset: number, duration: number }
     return transcript.map((item: any) => ({
       text: item.text || '',
       offset: item.start || 0,

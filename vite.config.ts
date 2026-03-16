@@ -27,12 +27,7 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart(),
     // Nitro builds server output for Vercel (and other serverless hosts)
-    nitro({
-      preset: 'vercel',
-      commonJS: {
-        dynamicRequireTargets: ['node_modules/proxy-agent'],
-      },
-    }),
+    nitro({ preset: 'vercel' }),
     viteReact(),
   ],
 
