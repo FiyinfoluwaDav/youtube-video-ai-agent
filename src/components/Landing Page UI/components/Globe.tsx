@@ -98,7 +98,7 @@ function GlobeCore() {
 
   return (
     <mesh ref={meshRef} renderOrder={1}>
-      <sphereGeometry args={[1.98, 64, 64]} />
+      <sphereGeometry args={[1.98, 32, 32]} />
       <meshStandardMaterial
         color="#0a0503"
         roughness={0.8}
@@ -113,7 +113,7 @@ function GlobeCore() {
 function AtmosphereGlow() {
   return (
     <mesh>
-      <sphereGeometry args={[2.15, 32, 32]} />
+      <sphereGeometry args={[2.15, 24, 24]} />
       <meshStandardMaterial
         color="#F29B88"
         transparent
@@ -129,7 +129,7 @@ export default function Globe() {
     <div className="w-full h-full cursor-grab active:cursor-grabbing">
       <Canvas
         camera={{ position: [0, 0, 6], fov: 45 }}
-        gl={{ antialias: true, alpha: true }}
+        gl={{ antialias: false, alpha: true, powerPreference: 'high-performance' }}
         style={{ background: 'transparent' }}
       >
         <ambientLight intensity={0.5} />
@@ -141,13 +141,13 @@ export default function Globe() {
         />
 
         <Stars
-          radius={80}
-          depth={50}
-          count={3000}
-          factor={3}
+          radius={60}
+          depth={40}
+          count={1000}
+          factor={2}
           saturation={0}
           fade
-          speed={0.5}
+          speed={0.3}
         />
 
         <GlobeCore />
