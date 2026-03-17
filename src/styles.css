@@ -175,3 +175,52 @@ code {
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #4b5563; /* gray-600 */
 }
+
+@layer utilities {
+  .blobReject {
+    animation: rejectBlob 0.42s ease-in-out;
+  }
+
+  .fieldReject {
+    animation: rejectField 0.34s ease-in-out;
+  }
+
+  @keyframes rejectBlob {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-8px) rotate(-1deg);
+    }
+    40% {
+      transform: translateX(8px) rotate(1deg);
+    }
+    60% {
+      transform: translateX(-6px) rotate(-0.6deg);
+    }
+    80% {
+      transform: translateX(6px) rotate(0.6deg);
+    }
+  }
+
+  @keyframes rejectField {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-6px);
+    }
+    40% {
+      transform: translateX(6px);
+    }
+    60% {
+      transform: translateX(-4px);
+    }
+    80% {
+      transform: translateX(4px);
+    }
+  }
+}
+
