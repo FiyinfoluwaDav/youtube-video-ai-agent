@@ -258,7 +258,7 @@ const Sidebar = ({
               className="w-4.5 opacity-70 invert dark:invert-0"
               alt=""
             />
-            <p>Dark Mode</p>
+            <p>{theme === 'dark' ? 'Dark Mode' : 'Light Mode'}</p>
           </div>
           <label className="relative inline-flex cursor-pointer">
             <input

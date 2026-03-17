@@ -14,27 +14,25 @@ const Loading = () => {
 
   return (
     <div className="landing-page-theme min-h-screen bg-[#020810] flex flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Stars Background */}
-      <div className="absolute inset-0 z-0">
-        {[...Array(50)].map((_, i) => (
+      {/* Vertical Speed Lines */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: Math.random(), scale: Math.random() }}
+            initial={{ y: -100, opacity: 0 }}
             animate={{
-              opacity: [0.2, 0.8, 0.2],
-              scale: [1, 1.2, 1],
+              y: ['0vh', '110vh'],
+              opacity: [0, 0.4, 0],
             }}
             transition={{
-              duration: 2 + Math.random() * 3,
+              duration: 0.5 + Math.random() * 0.5,
               repeat: Infinity,
-              ease: 'easeInOut',
+              ease: 'linear',
+              delay: Math.random() * 2,
             }}
-            className="absolute rounded-full bg-white"
+            className="absolute bg-linear-to-b from-transparent via-white/20 to-transparent w-px h-20"
             style={{
-              width: Math.random() * 2 + 1 + 'px',
-              height: Math.random() * 2 + 1 + 'px',
-              top: Math.random() * 100 + '%',
-              left: Math.random() * 100 + '%',
+              left: `${10 + Math.random() * 80}%`,
             }}
           />
         ))}
@@ -42,25 +40,34 @@ const Loading = () => {
 
       <div className="relative z-10 flex flex-col items-center gap-12 w-full max-w-md">
         <div className="relative">
-          {/* Flame/Glow effect behind rocket */}
+          {/* Thruster Flame effect behind rocket */}
+          <motion.div
+            animate={{
+              scaleY: [1, 1.5, 1],
+              scaleX: [1, 0.9, 1],
+              opacity: [0.6, 0.9, 0.6],
+            }}
+            transition={{ duration: 0.1, repeat: Infinity }}
+            className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-8 h-24 bg-linear-to-t from-primary via-secondary to-transparent blur-lg rounded-full"
+          />
           <motion.div
             animate={{
               scale: [1, 1.2, 1],
-              opacity: [0.3, 0.6, 0.3],
+              opacity: [0.4, 0.7, 0.4],
             }}
-            transition={{ duration: 0.5, repeat: Infinity }}
-            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-12 h-20 bg-gradient-to-t from-primary via-secondary to-transparent blur-xl rounded-full"
+            transition={{ duration: 0.15, repeat: Infinity }}
+            className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-16 h-16 bg-primary/30 blur-2xl rounded-full"
           />
 
           <motion.div
             animate={{
-              y: [-10, 10, -10],
-              rotate: [-2, 2, -2],
+              x: [-0.5, 0.5, -0.5],
+              y: [-0.5, 0.5, -0.5],
             }}
             transition={{
-              duration: 2,
+              duration: 0.05,
               repeat: Infinity,
-              ease: 'easeInOut',
+              ease: 'linear',
             }}
             className="relative bg-black/40 backdrop-blur-xl border border-white/10 p-8 rounded-full shadow-[0_0_50px_rgba(255,94,0,0.2)]"
           >
@@ -81,12 +88,12 @@ const Loading = () => {
           {/* Progress Bar */}
           <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/10 relative">
             <motion.div
-              className="h-full bg-gradient-to-r from-primary via-secondary to-primary shadow-[0_0_15px_rgba(255,94,0,0.5)]"
+              className="h-full bg-linear-to-r from-primary via-secondary to-primary shadow-[0_0_15px_rgba(255,94,0,0.5)]"
               style={{ width: `${progress}%` }}
             />
 
             {/* Glossy overlay for progress bar */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-b from-white/10 to-transparent pointer-events-none" />
           </div>
 
           <div className="font-display text-[10px] text-primary/60 tracking-widest uppercase">
