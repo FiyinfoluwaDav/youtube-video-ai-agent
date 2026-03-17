@@ -19,7 +19,7 @@ export const sendChatRequest = async (messages: ChatMessage[]) => {
 
     const chatCompletion = await groq.chat.completions.create({
       messages: messages as any,
-      model: 'llama-3.3-70b-versatile',
+      model: 'meta-llama/llama-prompt-guard-2-86m',
       temperature: 0.7,
       max_completion_tokens: 4000,
       top_p: 1,
