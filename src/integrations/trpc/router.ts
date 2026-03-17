@@ -65,7 +65,10 @@ const chatRouter = {
         return { content: response }
       } catch (error) {
         console.error('Error in chat.sendMessage:', error)
-        throw new Error('Failed to get response from AI')
+        if (error instanceof Error) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
+        }
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to get response from AI' })
       }
     }),
 
@@ -93,7 +96,10 @@ const chatRouter = {
         return { content: finalSummary }
       } catch (error) {
         console.error('Error in chat.summarizeVideoMapReduce:', error)
-        throw new Error('Failed to generate summary via Map-Reduce')
+        if (error instanceof Error) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
+        }
+        throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'Failed to generate summary via Map-Reduce' })
       }
     }),
   generateTitle: publicProcedure
@@ -335,6 +341,9 @@ Rules:
         return jsonObj
       } catch (error) {
         console.error('Error in chat.generateMindMap:', error)
+        if (error instanceof Error) {
+          throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: error.message })
+        }
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to generate mind map',

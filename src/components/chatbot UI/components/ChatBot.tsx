@@ -338,11 +338,12 @@ Answer questions based on this transcript and context but make sure you do not i
       }
     } catch (error) {
       console.error('Error sending message:', error)
+      const errorMsg = error instanceof Error ? `Error: ${error.message}` : 'Sorry, I encountered an error. Please try again later.'
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: 'Sorry, I encountered an error. Please try again later.',
+          content: errorMsg,
           isImage: false,
           isPublished: false,
           timestamp: Date.now(),
