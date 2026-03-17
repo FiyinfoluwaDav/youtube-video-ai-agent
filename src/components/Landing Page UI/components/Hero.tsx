@@ -97,7 +97,7 @@ export default function Hero() {
               </button>
             ) : (
               <button
-                onClick={() => navigate({ to: '/signup' })}
+                onClick={() => navigate({ to: '/login' })}
                 className="bg-primary/80 hover:bg-primary transition-colors text-white px-5 py-2 rounded-full text-xs font-medium shadow-[0_0_15px_rgba(255,94,0,0.3)]"
               >
                 Sign Up
@@ -151,7 +151,7 @@ export default function Hero() {
               ) : (
                 <button
                   onClick={() => {
-                    navigate({ to: '/signup' })
+                    navigate({ to: '/login' })
                     setIsMobileMenuOpen(false)
                   }}
                   className="bg-primary/90 hover:bg-primary transition-colors text-white px-8 py-3 rounded-full text-lg font-medium shadow-[0_0_20px_rgba(255,94,0,0.4)]"
