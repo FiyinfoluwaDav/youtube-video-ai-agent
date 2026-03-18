@@ -193,7 +193,7 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     updateChatMutation.mutate({ chatId: chat.id, name: chat.name })
 
     // Also update selected chat if it's the one being updated
-    if (selectedChat?.id === chat.id) {
+    if (chat.id && selectedChat?.id === chat.id) {
       setSelectedChat(chat)
     }
   }

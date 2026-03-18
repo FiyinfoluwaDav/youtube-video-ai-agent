@@ -330,11 +330,11 @@ Answer questions based on this transcript and context but make sure you do not i
       }
 
       // Generate title for new chats
-      if (!selectedChat && messages.length === 0) {
+      if (user && !selectedChat && messages.length === 0 && currentChat) {
         try {
           const { title } = await generateTitle({ message: currentPrompt })
           if (title) {
-            updateChat({ ...currentChat!, name: title })
+            updateChat({ ...currentChat, name: title })
           }
         } catch (error) {
           console.error('Failed to generate title:', error)
