@@ -183,7 +183,7 @@ const ChatBot = ({
       let chatId = selectedChat?.id
       let currentChat = selectedChat
 
-      if (!chatId) {
+      if (!chatId && user) {
         const chatName =
           isPdfFlow && videoTitle
             ? videoTitle.slice(0, 40)
@@ -214,12 +214,14 @@ const ChatBot = ({
         })
       }
 
-      // Save user message
-      await addMessage({
-        chatId: chatId!,
-        role: 'user',
-        content: currentPrompt,
-      })
+      // Save user message if logged in
+      if (chatId && user) {
+        await addMessage({
+          chatId: chatId,
+          role: 'user',
+          content: currentPrompt,
+        })
+      }
 
       const messagesToSend = [...messages, userMessage].map((m) => ({
         role: m.role as 'user' | 'assistant' | 'system',
@@ -312,12 +314,14 @@ Answer questions based on this transcript and context but make sure you do not i
       }
       setMessages(finalMessages)
 
-      // Save assistant message
-      await addMessage({
-        chatId: chatId!,
-        role: 'assistant',
-        content: responseContent,
-      })
+      // Save assistant message if logged in
+      if (chatId && user) {
+        await addMessage({
+          chatId: chatId,
+          role: 'assistant',
+          content: responseContent,
+        })
+      }
 
       // Update selected chat messages in memory
       if (currentChat) {
